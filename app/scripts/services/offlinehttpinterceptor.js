@@ -5,14 +5,9 @@ angular.module('offlineMode', [])
 		$httpProvider.interceptors.push('httpInterceptor');
 	})
 	.factory('httpInterceptor', function ($q) {
-		function getUrlParameterByName(name) {
-			name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
-			var regex = new RegExp('[\\?&]' + name + '=([^&#]*)'),
-				results = regex.exec(location.search);
-			return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
-		}
 
-		var OFFLINE = getUrlParameterByName('offline') === 'true';
+		var OFFLINE = location.search.indexOf('offline=true') > -1;
+
 		var _config = {
 			OFFLINE_DATA_PATH: 'lol',
 			API_PATH: 'rooofl'
@@ -20,11 +15,14 @@ angular.module('offlineMode', [])
 
 		return {
 			request: function(config) {
-				var parts = config.url.indexOf('/') === 0 ? config.url.substr(1, config.url.length).split('/') : config.url.split('/');
+				if (OFFLINE && config) {
+					var parts = config.url.indexOf('/') === 0 ? config.url.substr(1, config.url.length).split('/') : config.url.split('/');
 
-				if (OFFLINE && parts.splice(0, 1)[0] === _config.API_PATH) {
-					config.url = _config.OFFLINE_DATA_PATH + parts.join('/') + '.json';
+					if (parts.splice(0, 1)[0] === _config.API_PATH) {
+						config.url = _config.OFFLINE_DATA_PATH + parts.join('/') + '.json';
+					}
 				}
+
 				return config || $q.when(config);
 			},
 			config: _config
