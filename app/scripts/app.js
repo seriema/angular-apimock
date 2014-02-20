@@ -1,17 +1,24 @@
 function getUrlParameterByName(name) {
-	name = name.replace(/[\[]/, '\\\[').replace(/[\]]/, '\\\]');
+	name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
 	var regex = new RegExp('[\\?&]' + name + '=([^&#]*)'),
 		results = regex.exec(location.search);
-	return results == null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+	return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
 }
 
 var OFFLINE = getUrlParameterByName('offline') === 'true';
+var JS_ANGULAR_FOLDER = '/bower_components/angular-mocks/';
+var JSON_SERVER_URL = '/offline_data/';
 
 function demand(file) {
 	var result;
-	$.ajax(file, { async: false, type: 'GET' }).done(function (data) {
-		result = data;
-	});
+	var xhr = new XMLHttpRequest();
+	xhr.onreadystatechange = function() {
+		if (xhr.readyState === 4) {
+			result = xhr.responseText;
+		}
+	};
+	xhr.open('GET', file, false);
+	xhr.send(null);
 
 	return result;
 }
@@ -22,24 +29,31 @@ angular.module('angularOfflineApp', [])
 		if (OFFLINE) {
 			var se = document.createElement('script');
 			se.type = 'text/javascript';
-			se.text = demand('/Content/js/vendor/angular-1.2.9/angular-mocks.js');
+			se.text = demand(JS_ANGULAR_FOLDER+'angular-mocks.js');
 			document.getElementsByTagName('head')[0].appendChild(se);
 
 			$provide.decorator('$httpBackend', angular.mock.e2e.$httpBackendDecorator);
 		}
 	}])
+/*
+	.config(['$httpProvider', function ($httpProvider) {
+		$httpProvider.interceptors.push(function () {
+			return {
+				request: function (config) {
+					config.url = 'http://localhost:9060/' + config.url;
+				}
+			};
+		});
 
+	}])
+*/
 	.run(['$injector', function ($injector) {
 		if (OFFLINE) {
 			var $httpBackend = $injector.get('$httpBackend');
+//			var $httpProvider = $injector.get('$httpProvider');
 
-			$httpBackend.when('POST', '/api/Basket').respond(demand('/Content/js/data/post.basket.json'));
-			$httpBackend.when('GET', new RegExp('/api/ProductSearch(\.*)')).respond(demand('/Content/js/data/get.productsearch.json'));
 
-			$httpBackend.when('GET', '/Content/js/data/stores.json').respond(demand('/Content/js/data/stores.json'));
-			$httpBackend.when('GET', '/Content/js/app/storefinder/storefinder.tpl.html').respond(demand('/Content/js/app/storefinder/storefinder.tpl.html'));
-			$httpBackend.when('GET', '/Content/js/app/findbeverage/categories/categorycard.tpl.html').respond(demand('/Content/js/app/findbeverage/categories/categorycard.tpl.html'));
-			$httpBackend.when('GET', '/Content/js/data/categories.json').respond(demand('/Content/js/data/categories.json'));
-			$httpBackend.when('GET', '/Content/js/app/order/orderlist-item.tpl.html').respond(demand('/Content/js/app/order/Directives/sbOrderList-item.tpl.html'));
+			$httpBackend.when('GET', '/api/people/pikachu').respond(demand(JSON_SERVER_URL+'people/pikachu.json'));
+//			$httpBackend.when('GET', new RegExp('/api/ProductSearch(\.*)')).respond(demand(JSON_SERVER_URL+'get.productsearch.json'));
 		}
 	}]);
