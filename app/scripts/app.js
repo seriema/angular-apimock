@@ -23,8 +23,8 @@ function demand(file) {
 	return result;
 }
 
-angular.module('angularOfflineApp', [])
-
+angular.module('angularOfflineApp', ['offlineHttpInterceptor'])
+/*
 	.config(['$provide', function ($provide) {
 		if (OFFLINE) {
 			var se = document.createElement('script');
@@ -35,25 +35,29 @@ angular.module('angularOfflineApp', [])
 			$provide.decorator('$httpBackend', angular.mock.e2e.$httpBackendDecorator);
 		}
 	}])
+*/
 /*
 	.config(['$httpProvider', function ($httpProvider) {
-		$httpProvider.interceptors.push(function () {
+		$httpProvider.interceptors.push(function() {
 			return {
-				request: function (config) {
-					config.url = 'http://localhost:9060/' + config.url;
+				'request': function(config) {
+					// same as above
+				},
+
+				'response': function(response) {
+					// same as above
 				}
 			};
 		});
-
 	}])
 */
 	.run(['$injector', function ($injector) {
 		if (OFFLINE) {
-			var $httpBackend = $injector.get('$httpBackend');
+//			var $httpBackend = $injector.get('$httpBackend');
 //			var $httpProvider = $injector.get('$httpProvider');
 
 
-			$httpBackend.when('GET', '/api/people/pikachu').respond(demand(JSON_SERVER_URL+'people/pikachu.json'));
+//			$httpBackend.when('GET', '/api/people/pikachu').respond(demand(JSON_SERVER_URL+'people/pikachu.json'));
 //			$httpBackend.when('GET', new RegExp('/api/ProductSearch(\.*)')).respond(demand(JSON_SERVER_URL+'get.productsearch.json'));
 		}
 	}]);

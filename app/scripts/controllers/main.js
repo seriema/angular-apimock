@@ -5,7 +5,7 @@ angular.module('angularOfflineApp')
 		$scope.name = 'unknown';
 		$scope.command = 'null';
 
-		$http.get('/api/people/pikachu').then(function(data) {
+		$http.get('/api/people/pikachu').success(function(data) {
 			$scope.name = data.name;
 			$scope.command = data.command;
 		});
