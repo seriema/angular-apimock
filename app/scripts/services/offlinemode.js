@@ -7,7 +7,7 @@ angular.module('offlineMode', [])
 	.factory('httpInterceptor', function ($q) {
 
 		var OFFLINE = location.search.indexOf('offline=true') > -1,
-			_config = {
+			config = {
 			OFFLINE_DATA_PATH: '/offline_data',
 			API_PATH: '/api'
 		};
@@ -15,15 +15,15 @@ angular.module('offlineMode', [])
 		return {
 			request: function(req) {
 				if (OFFLINE && req) {
-					if (req.url.indexOf(_config.API_PATH) === 0) {
-						var path = req.url.substring(_config.API_PATH.length);
-						req.url = _config.OFFLINE_DATA_PATH + path + '.' + req.method.toLowerCase() + '.json';
+					if (req.url.indexOf(config.API_PATH) === 0) {
+						var path = req.url.substring(config.API_PATH.length);
+						req.url = config.OFFLINE_DATA_PATH + path + '.' + req.method.toLowerCase() + '.json';
 					}
 				}
 
 				return req || $q.when(req);
 			},
-			config: _config
+			config: config
 		};
 	}
 );
