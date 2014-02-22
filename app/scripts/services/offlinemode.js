@@ -13,15 +13,15 @@ angular.module('offlineMode', [])
 		};
 
 		return {
-			request: function(config) {
-				if (OFFLINE && config) {
-					if (config.url.indexOf(_config.API_PATH) === 0) {
-						var path = config.url.substring(_config.API_PATH.length);
-						config.url = _config.OFFLINE_DATA_PATH + path + '.' + config.method.toLowerCase() + '.json';
+			request: function(req) {
+				if (OFFLINE && req) {
+					if (req.url.indexOf(_config.API_PATH) === 0) {
+						var path = req.url.substring(_config.API_PATH.length);
+						req.url = _config.OFFLINE_DATA_PATH + path + '.' + req.method.toLowerCase() + '.json';
 					}
 				}
 
-				return config || $q.when(config);
+				return req || $q.when(req);
 			},
 			config: _config
 		};
