@@ -1,6 +1,10 @@
 {
   "name": "angularoffline",
   "version": "0.1.0",
+	"repository": {
+		"type": "git",
+		"url": "git://github.com/seriema/angular-offline.git"
+	},
   "dependencies": {},
   "devDependencies": {
     "grunt": "~0.4.1",
