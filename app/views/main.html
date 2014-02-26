@@ -1,30 +1,59 @@
-<div class="header">
-	<ul class="nav nav-pills pull-right">
-		<li class="active"><a href="#">Home</a></li>
-		<li><a href="#">About</a></li>
-		<li><a href="#">Contact</a></li>
-	</ul>
-	<h3 class="text-muted">angular offline</h3>
+
+<div class="top-border"></div>
+
+<header>
+	<div class="container">
+		<div class="row">
+			<h1>Angular Offline</h1>
+			<p class="lead">Automatically route your API calls to static JSON files, for hiccup free front&#8211;end development.</p>
+			<ul class="buttons">
+				<li><a href="#" class="button">Download (v0.1)</a></li>
+				<li><a href="https://github.com/seriema/angular-offline" class="button">View code</a></li>
+			</ul>
+		</div>
+	</div>
+</header>
+
+<div class="main-content">
+	<div class="container">
+		<div class="row">
+			<h2>
+			<a name="usage" class="anchor" href="#usage"><span class="octicon octicon-link"></span></a>Usage</h2>
+
+			<p>Include <code>offlinemode.js</code> into your project and add it as a dependency in your app.</p>
+
+			<pre><code>angular.module('myApp', ['offlineMode']);</code></pre>
+
+			<p>The default paths are <code>/offline_data</code> for getting .json files and <code>/api</code> for using the real API. You can change this with <code>config()</code> during the <code>run()</code> operation of your module.</p>
+
+			<pre><code>.run(function (httpInterceptor) {
+		httpInterceptor.config({
+			offlineDataPath: '/offline_data',
+			apiPath: '/api'
+		});
+	});</code></pre>
+
+			<p>Then when running your app you just do <code>$http</code> requests as usual to your API. If you append <code>?offline=true</code> to the URL in your browser when accessing the page, then offlineMode will kick in and you'll get your predefined json instead of calling the API.</p>
+
+			<pre><code>angular.module('myApp')
+		.controller('MainCtrl', function ($scope, $http) {
+			$scope.name = 'unknown';
+
+			$http.get('/api/people/pikachu').success(function(data) {
+				$scope.name = data.name;
+			});
+		});</code></pre>
+
+			<p>This means that in regular operation you'll call <code>/api/people/pikachu</code> as you'd expect. But if the API is down for some reason, or it's not even finished, and you want to work on the frontend, then just add <code>?offline=true</code> to the URL <em>in the browser</em> (the idea is that you <em>don't</em> change you JS) and it will instead do a request to <code>/offline_data/people/pikachu.get.json</code>.</p></article>
+		</div>
+	</div>
 </div>
 
-<div class="jumbotron">
-	<h1>'Allo, 'Allo!</h1>
-	<p class="lead">Always a pleasure scaffolding your apps.</p>
-	<p><a class="btn btn-lg btn-success" href="#">Splendid!</a></p>
-</div>
+<footer>
+	<div class="container">
+		<div class="row">
+			<p><span class="highlight">♥</span> from <a href="http://johansson.jp">Seriema</a> <span class="highlight">+</span> <a href="http://redhorn.se">Redhorn</a></p>
+		</div>
+	</div>
+</footer>
 
-<div class="row marketing">
-	<h4>HTML5 Boilerplate</h4>
-	<p>HTML5 Boilerplate is a professional front-end template for building fast, robust, and adaptable web apps or sites.</p>
-
-	<h4>Angular</h4>
-	<p>AngularJS is a toolset for building the framework most suited to your application development.</p>
-
-	<h4>Karma</h4>
-	<p>Spectacular Test Runner for JavaScript.</p>
-</div>
-</div>
-
-<div class="footer">
-	<p>♥ from the Yeoman team</p>
-</div>

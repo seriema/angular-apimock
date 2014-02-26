@@ -1,13 +1,9 @@
-/* Space out content a bit */
-body {
-  padding-top: 20px;
-  padding-bottom: 20px;
-}
 
 /* Everything but the jumbotron gets side spacing for mobile first views */
-.header,
+header,
 .marketing,
-.footer {
+.main-content,
+footer {
   padding-left: 15px;
   padding-right: 15px;
 }
@@ -62,9 +58,10 @@ body {
 /* Responsive: Portrait tablets and up */
 @media screen and (min-width: 768px) {
   /* Remove the padding we set earlier */
-  .header,
+  header,
   .marketing,
-  .footer {
+  footer,
+  .main-content {
     padding-left: 0;
     padding-right: 0;
   }
