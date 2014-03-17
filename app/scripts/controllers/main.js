@@ -1,12 +1,13 @@
 'use strict';
 
 angular.module('apiMockApp')
-	.controller('MainCtrl', function ($scope, $http) {
-		$scope.name = 'unknown';
-		$scope.command = 'null';
+	.controller('MainCtrl', function ($scope, $http, mockSwitch) {
+		$scope.name = '';
+		$scope.apiMocked = mockSwitch.mockApi();
 
 		$http.get('/api/people/pikachu').success(function(data) {
 			$scope.name = data.name;
-			$scope.command = data.command;
+		}).error(function(data) {
+			$scope.name = data;
 		});
 	});

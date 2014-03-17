@@ -16,7 +16,7 @@ describe('Controller: MainCtrl', function () {
 			$scope: scope
 		});
 		httpBackend = $httpBackend;
-		httpBackend.when('GET', '/api/people/pikachu').respond({name: 'foo', command: 'bar'});
+		httpBackend.when('GET', '/api/people/pikachu').respond({name: 'foo'});
 		httpBackend.when('GET', '/mock_data/people/pikachu.get.json').respond({name: 'Pikachu'});
 	}));
 
@@ -29,7 +29,6 @@ describe('Controller: MainCtrl', function () {
 		httpBackend.expect('GET', '/api/people/pikachu');
 		httpBackend.flush();
 		expect(scope.name).toBe('foo');
-		expect(scope.command).toBe('bar');
 	});
 
 	it('should hit /mock_data when offline', function () {
