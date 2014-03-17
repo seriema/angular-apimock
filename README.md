@@ -1,13 +1,13 @@
 angular-apiMock [![Build Status](https://travis-ci.org/seriema/angular-apimock.png?branch=master)](https://travis-ci.org/seriema/angular-apimock) [![devDependency Status](https://david-dm.org/seriema/angular-apimock/dev-status.png)](https://david-dm.org/seriema/angular-apimock#info=devDependencies)
 ===============
 
-Mock your API requests during development to focus on the UI first. With `angular-offline` you just add `?offline=true` to the browser URL and your app will start hitting your JSON mocks instead of the real API.
+Mock your API requests during development to focus on the UI first. With `angular-apiMock` you just add `?apimock=true` to the browser URL and your app will start hitting your JSON mocks instead of the real API.
 
-`angular-offline` follows the same URL path as your api, but with two additions:
+`angular-apiMock` follows the same URL path as your api, but with two additions:
 * it changes the starting folder from your api-path to your offline-path.
 * it appends the HTTP-verb and `.json` to the path.
 
-So a GET-request to `/api/people/pikachu` becomes `/offline_data/people/pikachu.get.json`.
+So a GET-request to `/api/people/pikachu` becomes `/mock_data/people/pikachu.get.json`.
 
 _"Online"_ vs _"Offline"_
 
