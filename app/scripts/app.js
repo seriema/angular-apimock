@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('angularOfflineApp', [
+angular.module('apiMockApp', [
   'ngCookies',
   'ngResource',
   'ngSanitize',
