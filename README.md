@@ -1,4 +1,4 @@
-angular-apiMock [![Build Status](https://travis-ci.org/seriema/angular-offline.png?branch=master)](https://travis-ci.org/seriema/angular-offline)
+angular-apiMock [![Build Status](https://travis-ci.org/seriema/angular-apimock.png?branch=master)](https://travis-ci.org/seriema/angular-apimock)
 ===============
 
 Mock your API requests during development to focus on the UI first. With `angular-offline` you just add `?offline=true` to the browser URL and your app will start hitting your JSON mocks instead of the real API.
