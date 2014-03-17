@@ -17,16 +17,17 @@ angular.module('apiMock', [])
 	.factory('httpInterceptor', function ($q, mockSwitch) {
 		var doMock = mockSwitch.mockApi(),
 			config = {
-				offlineDataPath: '/mock_data',
+				mockDataPath: '/mock_data',
 				apiPath: '/api'
 			};
 
 		return {
+			apiMocked: mockSwitch.mockApi,
 			request: function(req) {
 				if (doMock && req) {
 					if (req.url.indexOf(config.apiPath) === 0) {
 						var path = req.url.substring(config.apiPath.length);
-						req.url = config.offlineDataPath + path + '.' + req.method.toLowerCase() + '.json';
+						req.url = config.mockDataPath + path + '.' + req.method.toLowerCase() + '.json';
 					}
 				}
 
