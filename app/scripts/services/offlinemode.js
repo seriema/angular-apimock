@@ -1,20 +1,29 @@
 'use strict';
 
-angular.module('offlineMode', [])
+angular.module('apiMock', [])
+
 	.config(function ($httpProvider) {
 		$httpProvider.interceptors.push('httpInterceptor');
 	})
-	.factory('httpInterceptor', function ($q) {
 
-		var OFFLINE = location.search.indexOf('offline=true') > -1,
-			config = {
-			offlineDataPath: '/offline_data',
-			apiPath: '/api'
+	.factory('mockSwitch', function() {
+		return {
+			mockApi: function() {
+				return location.search.indexOf('apimock=true') > -1;
+			}
 		};
+	})
+
+	.factory('httpInterceptor', function ($q, mockSwitch) {
+		var doMock = mockSwitch.mockApi(),
+			config = {
+				offlineDataPath: '/mock_data',
+				apiPath: '/api'
+			};
 
 		return {
 			request: function(req) {
-				if (OFFLINE && req) {
+				if (doMock && req) {
 					if (req.url.indexOf(config.apiPath) === 0) {
 						var path = req.url.substring(config.apiPath.length);
 						req.url = config.offlineDataPath + path + '.' + req.method.toLowerCase() + '.json';

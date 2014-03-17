@@ -1,9 +1,9 @@
 'use strict';
 
-describe('Service: offlineMode', function () {
+describe('Service: apiMock', function () {
 
   // load the service's module
-  beforeEach(module('offlineMode'));
+  beforeEach(module('apiMock'));
 
   // instantiate service
   var httpInterceptor;

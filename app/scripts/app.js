@@ -1,9 +1,9 @@
 
-angular.module('angularOfflineApp', ['offlineMode'])
+angular.module('apiMockApp', ['apiMock'])
 
 	.run(function (httpInterceptor) {
 		httpInterceptor.config({
-			offlineDataPath: '/offline_data',
+			offlineDataPath: '/mock_data',
 			apiPath: '/api'
 		});
 	});

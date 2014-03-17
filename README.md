@@ -1,4 +1,4 @@
-angular-offline [![Build Status](https://travis-ci.org/seriema/angular-offline.png?branch=master)](https://travis-ci.org/seriema/angular-offline)
+angular-apiMock [![Build Status](https://travis-ci.org/seriema/angular-offline.png?branch=master)](https://travis-ci.org/seriema/angular-offline)
 ===============
 
 Mock your API requests during development to focus on the UI first. With `angular-offline` you just add `?offline=true` to the browser URL and your app will start hitting your JSON mocks instead of the real API.
@@ -15,23 +15,23 @@ _"Online"_ vs _"Offline"_
 
 ## Usage
 
-Include `offlinemode.js` into your project and add it as a dependency in your app.
+Include `angular-apimock.js` into your project and add it as a dependency in your app.
 
 ````
-angular.module('myApp', ['offlineMode']);
+angular.module('myApp', ['apiMock']);
 ````
 
-The default paths are `/offline_data` for getting .json files and `/api` for using the real API. You can change this with `config()` during the `run()` operation of your module.
+The default paths are `/mock_data` for getting .json files and `/api` for using the real API. You can change this with `config()` during the `run()` operation of your module.
 
 ````
 .run(function (httpInterceptor) {
     httpInterceptor.config({
-        offlineDataPath: '/offline_data',
+        offlineDataPath: '/mock_data',
         apiPath: '/api'
     });
 ````
 
-Then when running your app you just do `$http` requests as usual to your API. If you append `?offline=true` to the URL in your browser when accessing the page, then offlineMode will kick in and you'll get your predefined json instead of calling the API.
+Then when running your app you just do `$http` requests as usual to your API. If you append `?apimock=true` to the URL in your browser when accessing the page, then offlineMode will kick in and you'll get your predefined json instead of calling the API.
 
 ````
 angular.module('myApp')
@@ -44,4 +44,4 @@ angular.module('myApp')
     });
 ````
 
-This means that in regular operation you'll call `/api/people/pikachu` as you'd expect. But if the API is down for some reason, or it's not even finished, and you want to work on the frontend, then just add `?offline=true` to the URL _in the browser_ (the idea is that you _don't_ change you JS) and it will instead do a request to `/offline_data/people/pikachu.get.json`.
+This means that in regular operation you'll call `/api/people/pikachu` as you'd expect. But if the API is down for some reason, or it's not even finished, and you want to work on the frontend, then just add `?apimock=true` to the URL _in the browser_ (the idea is that you _don't_ change you JS) and it will instead do a request to `/mock_data/people/pikachu.get.json`.

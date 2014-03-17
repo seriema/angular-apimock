@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('angularOfflineApp')
+angular.module('apiMockApp')
 	.controller('MainCtrl', function ($scope, $http) {
 		$scope.name = 'unknown';
 		$scope.command = 'null';
