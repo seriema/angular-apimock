@@ -1,6 +1,8 @@
 angular-apiMock [![Build Status](https://travis-ci.org/seriema/angular-apimock.png?branch=master)](https://travis-ci.org/seriema/angular-apimock) [![devDependency Status](https://david-dm.org/seriema/angular-apimock/dev-status.png)](https://david-dm.org/seriema/angular-apimock#info=devDependencies)
 ===============
 
+Less than 0.4kb (gzipped).
+
 Mock your API requests during development to focus on the UI first. With `angular-apiMock` you just add `?apimock=true` to the browser URL and your app will start hitting your JSON mocks instead of the real API.
 
 `angular-apiMock` follows the same URL path as your api, but with two additions:
