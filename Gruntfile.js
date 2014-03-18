@@ -1,4 +1,4 @@
-// Generated on 2014-02-24 using generator-angular 0.6.0-rc.1
+// Generated on 2014-03-18 using generator-angular 0.6.0-rc.1
 'use strict';
 
 // # Globbing
@@ -345,5 +345,5 @@ module.exports = function (grunt) {
     'build'
   ]);
 
-  grunt.loadNpmTasks('grunt-gh-pages');
+  grunt.registerTask('grunt-gh-pages');
 };

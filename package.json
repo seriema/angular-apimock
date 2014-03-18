@@ -1,5 +1,5 @@
 {
-  "name": "angularoffline",
+  "name": "angularapimock",
   "version": "0.0.0",
   "dependencies": {},
   "devDependencies": {
@@ -27,19 +27,12 @@
     "load-grunt-tasks": "~0.2.0",
     "time-grunt": "~0.2.0",
     "karma-ng-scenario": "~0.1.0",
-    "grunt-karma": "~0.6.2",
-    "karma-script-launcher": "~0.1.0",
-    "karma-chrome-launcher": "~0.1.2",
-    "karma-firefox-launcher": "~0.1.3",
-    "karma-html2js-preprocessor": "~0.1.0",
-    "karma-jasmine": "~0.1.5",
-    "karma-coffee-preprocessor": "~0.1.3",
-    "requirejs": "~2.1.11",
-    "karma-requirejs": "~0.2.1",
-    "karma-phantomjs-launcher": "~0.1.2",
-    "karma": "~0.10.9",
+    "grunt-karma": "~0.8.2",
+    "karma": "~0.12.1",
     "karma-ng-html2js-preprocessor": "~0.1.0",
-    "grunt-gh-pages": "~0.9.1"
+    "grunt-gh-pages": "~0.9.1",
+    "karma-jasmine": "~0.1.5",
+    "karma-chrome-launcher": "~0.1.2"
   },
   "engines": {
     "node": ">=0.8.0"

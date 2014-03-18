@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('apiMockApp', [
+angular.module('angularApimockApp', [
   'ngCookies',
   'ngResource',
   'ngSanitize',
