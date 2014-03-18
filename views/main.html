@@ -3,11 +3,11 @@
 <header>
 	<div class="container">
 		<div class="row">
-			<h1>Angular Offline</h1>
+			<h1>Angular apiMock</h1>
 			<p class="lead">Automatically route your API calls to static JSON files, for hiccup free front&#8211;end development.</p>
 			<ul class="buttons">
-				<li><a href="#" class="button">Download (v0.1)</a></li>
-				<li><a href="https://github.com/seriema/angular-offline" class="button">View code</a></li>
+				<li><a href="https://raw.github.com/seriema/angular-apimock/master/app/scripts/services/angular-apimock.js" class="button">Download (v0.1)</a></li>
+				<li><a href="https://github.com/seriema/angular-apimock" class="button">View code</a></li>
 			</ul>
 		</div>
 	</div>
@@ -19,20 +19,20 @@
 			<h2>
 			<a name="usage" class="anchor" href="#usage"><span class="octicon octicon-link"></span></a>Usage</h2>
 
-			<p>Include <code>offlinemode.js</code> into your project and add it as a dependency in your app.</p>
+			<p>Include <code>angular-apimock.js</code> into your project and add it as a dependency in your app.</p>
 
-			<pre><code>angular.module('myApp', ['offlineMode']);</code></pre>
+			<pre><code>angular.module('myApp', ['apiMock']);</code></pre>
 
-			<p>The default paths are <code>/offline_data</code> for getting .json files and <code>/api</code> for using the real API. You can change this with <code>config()</code> during the <code>run()</code> operation of your module.</p>
+			<p>The default paths are <code>/mock_data</code> for getting .json files and <code>/api</code> for using the real API. You can change this with <code>config()</code> during the <code>run()</code> operation of your module.</p>
 
 			<pre><code>.run(function (httpInterceptor) {
 		httpInterceptor.config({
-			offlineDataPath: '/offline_data',
+			mockDataPath: '/mock_data',
 			apiPath: '/api'
 		});
 	});</code></pre>
 
-			<p>Then when running your app you just do <code>$http</code> requests as usual to your API. If you append <code>?offline=true</code> to the URL in your browser when accessing the page, then offlineMode will kick in and you'll get your predefined json instead of calling the API.</p>
+			<p>Then when running your app you just do <code>$http</code> requests as usual to your API. If you append <code>?apimock=true</code> to the URL in your browser when accessing the page, then the API-mock will kick in and you'll get your predefined json instead of calling the API.</p>
 
 			<pre><code>angular.module('myApp')
 		.controller('MainCtrl', function ($scope, $http) {
@@ -43,7 +43,7 @@
 			});
 		});</code></pre>
 
-			<p>This means that in regular operation you'll call <code>/api/people/pikachu</code> as you'd expect. But if the API is down for some reason, or it's not even finished, and you want to work on the frontend, then just add <code>?offline=true</code> to the URL <em>in the browser</em> (the idea is that you <em>don't</em> change you JS) and it will instead do a request to <code>/offline_data/people/pikachu.get.json</code>.</p>
+			<p>This means that in regular operation you'll call <code>/api/people/pikachu</code> as you'd expect. But if the API is down for some reason, or it's not even finished, and you want to work on the frontend, then just add <code>?apimock=true</code> to the URL <em>in the browser</em> (the idea is that you <em>don't</em> change you JS) and it will instead do a request to <code>/mock_data/people/pikachu.get.json</code>.</p>
 		</div>
 	</div>
 </div>
