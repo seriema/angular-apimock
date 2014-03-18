@@ -1,13 +1,20 @@
 
 a.button {
 	display: block;
-	padding: 12px 18px;
+	padding: 9px 12px;
 	border: 1px solid #fff;
 	border-radius: 6px;
 	float: left;
-	font-size: 16px;
+	font-size: 14px;
 	font-weight: 300;
 	color: #fff;
+}
+
+@media screen and (min-width: 401px) {
+	a.button {
+		padding: 12px 18px;
+		font-size: 16px;
+	}
 }
 
 a.button:hover {
@@ -73,13 +80,17 @@ footer a {
   color: #fff;
 }
 
+footer a:hover {
+	color: #fff;
+}
+
 code {
 	color: #333333;
 }
 
 
 /* theme 1 */
-
+/*
 .top-border {
 	background-color: #3b8183;
 }
@@ -97,9 +108,9 @@ footer {
 	background-color: #60b99a;
 	color: #554236;
 }
-
+*/
 /* theme 2 */
-
+/*
 .top-border {
 	background-color: #f85931;
 }
@@ -117,7 +128,7 @@ footer {
 	background-color: #42a89d;
 	color: #554236;
 }
-
+*/
 /* theme 3 */
 
 .top-border {
