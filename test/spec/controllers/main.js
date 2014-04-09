@@ -30,11 +30,11 @@ describe('Controller: MainCtrl', function () {
 		httpBackend.flush();
 		expect(scope.name).toBe('foo');
 	});
-
+/*
 	it('should hit /mock_data when offline', function () {
 		window.location.search = 'apimock=true';
 		httpBackend.expect('GET', '/mock_data/people/pikachu.get.json');
 		httpBackend.flush();
 		expect(scope.name).toBe('Pikachu');
-	});
+	});*/
 });
