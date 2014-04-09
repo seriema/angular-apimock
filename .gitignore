@@ -1,8 +1,0 @@
-node_modules
-bower_components
-dist
-.tmp
-.sass-cache
-app/bower_components
-.idea
-.tmp
