@@ -17,32 +17,30 @@
 <div class="main-content">
 	<div class="container">
 		<div class="row">
-			<h2>
-			<a name="usage" class="anchor" href="#usage"><span class="octicon octicon-link"></span></a>Usage</h2>
+			<h2><a name="usage" class="anchor" href="#usage"><span class="octicon octicon-link"></span></a>Usage</h2>
 
 			<p>Include <code>angular-apimock.js</code> into your project and add it as a dependency in your app.</p>
 
-			<pre><code>angular.module('myApp', ['apiMock']);</code></pre>
+			<pre><code>angular.module('myApp', ['apiMock'])</code></pre>
 
-			<p>The default paths are <code>/mock_data</code> for getting .json files and <code>/api</code> for using the real API. You can change this with <code>config()</code> during the <code>run()</code> operation of your module.</p>
+			<p>The default paths are <code>/mock_data</code> for getting .json files and <code>/api</code> for using the real API. You can change this with <code>config()</code> during the <code>config()</code> operation of your module.</p>
 
-			<pre><code>.run(function (httpInterceptor) {
-		httpInterceptor.config({
-			mockDataPath: '/mock_data',
-			apiPath: '/api'
-		});
-	});</code></pre>
+			<pre><code>.config(function (httpInterceptorProvider) {
+  httpInterceptorProvider.config({
+    mockDataPath: '/mock_data',
+    apiPath: '/api'
+  });
+});</code></pre>
 
 			<p>Then when running your app you just do <code>$http</code> requests as usual to your API. If you append <code>?apimock=true</code> to the URL in your browser when accessing the page, then the API-mock will kick in and you'll get your predefined json instead of calling the API.</p>
 
-			<pre><code>angular.module('myApp')
-		.controller('MainCtrl', function ($scope, $http) {
-			$scope.name = 'unknown';
+			<pre><code>.controller('MainCtrl', function ($scope, $http) {
+  $scope.name = 'unknown';
 
-			$http.get('/api/people/pikachu').success(function(data) {
-				$scope.name = data.name;
-			});
-		});</code></pre>
+  $http.get('/api/people/pikachu').success(function(data) {
+    $scope.name = data.name;
+  });
+});</code></pre>
 
 			<p>This means that in regular operation you'll call <code>/api/people/pikachu</code> as you'd expect. But if the API is down for some reason, or it's not even finished, and you want to work on the frontend, then just add <code>?apimock=true</code> to the URL <em>in the browser</em> (the idea is that you <em>don't</em> change you JS) and it will instead do a request to <code>/mock_data/people/pikachu.get.json</code>.</p>
 		</div>
@@ -56,4 +54,3 @@
 		</div>
 	</div>
 </footer>
-
