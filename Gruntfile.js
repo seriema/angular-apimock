@@ -222,12 +222,8 @@ module.exports = function (grunt) {
     // minsafe compatible so Uglify does not destroy the ng references
     ngmin: {
       dist: {
-        files: [{
-          expand: true,
-	  cwd: '<%= yeoman.dist %>/scripts',
-          src: '*.js',
-	  dest: '<%= yeoman.dist %>/scripts'
-        }]
+        src: ['<%= yeoman.dist %>/angular-apimock.js'],
+        dest: '<%= yeoman.dist %>/angular-apimock.min.js'
       }
     },
 
@@ -299,18 +295,22 @@ module.exports = function (grunt) {
     //     }
     //   }
     // },
-    // uglify: {
-    //   dist: {
-    //     files: {
-    //       '<%= yeoman.dist %>/scripts/scripts.js': [
-    //         '<%= yeoman.dist %>/scripts/scripts.js'
-    //       ]
-    //     }
-    //   }
-    // },
-    // concat: {
-    //   dist: {}
-    // },
+    uglify: {
+      dist: {
+        files: {
+          '<%= yeoman.dist %>/angular-apimock.min.js': [
+            '<%= yeoman.dist %>/angular-apimock.min.js'
+          ]
+        }
+      }
+    },
+
+    concat: {
+      dist: {
+        src: '<%= yeoman.app %>/scripts/**/*.js',
+        dest: '<%= yeoman.dist %>/angular-apimock.js'
+      }
+    },
 
     // Test settings
     karma: {
@@ -321,7 +321,7 @@ module.exports = function (grunt) {
     }
   });
 
-
+/*
   grunt.registerTask('serve', function (target) {
     if (target === 'dist') {
       return grunt.task.run(['build', 'connect:dist:keepalive']);
@@ -341,30 +341,30 @@ module.exports = function (grunt) {
     grunt.log.warn('The `server` task has been deprecated. Use `grunt serve` to start a server.');
     grunt.task.run(['serve']);
   });
-
+*/
   grunt.registerTask('test', [
     'clean:server',
     'concurrent:test',
-    'autoprefixer',
+//    'autoprefixer',
     'connect:test',
     'karma'
   ]);
 
   grunt.registerTask('build', [
     'clean:dist',
-    'bowerInstall',
-    'useminPrepare',
-    'concurrent:dist',
-    'autoprefixer',
+//    'bowerInstall',
+//    'useminPrepare',
+//    'concurrent:dist',
+//    'autoprefixer',
     'concat',
     'ngmin',
-    'copy:dist',
-    'cdnify',
-    'cssmin',
-    'uglify',
-    'rev',
-    'usemin',
-    'htmlmin'
+//    'copy:dist',
+//    'cdnify',
+//    'cssmin',
+    'uglify'//,
+//    'rev',
+//    'usemin',
+//    'htmlmin'
   ]);
 
   grunt.registerTask('default', [
