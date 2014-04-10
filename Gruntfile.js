@@ -29,7 +29,10 @@ module.exports = function (grunt) {
     watch: {
       js: {
         files: ['<%= yeoman.app %>/scripts/{,*/}*.js'],
-        tasks: ['newer:jshint:all', 'test']
+        tasks: ['newer:jshint:all', 'test'],
+        options: {
+          livereload: true
+        }
       },
       jsTest: {
         files: ['test/spec/{,*/}*.js'],
@@ -37,6 +40,14 @@ module.exports = function (grunt) {
       },
       gruntfile: {
         files: ['Gruntfile.js']
+      },
+      livereload: {
+        options: {
+          livereload: '<%= connect.options.livereload %>'
+        },
+        files: [
+          '<%= yeoman.app %>/{,*/}*.html'
+        ]
       }
     },
 
@@ -48,28 +59,21 @@ module.exports = function (grunt) {
         hostname: 'localhost',
         livereload: 35729
       },
-      livereload: {
-        options: {
-          open: true,
-          base: [
-            '.tmp',
-            '<%= yeoman.app %>'
-          ]
-        }
-      },
       test: {
         options: {
           port: 9001,
           base: [
-            '.tmp',
             'test',
             '<%= yeoman.app %>'
           ]
         }
       },
-      dist: {
+      livereload: {
         options: {
-          base: '<%= yeoman.dist %>'
+          open: true,
+          base: [
+            '<%= yeoman.app %>'
+          ]
         }
       }
     },
@@ -98,13 +102,11 @@ module.exports = function (grunt) {
         files: [{
           dot: true,
           src: [
-            '.tmp',
             '<%= yeoman.dist %>/*',
             '!<%= yeoman.dist %>/.git*'
           ]
         }]
-      },
-      server: '.tmp'
+      }
     },
 
     // Allow the use of non-minsafe AngularJS files. Automatically makes it
@@ -149,14 +151,18 @@ module.exports = function (grunt) {
     }
   });
 
+  grunt.registerTask('serve', [
+    'connect',
+    'watch:js'
+  ]);
+
   grunt.registerTask('test', [
-    'clean:server',
     'connect:test',
     'karma'
   ]);
 
   grunt.registerTask('build', [
-    'clean:dist',
+    'clean',
     'concat',
     'ngmin',
     'uglify'
