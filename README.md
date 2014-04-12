@@ -54,7 +54,7 @@ Add this to your AngularJS config (e.g. `app.js`):
 
 Check the [source code](http://johansson.jp/angular-apimock/demo) for our [website demo](http://johansson.jp/angular-apimock/demo). We're working on a better demo. :)
 
-## Use cases
+## FAQ
 
 ### Why not just use [Interfake](https://github.com/basicallydan/interfake)?
 Interfake is a great complement to ApiMock. We assume you have a way to serve static JSON files. That can be because you're on a project with a server already set up and you can't do many changes to it but at least you can add static files. If you don't have that, then Interfake is a great way to set it up. Our idea is that the frontend JS doesn't change between calling the "real" API and the "fake" one.
