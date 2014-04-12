@@ -1,49 +1,71 @@
-angular-apiMock [![Build Status](https://travis-ci.org/seriema/angular-apimock.png?branch=master)](https://travis-ci.org/seriema/angular-apimock) [![devDependency Status](https://david-dm.org/seriema/angular-apimock/dev-status.png)](https://david-dm.org/seriema/angular-apimock#info=devDependencies)
-===============
+# ApiMock for AngularJS: UI-first development [![Build Status](https://travis-ci.org/seriema/angular-apimock.png?branch=master)](https://travis-ci.org/seriema/angular-apimock) [![devDependency Status](https://david-dm.org/seriema/angular-apimock/dev-status.png)](https://david-dm.org/seriema/angular-apimock#info=devDependencies)
 
-Less than 0.4kb (gzipped).
+ApiMock is a minimal (0.4kb gzipped!) library for AngularJS that allows you to mock your HTTP API on _any_ platform. It routes your API calls to static JSON files on the server with a simple flag in the browser URL.
 
-Mock your API requests during development to focus on the UI first. With `angular-apiMock` you just add `?apimock=true` to the browser URL and your app will start hitting your JSON mocks instead of the real API.
 
-`angular-apiMock` follows the same URL path as your api, but with two additions:
-* it changes the starting folder from your api-path to your offline-path.
-* it appends the HTTP-verb and `.json` to the path.
-
-So a GET-request to `/api/people/pikachu` becomes `/mock_data/people/pikachu.get.json`.
-
-_"Online"_ vs _"Offline"_
+## Example
+The left shows the page where the API is missing. The right shows the same page, but API calls being rerouted to static JSON files.
 
 ![Online](https://dl.dropboxusercontent.com/u/5566693/Screenshot%202014-02-23%2015.04.25.png) ![Offline](https://dl.dropboxusercontent.com/u/5566693/Screenshot%202014-02-23%2015.03.54.png)
 
-## Usage
 
-Include `angular-apimock.js` into your project and add it as a dependency in your app.
+## Try it out
+
+Go to our [website demo](http://johansson.jp/angular-apimock/demo) to try it out. That's the simplest way to understand.
+
+
+## Get started
+
+Download it  [here](https://raw.githubusercontent.com/seriema/angular-apimock/master/dist/angular-apimock.min.js) or grab it through Bower.
 
 ````
-angular.module('myApp', ['apiMock']);
+bower install angular-apimock --save
 ````
 
-The default paths are `/mock_data` for getting .json files and `/api` for using the real API. You can change this with `config()` during the `config()` operation of your module.
+Include `angular-apimock.min.js` in your HTML:
+````
+<script src="/bower_components/angular-apimock/dist/angular-apimock.min.js"></script>
+````
 
+Add `apiMock` as a dependency in your AngularJS app config (e.g. `app.js`):
+````
+angular.module('myApp', ['apiMock']) ...
+````
+
+Now use `$http` as usual. When you're looking at your webpage and want to use mock data, just add `?apimock=true` to the _browser_ page URL. This way you never need to change your JavaScript!
+
+ApiMock appends the HTTP-verb before `.json` so a GET-request to `/api/customers/5` will be routed to `/mock_data/customers/5.get.json`. Now just fill your `/mock_data` directory with all the JSON files you want to grab.
+
+## Config
+
+Currently you can only change the api and mock-data paths.
+
+Add this to your AngularJS config (e.g. `app.js`):
 ````
 .config(function (httpInterceptorProvider) {
-    httpInterceptorProvider.config({
-        mockDataPath: '/my_mock_data_path',
-        apiPath: '/my_api_path'
-    });
+  httpInterceptorProvider.config({
+    mockDataPath: '/my_mock_data_path',
+    apiPath: '/my_api_path'
+  });
+});
 ````
 
-Then when running your app you just do `$http` requests as usual to your API. If you append `?apimock=true` to the URL in your browser when accessing the page, then apiMock will kick in and you'll get your predefined JSON instead of calling the API.
+## Samples
 
-````
-angular.module('myApp')
-	.controller('MainCtrl', function ($scope, $http) {
-		$scope.name = 'unknown';
+Check the [source code](http://johansson.jp/angular-apimock/demo) for our [website demo](http://johansson.jp/angular-apimock/demo). We're working on a better demo. :)
 
-        $http.get('/api/people/pikachu').success(function(data) {
-            $scope.name = data.name;
-        });
-    });
-````
+## Use cases
 
-This means that in regular operation you'll call `/api/people/pikachu` as you'd expect. But if the API is down for some reason, or it's not even finished, and you want to work on the frontend, then just add `?apimock=true` to the URL _in the browser_ (the idea is that you _don't_ change your JS) and it will instead do a request to `/mock_data/people/pikachu.get.json`.
+### Why not just use [Interfake](https://github.com/basicallydan/interfake)?
+Interfake is a great complement to ApiMock. We assume you have a way to serve static JSON files. That can be because you're on a project with a server already set up and you can't do many changes to it but at least you can add static files. If you don't have that, then Interfake is a great way to set it up. Our idea is that the frontend JS doesn't change between calling the "real" API and the "fake" one.
+
+### Why would I want to reroute my API calls?
+Sometimes you don't have control over the API. It could be down for some reason, or it might not have been developed yet. ApiMock allows you as a frontend developer to continue working on the UI without changing any code. It's also helpful in figuring out what your API actually _should_ have as you can play around with your static JSON and then have it serve the role as documentation for backend developers.
+
+
+## Contribute
+
+ApiMock started as a concept at a large eCommerce project years ago. Having the backend team completely separate from the frontend team created some constraints that needed to be solved. Now it's been cleaned up and simplified for AngularJS. We'd love any feedback so feel free to raise [an issue]() or do a [pull request]() (make sure you run `grunt`).
+
+
+♥ from [Seriema](http://johansson.jp) + [Redhorn](http://redhorn.se/)
