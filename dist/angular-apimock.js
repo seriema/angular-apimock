@@ -9,7 +9,7 @@ angular.module('apiMock', []).config([
 ]).factory('mockSwitch', function () {
   return {
     mockApi: function () {
-      return location.search.toLowerCase().indexOf('apimock=true') > -1;
+      return location.search.toLowerCase().indexOf('apimock=true') > -1 || location.hash.toLowerCase().indexOf('apimock=true') > -1;
     }
   };
 }).provider('httpInterceptor', function () {
