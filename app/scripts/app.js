@@ -1,16 +1,19 @@
-'use strict';
-
 angular.module('angularApimockApp', [
   'ngCookies',
   'ngResource',
   'ngSanitize',
-  'ngRoute'
+  'ngRoute',
+
+  'ui.bootstrap',
+  'apiMock'
 ])
   .config(function ($routeProvider) {
     $routeProvider
       .when('/', {
-        templateUrl: 'views/main.html',
-        controller: 'MainCtrl'
+        templateUrl: 'views/main.html'
+      })
+      .when('/demo-simple', {
+        templateUrl: 'views/demo-simple.html'
       })
       .otherwise({
         redirectTo: '/'
