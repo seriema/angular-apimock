@@ -1,3 +1,5 @@
+'use strict';
+
 angular.module('angularApimockApp', [
   'ngCookies',
   'ngResource',
