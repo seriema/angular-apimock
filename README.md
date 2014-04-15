@@ -65,9 +65,24 @@ Sometimes you don't have control over the API. It could be down for some reason,
 ### Isn't this the same as `$httpBackend`?
 No, but it works in a similar fashion: it routes HTTP calls. Our initial implementation of apiMock used `$httpBackend` but then it would route _all_ AJAX requests and we only wanted to route API calls. A difference that's noticed when Angular tries to get HTML templates for directives, or if you try to load an image through AJAX. `$httpBackend` is for unit testing, `apiMock` is for the actual webpage.
 
+
+## Wishlist
+
+* Demo based on Magic The Gathering cards (reference to a //build presentation)
+* Demo for `isMocked`
+* Demo with [Interfake](https://github.com/basicallydan/interfake)
+* Handle queries (?search=banana)
+* Handle body data in POST requests
+* Generate sample JSON from JSON Schema (json-schema.org) and JSON LD (json-ld.org) (maybe a separate project?)
+* Simulate complete offline, e.g. fail all API calls to test for 404 etc
+* Automatic fallback to apiMock if the real API doesn't answer (or gives an error)
+* Test `apimock=true` in more scenarios
+* Remember mock-mode after page navigation
+
+
 ## Contribute
 
-ApiMock started as a concept at a large eCommerce project years ago. Having the backend team completely separate from the frontend team created some constraints that needed to be solved. Now it's been cleaned up and simplified for AngularJS. We'd love any feedback so feel free to raise [an issue]() or do a [pull request]() (make sure you run `grunt`).
+ApiMock started as a concept at a large eCommerce project years ago. Having the backend team completely separate from the frontend team created some constraints that needed to be solved. Now it's been cleaned up and simplified for AngularJS. We'd love any feedback so feel free to raise [an issue]() or do a [pull request]() (make sure you run `grunt`). If you want to implement something from the Wishlist, that would be awesome too!
 
 
 ♥ from [Seriema](http://johansson.jp) + [Redhorn](http://redhorn.se/)
