@@ -4,14 +4,6 @@ angular.module('apiMock', [])
 		$httpProvider.interceptors.push('httpInterceptor');
 	})
 
-	.factory('mockSwitch', function($location) {
-		return {
-			mockApi: function() {
-				return !!$location.search().apimock;
-			}
-		};
-	})
-
 	.provider('httpInterceptor', function() {
     var config = {
       mockDataPath: '/mock_data',
@@ -22,12 +14,20 @@ angular.module('apiMock', [])
       angular.extend(config, options);
     };
 
-		function HttpInterceptor($q, mockSwitch) {
-			var doMock = mockSwitch.mockApi();
+    function HttpInterceptor($q, $location) {
+      this.apiMocked = function() {
+        var regex = /apimock/i,
+          param = null;
+        angular.forEach($location.search(), function(value, key) {
+          if (regex.test(key)) {
+            param = key;
+          }
+        });
+        return !!$location.search()[param] && typeof $location.search()[param] === 'boolean';
+      };
 
-      this.apiMocked = mockSwitch.mockApi();
       this.request = function (req) {
-				if (doMock && req) {
+				if (this.apiMocked() && req) {
 					if (req.url.indexOf(config.apiPath) === 0) {
 						var path = req.url.substring(config.apiPath.length);
 						req.url = config.mockDataPath + path + '.' + req.method.toLowerCase() + '.json';
@@ -38,7 +38,7 @@ angular.module('apiMock', [])
 			};
 		}
 
-		this.$get = function ($q, mockSwitch) {
-			return new HttpInterceptor($q, mockSwitch);
+		this.$get = function ($q, $location) {
+			return new HttpInterceptor($q, $location);
 		};
 	});
