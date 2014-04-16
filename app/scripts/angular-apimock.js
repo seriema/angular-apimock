@@ -15,6 +15,8 @@ angular.module('apiMock', [])
     };
 
     function HttpInterceptor($q, $location) {
+      self = this;
+
       this.apiMocked = function() {
         var regex = /apimock/i,
           param = null;
@@ -27,7 +29,7 @@ angular.module('apiMock', [])
       };
 
       this.request = function (req) {
-				if (this.apiMocked() && req) {
+				if (self.apiMocked() && req) {
 					if (req.url.indexOf(config.apiPath) === 0) {
 						var path = req.url.substring(config.apiPath.length);
 						req.url = config.mockDataPath + path + '.' + req.method.toLowerCase() + '.json';
