@@ -27,7 +27,10 @@ describe('Service: apiMock', function () {
       {'apimock': true},
       {'apiMock': true},
       {'APIMOCK': true},
-      {'ApiMock': true}
+      {'ApiMock': true},
+      {'apimock': 'true'},
+      {'apimock': 'True'},
+      {'apimock': 'TRUE'}
     ];
 
     angular.forEach(options, function(option) {
@@ -56,7 +59,9 @@ describe('Service: apiMock', function () {
     // Define a NOT valid query string.
     options = [
       {'apimock': false},
-      {'apimock': 'true'},
+      {'apimock': 'false'},
+      {'apimock': 'False'},
+      {'apimock': 'FALSE'},
       {'apimock': 1},
       {'apimock': 'not valid'},
       {'apimock': 40}
