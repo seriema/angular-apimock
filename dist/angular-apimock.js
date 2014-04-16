@@ -23,6 +23,11 @@ angular.module('apiMock', [])
         angular.forEach($location.search(), function(value, key) {
           if (regex.test(key)) {
             param = key;
+            // Update $location object with primitive boolean compatibility in case if string type.
+            if (value = angular.lowercase(value) === 'true') {
+              $location.search(key, !!value);
+            }
+
           }
         });
         return !!$location.search()[param] && typeof $location.search()[param] === 'boolean';
