@@ -18,3 +18,4 @@ node_modules
 .sass-cache
 app/bower_components
 .idea
+.grunt
