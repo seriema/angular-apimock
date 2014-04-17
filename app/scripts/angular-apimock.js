@@ -4,9 +4,9 @@ angular.module('apiMock', [])
   $httpProvider.interceptors.push('httpInterceptor');
 })
 
-.factory('mockSwitch', function() {
+.factory('apiMock', function() {
   return {
-    mockApi: function() {
+    isMocking: function() {
       return location.search.toLowerCase().indexOf('apimock=true') > -1 ||
       location.hash.toLowerCase().indexOf('apimock=true') > -1;
     }
@@ -23,10 +23,9 @@ angular.module('apiMock', [])
     angular.extend(config, options);
   };
 
-  function HttpInterceptor($q, mockSwitch) {
-    var doMock = mockSwitch.mockApi();
+  function HttpInterceptor($q, apiMock) {
+    var doMock = apiMock.isMocking();
 
-    this.apiMocked = mockSwitch.mockApi;
     this.request = function (req) {
       if (doMock && req) {
         if (req.url.indexOf(config.apiPath) === 0) {
@@ -39,7 +38,7 @@ angular.module('apiMock', [])
     };
   }
 
-  this.$get = function ($q, mockSwitch) {
-    return new HttpInterceptor($q, mockSwitch);
+  this.$get = function ($q, apiMock) {
+    return new HttpInterceptor($q, apiMock);
   };
 });

@@ -28,9 +28,9 @@
         });
       });
 
-      app.controller('MainCtrl', function ($scope, $http, mockSwitch) {
+      app.controller('MainCtrl', function ($scope, $http, apiMock) {
         $scope.name = '';
-        $scope.apiMocked = mockSwitch.mockApi();
+	$scope.apiMocked = apiMock.isMocking();
 
         $http.get('/api/people/pikachu').success(function(data) {
           $scope.name = data.name;
