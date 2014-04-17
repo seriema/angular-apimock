@@ -78,6 +78,7 @@ No, but it works in a similar fashion: it routes HTTP calls. Our initial impleme
 * Automatic fallback to apiMock if the real API doesn't answer (or gives an error)
 * Test `apimock=true` in more scenarios
 * Remember mock-mode after page navigation
+* Plunkr demos
 
 
 ## Contribute
