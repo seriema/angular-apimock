@@ -347,5 +347,12 @@ module.exports = function (grunt) {
     'build'
   ]);
 
+  grunt.registerTask('dist', [
+    'jshint',
+    'test',
+    'build',
+    'grunt-gh-pages'
+  ]);
+
   grunt.registerTask('grunt-gh-pages');
 };
