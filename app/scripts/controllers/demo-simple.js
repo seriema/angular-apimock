@@ -6,7 +6,7 @@ angular.module('angularApimockApp')
     $httpInterceptorProvider.config({
       mockDataPath: 'mock_data',
       apiPath: 'api'
-    })
+    });
   })
 
   .controller('DemoSimpleCtrl', function ($scope, $http) {
