@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.2.15-build.2399+sha.ca4ddfa
+ * @license AngularJS v1.2.16
  * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -204,6 +204,9 @@ function shallowClearAndCopy(src, dst) {
  *     On failure, the promise is resolved with the {@link ng.$http http response} object, without
  *     the `resource` property.
  *
+ *     If an interceptor object was provided, the promise will instead be resolved with the value
+ *     returned by the interceptor.
+ *
  *   - `$resolved`: `true` after first server interaction is completed (either with success or
  *      rejection), `false` before that. Knowing if the Resource has been resolved is useful in
  *      data-binding.
@@ -258,7 +261,7 @@ function shallowClearAndCopy(src, dst) {
 
    ```js
      var User = $resource('/user/:userId', {userId:'@id'});
-     var user = User.get({userId:123}, function() {
+     User.get({userId:123}, function(user) {
        user.abc = true;
        user.$save();
      });
@@ -277,6 +280,16 @@ function shallowClearAndCopy(src, dst) {
          //putResponseHeaders => $http header getter
        });
      });
+   ```
+ *
+ * You can also access the raw `$http` promise via the `$promise` property on the object returned
+ *
+   ```
+     var User = $resource('/user/:userId', {userId:'@id'});
+     User.get({userId:123})
+         .$promise.then(function(user) {
+           $scope.user = user;
+         });
    ```
 
  * # Creating a custom 'PUT' request
