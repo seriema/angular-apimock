@@ -1,7 +1,5 @@
 angular.module('apiMock', [])
 
-angular.module('apiMock', [])
-
 .config(function ($httpProvider) {
   $httpProvider.interceptors.push('httpInterceptor');
 })
