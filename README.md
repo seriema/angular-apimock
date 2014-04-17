@@ -11,7 +11,7 @@ The left shows the page where the API is missing. The right shows the same page,
 
 ## Try it out
 
-Go to our [website demo](http://johansson.jp/angular-apimock/demo) to try it out. That's the simplest way to understand.
+Go to our [website demo](http://johansson.jp/angular-apimock/#/demo-simple) to try it out. That's the simplest way to understand.
 
 
 ## Get started
@@ -52,7 +52,7 @@ Add this to your AngularJS config (e.g. `app.js`):
 
 ## Samples
 
-Check the [source code](http://johansson.jp/angular-apimock/demo) for our [website demo](http://johansson.jp/angular-apimock/demo). We're working on a better demo. :)
+Check the [source code](https://github.com/seriema/angular-apimock/blob/gh-pages-dev/app/scripts/controllers/demo-simple.js) for our [website demo](http://johansson.jp/angular-apimock/demo). We're working on more demos. :)
 
 ## FAQ
 
