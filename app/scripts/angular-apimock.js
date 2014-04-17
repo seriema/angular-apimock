@@ -23,15 +23,21 @@ angular.module('apiMock', [])
     angular.extend(config, options);
   };
 
+  function shouldReplace(req, apiPath) {
+    return req.url.indexOf(apiPath) === 0;
+  }
+
+  function replacePath(req, apiPath, mockDataPath) {
+    var path = req.url.substring(apiPath.length);
+    req.url = mockDataPath + path + '.' + req.method.toLowerCase() + '.json';
+  }
+
   function HttpInterceptor($q, apiMock) {
     var doMock = apiMock.isMocking();
 
     this.request = function (req) {
-      if (doMock && req) {
-        if (req.url.indexOf(config.apiPath) === 0) {
-          var path = req.url.substring(config.apiPath.length);
-          req.url = config.mockDataPath + path + '.' + req.method.toLowerCase() + '.json';
-        }
+      if (doMock && req && shouldReplace(req, config.apiPath)) {
+        replacePath(req, config.apiPath, config.mockDataPath);
       }
 
       return req || $q.when(req);
