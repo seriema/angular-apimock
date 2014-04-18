@@ -7,22 +7,21 @@ angular.module('apiMock', [])
 .factory('apiMock', function($location) {
   return {
     isMocking: function() {
-      var regex = /apimock/i,
-          param = null;
+      var regex = /apimock/i;
+      var found = false;
 
       angular.forEach($location.search(), function(value, key) {
         if (regex.test(key)) {
-          param = key;
           // Update $location object with primitive boolean compatibility in case if string type.
-          value = angular.lowercase(value);
-          if (value === 'true') {
-            $location.search(key, !!value);
+          if (value === true || angular.lowercase(value) === 'true') {
+            found = true;
+            $location.search(key, null);
+            $location.search('apimock', true);
           }
-
         }
       });
 
-      return !!$location.search()[param] && typeof $location.search()[param] === 'boolean';
+      return found;
     }
   };
 })
