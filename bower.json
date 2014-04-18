@@ -1,6 +1,14 @@
 {
   "name": "angular-apimock",
   "version": "0.1.0",
+  "main": "dist/angular-apimock.min.js",
+  "ignore": [
+    "Gruntfile.js",
+    "karma*.js",
+    "package.json",
+    "app",
+    "test"
+  ],
   "dependencies": {
     "angular": "~1.2.16"
   },
