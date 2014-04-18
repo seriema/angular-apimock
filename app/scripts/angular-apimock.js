@@ -4,11 +4,24 @@ angular.module('apiMock', [])
   $httpProvider.interceptors.push('httpInterceptor');
 })
 
-.factory('apiMock', function() {
+.factory('apiMock', function($location) {
   return {
     isMocking: function() {
-      return location.search.toLowerCase().indexOf('apimock=true') > -1 ||
-      location.hash.toLowerCase().indexOf('apimock=true') > -1;
+      var regex = /apimock/i,
+          param = null;
+
+      angular.forEach($location.search(), function(value, key) {
+        if (regex.test(key)) {
+          param = key;
+          // Update $location object with primitive boolean compatibility in case if string type.
+          if (value = angular.lowercase(value) === 'true') {
+            $location.search(key, !!value);
+          }
+
+        }
+      });
+
+      return !!$location.search()[param] && typeof $location.search()[param] === 'boolean';
     }
   };
 })
