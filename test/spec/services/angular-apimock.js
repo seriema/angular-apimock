@@ -20,6 +20,17 @@ describe('Service: apiMock', function () {
     expect(!!httpInterceptor).toBe(true);
   });
 
+  it('should detect apimock param in search queries', function () {
+    $location.url('/page?apimock=true');
+    expect(apiMock.isMocking()).toBe(true);
+  });
+
+/* This doesn't behave as when in the browser?
+  it('should detect apimock param after hash', function () {
+    $location.url('/#/view/?apimock=true');
+    expect(apiMock.isMocking()).toBe(true);
+  }); */
+
   it('should return true when apimock param is equal to true. (http://server/?apimock=true)', function () {
     var options;
     var key;
