@@ -6,13 +6,27 @@ angular.module('apiMock', []).config([
   function ($httpProvider) {
     $httpProvider.interceptors.push('httpInterceptor');
   }
-]).factory('apiMock', function () {
-  return {
-    isMocking: function () {
-      return location.search.toLowerCase().indexOf('apimock=true') > -1 || location.hash.toLowerCase().indexOf('apimock=true') > -1;
-    }
-  };
-}).provider('httpInterceptor', function () {
+]).factory('apiMock', [
+  '$location',
+  function ($location) {
+    return {
+      isMocking: function () {
+        var regex = /apimock/i, param = null;
+        angular.forEach($location.search(), function (value, key) {
+          if (regex.test(key)) {
+            param = key;
+            // Update $location object with primitive boolean compatibility in case if string type.
+            value = angular.lowercase(value);
+            if (value === 'true') {
+              $location.search(key, !!value);
+            }
+          }
+        });
+        return !!$location.search()[param] && typeof $location.search()[param] === 'boolean';
+      }
+    };
+  }
+]).provider('httpInterceptor', function () {
   var config = {
       mockDataPath: '/mock_data',
       apiPath: '/api'
