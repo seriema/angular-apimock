@@ -21,11 +21,13 @@
     <script>
       var app = angular.module('testApp', ['apiMock']);
 
-      app.config(function (httpInterceptorProvider) {
-        httpInterceptorProvider.config({
+      app.config(function (apiMockProvider, $locationProvider) {
+        apiMockProvider.config({
           mockDataPath: '/mock_data',
           apiPath: '/api'
         });
+
+        $locationProvider.html5Mode(true);
       });
 
       app.controller('MainCtrl', function ($scope, $http, apiMock) {
