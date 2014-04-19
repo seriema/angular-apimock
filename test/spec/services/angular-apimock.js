@@ -34,6 +34,36 @@ describe('Service: apiMock', function () {
     expect(apiMock.isMocking()).toBe(true);
   })); */
 
+  it('should detect /api path', function () {
+    var mockRequest = {
+      url: '/api/pokemon/1',
+      method: 'GET'
+    };
+
+    var result = apiMock.shouldReplace(mockRequest);
+    expect(result).toBe(true);
+  });
+
+  it('should not detect /api path when its not present', function () {
+    var mockRequest = {
+      url: '/games/pokemon/1',
+      method: 'GET'
+    };
+
+    var result = apiMock.shouldReplace(mockRequest);
+    expect(result).toBe(false);
+  });
+
+  it('should not detect /api path when its not the first folder', function () {
+    var mockRequest = {
+      url: '/games/api/pokemon/1',
+      method: 'GET'
+    };
+
+    var result = apiMock.shouldReplace(mockRequest);
+    expect(result).toBe(false);
+  });
+
   it('should return true when apimock param is equal to true. (http://server/?apimock=true)', function () {
     var options;
     var key;
