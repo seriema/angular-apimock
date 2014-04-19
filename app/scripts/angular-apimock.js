@@ -56,18 +56,12 @@ angular.module('apiMock', [])
   };
 })
 
-.provider('httpInterceptor', function() {
-  function HttpInterceptor($q, apiMock) {
-    this.request = function (req) {
-      if (req && apiMock.isMocking() && apiMock.shouldReplace(req)) {
-        apiMock.replacePath(req);
-      }
+.service('httpInterceptor', function($q, apiMock) {
+  this.request = function (req) {
+    if (req && apiMock.isMocking() && apiMock.shouldReplace(req)) {
+      apiMock.replacePath(req);
+    }
 
-      return req || $q.when(req);
-    };
-  }
-
-  this.$get = function ($q, apiMock) {
-    return new HttpInterceptor($q, apiMock);
+    return req || $q.when(req);
   };
 });
