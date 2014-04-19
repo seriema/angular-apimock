@@ -16,10 +16,6 @@ describe('Service: apiMock', function () {
     $location = _$location_;
   }));
 
-  it('should exist', function () {
-    expect(!!httpInterceptor).toBe(true);
-  });
-
   it('should detect apimock param in search queries', function () {
     $location.url('/page?apimock=true');
     expect(apiMock.isMocking()).toBe(true);
