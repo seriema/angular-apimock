@@ -32,7 +32,7 @@
 
       app.controller('MainCtrl', function ($scope, $http, apiMock) {
         $scope.name = '';
-	$scope.apiMocked = apiMock.isMocking();
+        $scope.apiMocked = apiMock.isMocking();
 
         $http.get('/api/people/pikachu').success(function(data) {
           $scope.name = data.name;
