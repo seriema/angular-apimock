@@ -31,6 +31,13 @@ describe('Service: apiMock', function () {
     expect(apiMock.isMocking()).toBe(true);
   }); */
 
+/* Need to test with html5Mode turned on, but how?
+  it('should detect apimock param after hash', inject(function($locationProvider) {
+    $locationProvider.html5Mode(true);
+    $location.url('/#/view/?apimock=true');
+    expect(apiMock.isMocking()).toBe(true);
+  })); */
+
   it('should return true when apimock param is equal to true. (http://server/?apimock=true)', function () {
     var options;
     var key;
