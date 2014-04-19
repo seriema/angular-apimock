@@ -64,6 +64,46 @@ describe('Service: apiMock', function () {
     expect(result).toBe(false);
   });
 
+  it('should correctly change path for GET requests', function () {
+    var mockRequest = {
+      url: '/api/pokemon/1',
+      method: 'GET'
+    };
+
+    apiMock.replacePath(mockRequest);
+    expect(mockRequest.url).toBe('/mock_data/pokemon/1.get.json');
+  });
+
+  it('should correctly change path for POST requests', function () {
+    var mockRequest = {
+      url: '/api/pokemon/1',
+      method: 'POST'
+    };
+
+    apiMock.replacePath(mockRequest);
+    expect(mockRequest.url).toBe('/mock_data/pokemon/1.post.json');
+  });
+
+  it('should correctly change path for DELETE requests', function () {
+    var mockRequest = {
+      url: '/api/pokemon/1',
+      method: 'DELETE'
+    };
+
+    apiMock.replacePath(mockRequest);
+    expect(mockRequest.url).toBe('/mock_data/pokemon/1.delete.json');
+  });
+
+  it('should correctly change path for PUT requests', function () {
+    var mockRequest = {
+      url: '/api/pokemon/1',
+      method: 'PUT'
+    };
+
+    apiMock.replacePath(mockRequest);
+    expect(mockRequest.url).toBe('/mock_data/pokemon/1.put.json');
+  });
+
   it('should return true when apimock param is equal to true. (http://server/?apimock=true)', function () {
     var options;
     var key;
