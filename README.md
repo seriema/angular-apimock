@@ -36,19 +36,31 @@ Now use `$http` as usual. When you're looking at your webpage and want to use mo
 
 ApiMock appends the HTTP-verb before `.json` so a GET-request to `/api/customers/5` will be routed to `/mock_data/customers/5.get.json`. Now just fill your `/mock_data` directory with all the JSON files you want to grab.
 
+
 ## Config
 
-Currently you can only change the api and mock-data paths.
-
-Add this to your AngularJS config (e.g. `app.js`):
+You can customize all parts of apiMock. It's done through the `apiMockProvider.config()`. Add this to your AngularJS config (e.g. `app.js`):
 ````
-.config(function (httpInterceptorProvider) {
-  httpInterceptorProvider.config({
-    mockDataPath: '/my_mock_data_path',
-    apiPath: '/my_api_path'
+.config(function (apiMockProvider) {
+  apiMockProvider.config({
+    mockDataPath: string,
+    apiPath: string,
+    shouldReplace: function,
+    replacePath: function,
+    isMocking: function
   });
 });
 ````
+
+`mockDataPath: string`- set the path to be rerouted to. Default: '/mock_data'.
+
+`apiPath: string`- set the path to be rerouted from. Default: '/api'.
+
+`shouldReplace: function`- takes a `request` object and decides if the path should be rerouted. Default: Checks the requested URL for `apiPath` and returns true if it's the beginning of the path.
+
+`replacePath: function`- takes a `request` object and replaces the URL with the routed path. Default: Simply replaces `apiPath` with `mockDataPath`.
+
+`isMocking: function`- decides if mocking is enabled. Default: Checks `$location` for a `apimock` variable and that it's set to `true`.
 
 ## Samples
 
