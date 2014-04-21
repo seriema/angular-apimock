@@ -11,6 +11,17 @@
       <p>
         Name: {{name}}
       </p>
+
+      <h2>Debug info</h2>
+      <p>
+        $location.protocol() = {{$location.protocol()}}<br>
+        $location.host() = {{$location.host()}}<br>
+        $location.port() = {{$location.port()}}<br>
+        $location.path() = {{$location.path()}}<br>
+        $location.search() = {{$location.search()}}<br>
+        $location.hash() = {{$location.hash()}}<br>
+      </p>
+
     </div>
 
 
@@ -30,9 +41,11 @@
         $locationProvider.html5Mode(true);
       });
 
-      app.controller('MainCtrl', function ($scope, $http, apiMock) {
+      app.controller('MainCtrl', function ($scope, $http, apiMock, $location) {
         $scope.name = '';
         $scope.apiMocked = apiMock.isMocking();
+
+        $scope.$location = $location;
 
         $http.get('/api/people/pikachu').success(function(data) {
           $scope.name = data.name;
