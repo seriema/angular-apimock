@@ -65,6 +65,9 @@ Sometimes you don't have control over the API. It could be down for some reason,
 ### Isn't this the same as `$httpBackend`?
 No, but it works in a similar fashion: it routes HTTP calls. Our initial implementation of apiMock used `$httpBackend` but then it would route _all_ AJAX requests and we only wanted to route API calls. A difference that's noticed when Angular tries to get HTML templates for directives, or if you try to load an image through AJAX. `$httpBackend` is for unit testing, `apiMock` is for the actual webpage.
 
+### Is there a complete "offline" mode?
+Like disabling all network traffic yet things work? No, but it's a good idea. It would be perfect for presentation demo's when the WiFi is unreliable. If you have an idea of how to implement this, let us know!
+
 
 ## Wishlist
 
