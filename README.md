@@ -62,9 +62,11 @@ You can customize all parts of apiMock. It's done through the `apiMockProvider.c
 
 `isMocking: function`- decides if mocking is enabled. Default: Checks `$location` for a `apimock` variable and that it's set to `true`.
 
+
 ## Samples
 
 Check the [source code](https://github.com/seriema/angular-apimock/blob/gh-pages-dev/app/scripts/controllers/demo-simple.js) for our [website demo](http://johansson.jp/angular-apimock/demo). We're working on more demos. :)
+
 
 ## FAQ
 
