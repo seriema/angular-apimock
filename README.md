@@ -58,7 +58,7 @@ You can customize all parts of apiMock. It's done through the `apiMockProvider.c
 
 `shouldReplace: function`- takes a `request` object and decides if the path should be rerouted. Default: Checks the requested URL for `apiPath` and returns true if it's the beginning of the path.
 
-`replacePath: function`- takes a `request` object and replaces the URL with the routed path. Default: Simply replaces `apiPath` with `mockDataPath`.
+`replacePath: function`- takes a `request` object and replaces the URL with the routed path. Default: Simply replaces `apiPath` with `mockDataPath`, but adds the HTTP verb and `.json` at the end of the path. A GET request to '/api/user/5' turns into '/api/user/5.get.json'.
 
 `isMocking: function`- decides if mocking is enabled. Default: Checks `$location` for a `apimock` variable and that it's set to `true`.
 
