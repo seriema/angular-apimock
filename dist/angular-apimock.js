@@ -6,55 +6,59 @@ angular.module('apiMock', []).config([
   function ($httpProvider) {
     $httpProvider.interceptors.push('httpInterceptor');
   }
-]).factory('apiMock', [
-  '$location',
-  function ($location) {
-    return {
-      shouldReplace: function (req, apiPath) {
-        return req.url.indexOf(apiPath) === 0;
-      },
-      replacePath: function (req, apiPath, mockDataPath) {
-        var path = req.url.substring(apiPath.length);
-        req.url = mockDataPath + path + '.' + req.method.toLowerCase() + '.json';
-      },
-      isMocking: function () {
-        var regex = /apimock/i;
-        var found = false;
-        angular.forEach($location.search(), function (value, key) {
-          if (regex.test(key)) {
-            // Update $location object with primitive boolean compatibility in case if string type.
-            if (value === true || angular.lowercase(value) === 'true') {
-              found = true;
-              $location.search(key, null);
-              $location.search('apimock', true);
-            }
-          }
-        });
-        return found;
-      }
-    };
+]).provider('apiMock', function () {
+  var $location;
+  function shouldReplace(req) {
+    return req.url.indexOf(config.apiPath) === 0;
   }
-]).provider('httpInterceptor', function () {
+  function replacePath(req) {
+    var path = req.url.substring(config.apiPath.length);
+    req.url = config.mockDataPath + path + '.' + req.method.toLowerCase() + '.json';
+  }
+  function isMocking() {
+    var regex = /apimock/i;
+    var found = false;
+    angular.forEach($location.search(), function (value, key) {
+      if (regex.test(key)) {
+        // Update $location object with primitive boolean compatibility in case if string type.
+        if (value === true || angular.lowercase(value) === 'true') {
+          found = true;
+          $location.search(key, null);
+          $location.search('apimock', true);
+        }
+      }
+    });
+    return found;
+  }
   var config = {
       mockDataPath: '/mock_data',
-      apiPath: '/api'
+      apiPath: '/api',
+      shouldReplace: shouldReplace,
+      replacePath: replacePath,
+      isMocking: isMocking
     };
+  function ApiMock(_$location) {
+    angular.extend(this, config);
+    $location = _$location;
+  }
   this.config = function (options) {
     angular.extend(config, options);
   };
-  function HttpInterceptor($q, apiMock) {
+  this.$get = [
+    '$location',
+    function ($location) {
+      return new ApiMock($location);
+    }
+  ];
+}).service('httpInterceptor', [
+  '$q',
+  'apiMock',
+  function ($q, apiMock) {
     this.request = function (req) {
-      if (req && apiMock.isMocking() && apiMock.shouldReplace(req, config.apiPath)) {
-        apiMock.replacePath(req, config.apiPath, config.mockDataPath);
+      if (req && apiMock.isMocking() && apiMock.shouldReplace(req)) {
+        apiMock.replacePath(req);
       }
       return req || $q.when(req);
     };
   }
-  this.$get = [
-    '$q',
-    'apiMock',
-    function ($q, apiMock) {
-      return new HttpInterceptor($q, apiMock);
-    }
-  ];
-});
+]);
