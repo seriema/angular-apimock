@@ -21,6 +21,7 @@ module.exports = function (grunt) {
     // Project settings
     yeoman: {
       // configurable paths
+      version: require('./bower.json').version,
       app: require('./bower.json').appPath || 'app',
       dist: 'dist'
     },
@@ -114,7 +115,7 @@ module.exports = function (grunt) {
     ngmin: {
       dist: {
         src: ['<%= yeoman.dist %>/angular-apimock.js'],
-        dest: '<%= yeoman.dist %>/angular-apimock.min.js'
+        dest: '<%= yeoman.dist %>/angular-apimock.js'
       }
     },
 
@@ -126,16 +127,23 @@ module.exports = function (grunt) {
     },
 
     uglify: {
+      options: {
+        preserveComments: 'some',
+        report: 'gzip'
+      },
       dist: {
         files: {
           '<%= yeoman.dist %>/angular-apimock.min.js': [
-            '<%= yeoman.dist %>/angular-apimock.min.js'
+            '<%= yeoman.dist %>/angular-apimock.js'
           ]
         }
       }
     },
 
     concat: {
+      options: {
+        banner: '/*! Angular API Mock v<%= yeoman.version %>\n * Licensed with MIT\n * Made with ♥ from Seriema + Redhorn */\n',
+      },
       dist: {
         src: '<%= yeoman.app %>/scripts/**/*.js',
         dest: '<%= yeoman.dist %>/angular-apimock.js'

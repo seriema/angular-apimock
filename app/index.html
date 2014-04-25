@@ -11,6 +11,17 @@
       <p>
         Name: {{name}}
       </p>
+
+      <h2>Debug info</h2>
+      <p>
+        $location.protocol() = {{$location.protocol()}}<br>
+        $location.host() = {{$location.host()}}<br>
+        $location.port() = {{$location.port()}}<br>
+        $location.path() = {{$location.path()}}<br>
+        $location.search() = {{$location.search()}}<br>
+        $location.hash() = {{$location.hash()}}<br>
+      </p>
+
     </div>
 
 
@@ -21,16 +32,20 @@
     <script>
       var app = angular.module('testApp', ['apiMock']);
 
-      app.config(function (httpInterceptorProvider) {
-        httpInterceptorProvider.config({
+      app.config(function (apiMockProvider, $locationProvider) {
+        apiMockProvider.config({
           mockDataPath: '/mock_data',
           apiPath: '/api'
         });
+
+        $locationProvider.html5Mode(true);
       });
 
-      app.controller('MainCtrl', function ($scope, $http, mockSwitch) {
+      app.controller('MainCtrl', function ($scope, $http, apiMock, $location) {
         $scope.name = '';
-        $scope.apiMocked = mockSwitch.mockApi();
+        $scope.apiMocked = apiMock.isMocking();
+
+        $scope.$location = $location;
 
         $http.get('/api/people/pikachu').success(function(data) {
           $scope.name = data.name;
