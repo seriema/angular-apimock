@@ -21,6 +21,30 @@ describe('Service: apiMock', function () {
     expect(apiMock.isMocking()).toBe(true);
   });
 
+  it('should do the mock if indicate the property apiMock is undefined or apiMock=true was set in the $http config request.', function() {
+    var options = [undefined, true];
+
+    // Set location with the query string.
+    $location.search('apiMock', true);
+    angular.forEach(options, function(option) {
+      apiMock.requestMockConfig(option);
+
+      expect(apiMock.isMocking()).toBe(true);
+    });
+
+    // Remove param tested from the location.
+    $location.search('apiMock', null);
+  });
+
+  it('should not do the mock if the property apiMock=false was in the $http config request.', function() {
+    var option = false;
+    // Set location with the query string.
+    $location.search('apiMock', true);
+    apiMock.requestMockConfig(option);
+
+    expect(apiMock.isMocking()).toBe(false);
+  });
+
 /* This doesn't behave as when in the browser?
   it('should detect apimock param after hash', function () {
     $location.url('/#/view/?apimock=true');
