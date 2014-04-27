@@ -32,8 +32,8 @@
     <script>
       var app = angular.module('testApp', ['apiMock']);
 
-      app.config(function (apiMockProvider, $locationProvider) {
-        apiMockProvider.config({
+      app.config(function (apiMockDefaultImplProvider, $locationProvider) {
+        apiMockDefaultImplProvider.config({
           mockDataPath: '/mock_data',
           apiPath: '/api'
         });
@@ -41,9 +41,9 @@
         $locationProvider.html5Mode(true);
       });
 
-      app.controller('MainCtrl', function ($scope, $http, apiMock, $location) {
+      app.controller('MainCtrl', function ($scope, $http, apiMockDefaultImpl, $location) {
         $scope.name = '';
-        $scope.apiMocked = apiMock.isMocking();
+        $scope.apiMocked = apiMockDefaultImpl.isGlobalMock();
 
         $scope.$location = $location;
 

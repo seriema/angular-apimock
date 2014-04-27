@@ -54,12 +54,12 @@ angular.module('apiMock', [])
   }
 
   function reroutePath(req) {
-    var path = req.url.substring(this.apiPath.length);
-    req.url = this.mockDataPath + path + '.' + req.method.toLowerCase() + '.json';
+    var path = req.url.substring(config.apiPath.length);
+    req.url = config.mockDataPath + path + '.' + req.method.toLowerCase() + '.json';
   }
 
   function shouldMock(req) {
-    return (this.isGlobalMock() || this.isLocalMock(req)) && this.isApiPath(req);
+    return (config.isGlobalMock() || config.isLocalMock(req)) && config.isApiPath(req);
   }
 
   var config = {
@@ -69,15 +69,15 @@ angular.module('apiMock', [])
     isLocalMock: isLocalMock,
     isGlobalMock: isGlobalMock,
     reroutePath: reroutePath,
-
-    shouldMock: shouldMock,
-    doMock: reroutePath
   };
 
   function ApiMockDefaultImpl(_$location) {
     angular.extend(this, config);
     $location = _$location;
   }
+
+  this.shouldMock = shouldMock;
+  this.doMock = config.reroutePath;
 
   this.config = function (options) {
     angular.extend(config, options);
