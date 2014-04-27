@@ -91,7 +91,7 @@ Like disabling all network traffic yet things work? No, but it's a good idea. It
 * Handle queries (?search=banana)
 * Handle body data in POST requests
 * Generate sample JSON from JSON Schema (json-schema.org) and JSON LD (json-ld.org) (maybe a separate project?)
-* Simulate complete offline, e.g. fail all API calls to test for 404 etc
+* Simulate complete offline, e.g. fail all API calls to test for 404 etc. `apimock=auto`?
 * Automatic fallback to apiMock if the real API doesn't answer (or gives an error)
 * Test `apimock=true` in more scenarios
 * Remember mock-mode after page navigation
