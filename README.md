@@ -1,1 +1,1 @@
-This branch is for the source files for the presentation website of Angular ApiMock. Please go to http://johansson.jp/angular-apimock for more information.
+This branch is for the source files for the presentation website of Angular ApiMock. See this site on http://johansson.jp/angular-apimock or go to the code on Github on https://github.com/seriema/angular-apimock.
