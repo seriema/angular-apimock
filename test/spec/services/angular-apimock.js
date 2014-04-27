@@ -16,6 +16,27 @@ describe('Service: apiMock', function () {
     $location = _$location_;
   }));
 
+  it('should detect mock in $http requests so specific calls can override', function() {
+    var request = { apiMock: true };
+
+    var result = apiMock.requestIsOverriding(request);
+    expect(result).toBe(true);
+  });
+
+  it('should not mock if $http request doesnt contain override', function() {
+    var options = [undefined, false, ''];
+
+    angular.forEach(options, function(option) {
+      var request = { apiMock: option };
+      var result = apiMock.requestIsOverriding(request);
+
+      expect(result).toBe(false);
+    });
+
+    // Remove param tested from the location.
+    $location.search('apiMock', null);
+  });
+
   it('should detect apimock param in search queries', function () {
     $location.url('/page?apimock=true');
     expect(apiMock.isMocking()).toBe(true);
