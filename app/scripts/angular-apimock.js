@@ -28,7 +28,7 @@ angular.module('apiMock', [])
    'apiPath' string: the path to be rerouted from. Default: '/api'. */
   var $location;
 
-  function requestIsOverriding(req) {
+  function localMock(req) {
     return !!req.apiMock;
   }
 
@@ -41,7 +41,7 @@ angular.module('apiMock', [])
     req.url = config.mockDataPath + path + '.' + req.method.toLowerCase() + '.json';
   }
 
-  function isMocking() {
+  function globalMock() {
     var regex = /apimock/i;
     var found = false;
 
@@ -64,10 +64,11 @@ angular.module('apiMock', [])
     apiPath: '/api',
     shouldReplace: shouldReplace,
     replacePath: replacePath,
-    isMocking: isMocking,
-    requestIsOverriding: requestIsOverriding,
+    isMocking: globalMock,
+    requestIsOverriding: localMock,
+    doMock: replacePath,
     shouldMock: function (req) {
-      return (this.isMocking() || this.requestIsOverriding(req)) && this.shouldReplace(req);
+      return (globalMock() || localMock(req)) && this.shouldReplace(req);
     }
   };
 
@@ -90,7 +91,7 @@ angular.module('apiMock', [])
    on every http call. This allows us to do our magic. */
   this.request = function (req) {
     if (req && apiMock.shouldMock(req)) {
-      apiMock.replacePath(req);
+      apiMock.doMock(req);
     }
 
     return req || $q.when(req);
