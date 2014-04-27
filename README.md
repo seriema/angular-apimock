@@ -82,6 +82,29 @@ No, but it works in a similar fashion: it routes HTTP calls. Our initial impleme
 ### Is there a complete "offline" mode?
 Like disabling all network traffic yet things work? No, but it's a good idea. It would be perfect for presentation demo's when the WiFi is unreliable. If you have an idea of how to implement this, let us know!
 
+### Can I mock when [...] or instead of URL replacing can I [...]?
+Actually the basic idea here is to intercept http calls then do whatever we want. This project, `angular-apimock`, aims to do things a certain way. Although everything is configurable and can be overriden in `.config()` you might want to create your own module. If so, here's the basics:
+````
+angular.module('myModule', [])
+
+.config(function ($httpProvider) {
+/* This is where the magic happens. Configure $httpProvider to use our
+   httpInterceptor on all calls. It's what allows us to do automatic routing. */
+  $httpProvider.interceptors.push('yourHttpInterceptor');
+})
+
+.service('yourHttpInterceptor', function($q) {
+/* The main service. Is jacked in as a interceptor on $http so it gets called
+   on every http call. This allows us to do our magic. */
+  this.request = function (req) {
+    if (req) {
+      // Do whatever you want to the request here.
+    }
+
+    return req || $q.when(req);
+  };
+});
+````
 
 ## Wishlist
 
