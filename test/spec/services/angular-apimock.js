@@ -5,21 +5,23 @@ describe('Service: apiMock', function () {
   // load the service's module
   beforeEach(module('apiMock'));
 
-  // instantiate service
+  // instantiate services
   var httpInterceptor;
   var apiMock;
+  var apiMockImpl;
   var $location;
 
-  beforeEach(inject(function (_httpInterceptor_, _apiMock_, _$location_) {
+  beforeEach(inject(function (_httpInterceptor_, _apiMock_, _apiMockDefaultImpl_, _$location_) {
 	  httpInterceptor = _httpInterceptor_;
     apiMock = _apiMock_;
+    apiMockImpl = _apiMockDefaultImpl_;
     $location = _$location_;
   }));
 
   it('should detect mock in $http requests so specific calls can override', function() {
     var request = { apiMock: true };
 
-    var result = apiMock.requestIsOverriding(request);
+    var result = apiMockImpl.isLocalMock(request);
     expect(result).toBe(true);
   });
 
@@ -28,7 +30,7 @@ describe('Service: apiMock', function () {
 
     angular.forEach(options, function(option) {
       var request = { apiMock: option };
-      var result = apiMock.requestIsOverriding(request);
+      var result = apiMockImpl.isLocalMock(request);
 
       expect(result).toBe(false);
     });
@@ -39,7 +41,7 @@ describe('Service: apiMock', function () {
 
   it('should detect apimock param in search queries', function () {
     $location.url('/page?apimock=true');
-    expect(apiMock.isMocking()).toBe(true);
+    expect(apiMockImpl.isGlobalMock()).toBe(true);
   });
 
 /* This doesn't behave as when in the browser?
@@ -61,7 +63,7 @@ describe('Service: apiMock', function () {
       method: 'GET'
     };
 
-    var result = apiMock.shouldReplace(mockRequest);
+    var result = apiMockImpl.isApiPath(mockRequest);
     expect(result).toBe(true);
   });
 
@@ -71,7 +73,7 @@ describe('Service: apiMock', function () {
       method: 'GET'
     };
 
-    var result = apiMock.shouldReplace(mockRequest);
+    var result = apiMockImpl.isApiPath(mockRequest);
     expect(result).toBe(false);
   });
 
@@ -81,7 +83,7 @@ describe('Service: apiMock', function () {
       method: 'GET'
     };
 
-    var result = apiMock.shouldReplace(mockRequest);
+    var result = apiMockImpl.isApiPath(mockRequest);
     expect(result).toBe(false);
   });
 
@@ -91,7 +93,7 @@ describe('Service: apiMock', function () {
       method: 'GET'
     };
 
-    apiMock.replacePath(mockRequest);
+    apiMockImpl.reroutePath(mockRequest);
     expect(mockRequest.url).toBe('/mock_data/pokemon/1.get.json');
   });
 
@@ -101,7 +103,7 @@ describe('Service: apiMock', function () {
       method: 'POST'
     };
 
-    apiMock.replacePath(mockRequest);
+    apiMockImpl.reroutePath(mockRequest);
     expect(mockRequest.url).toBe('/mock_data/pokemon/1.post.json');
   });
 
@@ -111,7 +113,7 @@ describe('Service: apiMock', function () {
       method: 'DELETE'
     };
 
-    apiMock.replacePath(mockRequest);
+    apiMockImpl.reroutePath(mockRequest);
     expect(mockRequest.url).toBe('/mock_data/pokemon/1.delete.json');
   });
 
@@ -121,7 +123,7 @@ describe('Service: apiMock', function () {
       method: 'PUT'
     };
 
-    apiMock.replacePath(mockRequest);
+    apiMockImpl.reroutePath(mockRequest);
     expect(mockRequest.url).toBe('/mock_data/pokemon/1.put.json');
   });
 
@@ -147,7 +149,7 @@ describe('Service: apiMock', function () {
 
       // Set location with the query string.
       $location.search(key, value);
-      expect(apiMock.isMocking()).toBe(true);
+      expect(apiMockImpl.isGlobalMock()).toBe(true);
 
       // Remove param tested from the location.
       $location.search(key, null);
@@ -177,16 +179,14 @@ describe('Service: apiMock', function () {
 
       // Set location with the query string.
       $location.search(key, value);
-      expect(apiMock.isMocking()).toBe(false);
+      expect(apiMockImpl.isGlobalMock()).toBe(false);
 
       // Remove param tested from the location.
       $location.search(key, null);
     });
   });
 
-  it('should return false when apimock param is not present in the query string. (http://server/)', inject(function (_httpInterceptor_) {
-    // Create an instance of the interceptor.
-    httpInterceptor = _httpInterceptor_;
-    expect(apiMock.isMocking()).toBe(false);
-  }));
+  it('should return false when apimock param is not present in the query string. (http://server/)', function () {
+    expect(apiMockImpl.isGlobalMock()).toBe(false);
+  });
 });
