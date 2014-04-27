@@ -65,7 +65,10 @@ angular.module('apiMock', [])
     shouldReplace: shouldReplace,
     replacePath: replacePath,
     isMocking: isMocking,
-    requestIsOverriding: requestIsOverriding
+    requestIsOverriding: requestIsOverriding,
+    shouldMock: function (req) {
+      return (this.isMocking() || this.requestIsOverriding(req)) && this.shouldReplace(req);
+    }
   };
 
   function ApiMock(_$location) {
@@ -86,7 +89,7 @@ angular.module('apiMock', [])
 /* The main service. Is jacked in as a interceptor on $http so it gets called
    on every http call. This allows us to do our magic. */
   this.request = function (req) {
-    if (req && (apiMock.isMocking() || apiMock.requestIsOverriding(req)) && apiMock.shouldReplace(req)) {
+    if (req && apiMock.shouldMock(req)) {
       apiMock.replacePath(req);
     }
 
