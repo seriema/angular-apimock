@@ -165,6 +165,7 @@ module.exports = function (grunt) {
   ]);
 
   grunt.registerTask('test', [
+    'newer:jshint',
     'connect:test',
     'karma'
   ]);
