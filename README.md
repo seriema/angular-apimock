@@ -65,7 +65,7 @@ You can customize all parts of apiMock. It's done through the `apiMockProvider.c
 
 ## Samples
 
-Check the [source code](https://github.com/seriema/angular-apimock/blob/gh-pages-dev/app/scripts/controllers/demo-simple.js) for our [website demo](http://johansson.jp/angular-apimock/demo). We're working on more demos. :)
+Check the [source code](https://github.com/seriema/angular-apimock/blob/gh-pages-dev/app/scripts/controllers/demo-simple.js) for our [website demo](http://johansson.jp/angular-apimock/#/demo-simple). We're working on more demos. :)
 
 
 ## FAQ
