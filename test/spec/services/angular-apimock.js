@@ -125,6 +125,26 @@ describe('Service: apiMock', function () {
     expect(mockRequest.url).toBe('/mock_data/pokemon/1.put.json');
   });
 
+  it('should ignore query objects in URL, with /?', function () {
+    var mockRequest = {
+      url: '/api/pokemon/?name=Pikachu',
+      method: 'GET'
+    };
+
+    apiMock.doMock(mockRequest);
+    expect(mockRequest.url).toBe('/mock_data/pokemon.get.json');
+  });
+
+  it('should ignore query objects in URL, with just ?', function () {
+    var mockRequest = {
+      url: '/api/pokemon?name=Pikachu',
+      method: 'GET'
+    };
+
+    apiMock.doMock(mockRequest);
+    expect(mockRequest.url).toBe('/mock_data/pokemon.get.json');
+  });
+
   it('should return true when apimock param is equal to true. (http://server/?apimock=true)', function () {
     var options;
     var key;

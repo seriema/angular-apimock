@@ -45,7 +45,7 @@ angular.module('apiMock', []).config([
     angular.forEach($location.search(), function (value, key) {
       if (regex.test(key)) {
         // Update $location object with primitive boolean compatibility in case if string type.
-        if (value == true || angular.lowercase(value) === 'true') {
+        if (value === true || angular.lowercase(value) === 'true') {
           found = true;
           $location.search(key, null);
           $location.search('apimock', true);
@@ -55,8 +55,17 @@ angular.module('apiMock', []).config([
     return found;
   }
   function doMock(req) {
+    // replace apiPath with mockDataPath.
     var path = req.url.substring(config.apiPath.length);
-    req.url = config.mockDataPath + path + '.' + req.method.toLowerCase() + '.json';
+    req.url = config.mockDataPath + path;
+    // strip query strings (like ?search=banana).
+    var regex = /[a-zA-z0-9/.\-]*/;
+    req.url = regex.exec(req.url)[0];
+    // add file endings (method verb and .json).
+    if (req.url[req.url.length - 1] === '/') {
+      req.url = req.url.slice(0, -1);
+    }
+    req.url += '.' + req.method.toLowerCase() + '.json';
   }
   function shouldMock(req) {
     return (this._isGlobalMock() || this._isLocalMock(req)) && this._isApiPath(req);
