@@ -45,7 +45,7 @@ angular.module('apiMock', []).config([
     angular.forEach($location.search(), function (value, key) {
       if (regex.test(key)) {
         // Update $location object with primitive boolean compatibility in case if string type.
-        if (value === true || angular.lowercase(value) === 'true') {
+        if (value == true || angular.lowercase(value) === 'true') {
           found = true;
           $location.search(key, null);
           $location.search('apimock', true);
