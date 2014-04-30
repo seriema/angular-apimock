@@ -8,20 +8,18 @@ describe('Service: apiMock', function () {
   // instantiate services
   var httpInterceptor;
   var apiMock;
-  var apiMockImpl;
   var $location;
 
-  beforeEach(inject(function (_httpInterceptor_, _apiMock_, _apiMockDefaultImpl_, _$location_) {
+  beforeEach(inject(function (_httpInterceptor_, _apiMock_, _$location_) {
 	  httpInterceptor = _httpInterceptor_;
     apiMock = _apiMock_;
-    apiMockImpl = _apiMockDefaultImpl_;
     $location = _$location_;
   }));
 
   it('should detect mock in $http requests so specific calls can override', function() {
     var request = { apiMock: true };
 
-    var result = apiMockImpl.isLocalMock(request);
+    var result = apiMock._isLocalMock(request);
     expect(result).toBe(true);
   });
 
@@ -30,7 +28,7 @@ describe('Service: apiMock', function () {
 
     angular.forEach(options, function(option) {
       var request = { apiMock: option };
-      var result = apiMockImpl.isLocalMock(request);
+      var result = apiMock._isLocalMock(request);
 
       expect(result).toBe(false);
     });
@@ -41,7 +39,7 @@ describe('Service: apiMock', function () {
 
   it('should detect apimock param in search queries', function () {
     $location.url('/page?apimock=true');
-    expect(apiMockImpl.isGlobalMock()).toBe(true);
+    expect(apiMock._isGlobalMock()).toBe(true);
   });
 
 /* This doesn't behave as when in the browser?
@@ -63,7 +61,7 @@ describe('Service: apiMock', function () {
       method: 'GET'
     };
 
-    var result = apiMockImpl.isApiPath(mockRequest);
+    var result = apiMock._isApiPath(mockRequest);
     expect(result).toBe(true);
   });
 
@@ -73,7 +71,7 @@ describe('Service: apiMock', function () {
       method: 'GET'
     };
 
-    var result = apiMockImpl.isApiPath(mockRequest);
+    var result = apiMock._isApiPath(mockRequest);
     expect(result).toBe(false);
   });
 
@@ -83,7 +81,7 @@ describe('Service: apiMock', function () {
       method: 'GET'
     };
 
-    var result = apiMockImpl.isApiPath(mockRequest);
+    var result = apiMock._isApiPath(mockRequest);
     expect(result).toBe(false);
   });
 
@@ -93,7 +91,7 @@ describe('Service: apiMock', function () {
       method: 'GET'
     };
 
-    apiMockImpl.reroutePath(mockRequest);
+    apiMock.doMock(mockRequest);
     expect(mockRequest.url).toBe('/mock_data/pokemon/1.get.json');
   });
 
@@ -103,7 +101,7 @@ describe('Service: apiMock', function () {
       method: 'POST'
     };
 
-    apiMockImpl.reroutePath(mockRequest);
+    apiMock.doMock(mockRequest);
     expect(mockRequest.url).toBe('/mock_data/pokemon/1.post.json');
   });
 
@@ -113,7 +111,7 @@ describe('Service: apiMock', function () {
       method: 'DELETE'
     };
 
-    apiMockImpl.reroutePath(mockRequest);
+    apiMock.doMock(mockRequest);
     expect(mockRequest.url).toBe('/mock_data/pokemon/1.delete.json');
   });
 
@@ -123,7 +121,7 @@ describe('Service: apiMock', function () {
       method: 'PUT'
     };
 
-    apiMockImpl.reroutePath(mockRequest);
+    apiMock.doMock(mockRequest);
     expect(mockRequest.url).toBe('/mock_data/pokemon/1.put.json');
   });
 
@@ -149,7 +147,7 @@ describe('Service: apiMock', function () {
 
       // Set location with the query string.
       $location.search(key, value);
-      expect(apiMockImpl.isGlobalMock()).toBe(true);
+      expect(apiMock._isGlobalMock()).toBe(true);
 
       // Remove param tested from the location.
       $location.search(key, null);
@@ -179,7 +177,7 @@ describe('Service: apiMock', function () {
 
       // Set location with the query string.
       $location.search(key, value);
-      expect(apiMockImpl.isGlobalMock()).toBe(false);
+      expect(apiMock._isGlobalMock()).toBe(false);
 
       // Remove param tested from the location.
       $location.search(key, null);
@@ -187,6 +185,6 @@ describe('Service: apiMock', function () {
   });
 
   it('should return false when apimock param is not present in the query string. (http://server/)', function () {
-    expect(apiMockImpl.isGlobalMock()).toBe(false);
+    expect(apiMock._isGlobalMock()).toBe(false);
   });
 });

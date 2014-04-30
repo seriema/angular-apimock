@@ -2,7 +2,13 @@
    other projects. */
 angular.module('apiMock', [])
 
-.provider('apiMockDefaultImpl', function () {
+.config(function ($httpProvider) {
+/* This is where the magic happens. Configure $httpProvider to use our
+   httpInterceptor on all calls. It's what allows us to do automatic routing. */
+  $httpProvider.interceptors.push('httpInterceptor');
+})
+
+.provider('apiMock', function () {
 /* This is the default implementation of apiMock. It's driven by the maintainers
    goals, but can be overriden in apiMock.config(). The members are:
    'isApiPath' function: takes a `request` object and decides if the path
@@ -28,7 +34,7 @@ angular.module('apiMock', [])
   var $location;
 
   function isApiPath(req) {
-    return req.url.indexOf(this.apiPath) === 0;
+    return req.url.indexOf(config.apiPath) === 0;
   }
 
   function isLocalMock(req) {
@@ -53,62 +59,37 @@ angular.module('apiMock', [])
     return found;
   }
 
-  function reroutePath(req) {
+  function doMock(req) {
     var path = req.url.substring(config.apiPath.length);
     req.url = config.mockDataPath + path + '.' + req.method.toLowerCase() + '.json';
   }
 
   function shouldMock(req) {
-    return (config.isGlobalMock() || config.isLocalMock(req)) && config.isApiPath(req);
+    return (this._isGlobalMock() || this._isLocalMock(req)) && this._isApiPath(req);
   }
 
-  var config = {
-    mockDataPath: mockDataPath,
-    apiPath: apiPath,
-    isApiPath: isApiPath,
-    isLocalMock: isLocalMock,
-    isGlobalMock: isGlobalMock,
-    reroutePath: reroutePath,
-  };
-
-  function ApiMockDefaultImpl(_$location) {
-    angular.extend(this, config);
+  function ApiMock(_$location) {
     $location = _$location;
   }
 
-  this.shouldMock = shouldMock;
-  this.doMock = config.reroutePath;
+  var p = ApiMock.prototype;
+  p.shouldMock = shouldMock;
+  p.doMock = doMock;
+  p._isApiPath = isApiPath;
+  p._isLocalMock = isLocalMock;
+  p._isGlobalMock = isGlobalMock;
+
+  var config = {
+    mockDataPath: mockDataPath,
+    apiPath: apiPath
+  };
 
   this.config = function (options) {
     angular.extend(config, options);
   };
 
   this.$get = function ($location) {
-    return new ApiMockDefaultImpl($location);
-  };
-})
-
-.provider('apiMock', function () {
-/* Helper-service that allows the httpInterceptor to be configured. It's
-   basically a config-object that can have all it's members set to something
-   user-defined. It works with to primary methods:
-   'shouldMock' function: decides if the current request should be mocked.
-   'doMock' function: does the actual mocking of the request.*/
-  var config = {
-    shouldMock: null,
-    doMock: null
-  };
-
-  function ApiMock() {
-    angular.extend(this, config);
-  }
-
-  this.config = function (options) {
-    angular.extend(config, options);
-  };
-
-  this.$get = function () {
-    return new ApiMock();
+    return new ApiMock($location);
   };
 })
 
@@ -122,16 +103,4 @@ angular.module('apiMock', [])
 
     return req || $q.when(req);
   };
-})
-
-.config(function ($httpProvider, apiMockProvider, apiMockDefaultImplProvider) {
-/* This is where the magic happens. Configure $httpProvider to use our
-   httpInterceptor on all calls. It's what allows us to do automatic routing. */
-  $httpProvider.interceptors.push('httpInterceptor');
-
-/* This sets the default behaviour of apiMock. */
-  apiMockProvider.config({
-    shouldMock: apiMockDefaultImplProvider.shouldMock,
-    doMock: apiMockDefaultImplProvider.doMock
-  });
 });
