@@ -33,13 +33,33 @@ angular.module('apiMock', []).config([
   var mockDataPath = '/mock_data';
   var apiPath = '/api';
   var $location;
-  function isApiPath(req) {
+  function ApiMock(_$location) {
+    $location = _$location;
+  }
+  var p = ApiMock.prototype;
+  p.shouldMock = function (req) {
+    return (this._isGlobalMock() || this._isLocalMock(req)) && this._isApiPath(req);
+  };
+  p.doMock = function (req) {
+    // replace apiPath with mockDataPath.
+    var path = req.url.substring(config.apiPath.length);
+    req.url = config.mockDataPath + path;
+    // strip query strings (like ?search=banana).
+    var regex = /[a-zA-z0-9/.\-]*/;
+    req.url = regex.exec(req.url)[0];
+    // add file endings (method verb and .json).
+    if (req.url[req.url.length - 1] === '/') {
+      req.url = req.url.slice(0, -1);
+    }
+    req.url += '.' + req.method.toLowerCase() + '.json';
+  };
+  p._isApiPath = function (req) {
     return req.url.indexOf(config.apiPath) === 0;
-  }
-  function isLocalMock(req) {
+  };
+  p._isLocalMock = function (req) {
     return !!req.apiMock;
-  }
-  function isGlobalMock() {
+  };
+  p._isGlobalMock = function () {
     var regex = /apimock/i;
     var found = false;
     angular.forEach($location.search(), function (value, key) {
@@ -53,32 +73,7 @@ angular.module('apiMock', []).config([
       }
     });
     return found;
-  }
-  function doMock(req) {
-    // replace apiPath with mockDataPath.
-    var path = req.url.substring(config.apiPath.length);
-    req.url = config.mockDataPath + path;
-    // strip query strings (like ?search=banana).
-    var regex = /[a-zA-z0-9/.\-]*/;
-    req.url = regex.exec(req.url)[0];
-    // add file endings (method verb and .json).
-    if (req.url[req.url.length - 1] === '/') {
-      req.url = req.url.slice(0, -1);
-    }
-    req.url += '.' + req.method.toLowerCase() + '.json';
-  }
-  function shouldMock(req) {
-    return (this._isGlobalMock() || this._isLocalMock(req)) && this._isApiPath(req);
-  }
-  function ApiMock(_$location) {
-    $location = _$location;
-  }
-  var p = ApiMock.prototype;
-  p.shouldMock = shouldMock;
-  p.doMock = doMock;
-  p._isApiPath = isApiPath;
-  p._isLocalMock = isLocalMock;
-  p._isGlobalMock = isGlobalMock;
+  };
   var config = {
       mockDataPath: mockDataPath,
       apiPath: apiPath
