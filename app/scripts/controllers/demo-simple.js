@@ -2,8 +2,8 @@
 
 angular.module('angularApimockApp')
 
-  .config(function(httpInterceptorProvider) {
-    httpInterceptorProvider.config({
+  .config(function(apiMockProvider) {
+    apiMockProvider.config({
       mockDataPath: 'mock_data',
       apiPath: 'api'
     });
