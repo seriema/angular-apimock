@@ -1,6 +1,6 @@
 # ApiMock for AngularJS: UI-first development [![Build Status](https://travis-ci.org/seriema/angular-apimock.png?branch=master)](https://travis-ci.org/seriema/angular-apimock) [![devDependency Status](https://david-dm.org/seriema/angular-apimock/dev-status.png)](https://david-dm.org/seriema/angular-apimock#info=devDependencies)
 
-ApiMock is a minimal (<0.3kb gzipped!) library for AngularJS that allows you to mock your HTTP API on _any_ platform. It routes your API calls to static JSON files on the server with a simple flag in the browser URL.
+ApiMock is a minimal (0.3kb gzipped!) library for AngularJS that allows you to mock your HTTP API on _any_ platform, without know anything about servers. It routes your API calls to static JSON files with a simple flag in the browser URL.
 
 
 ## Example
@@ -37,30 +37,33 @@ Now use `$http` as usual. When you're looking at your webpage and want to use mo
 ApiMock appends the HTTP-verb before `.json` so a GET-request to `/api/customers/5` will be routed to `/mock_data/customers/5.get.json`. Now just fill your `/mock_data` directory with all the JSON files you want to grab.
 
 
-## Config
+## Options
 
-You can customize all parts of apiMock. It's done through the `apiMockProvider.config()`. Add this to your AngularJS config (e.g. `app.js`):
+ApiMock follows a simple concept: reroute HTTP requests, from `apiPath` to `mockDataPath`. So you can change the paths but any deeper configuration is probably easier to write your own `httpInterceptor` (check the FAQ).
+
+Configure is done through `apiMockProvider.config()`. Add this to your AngularJS config file (e.g. `app.js`):
 ````
 .config(function (apiMockProvider) {
   apiMockProvider.config({
-    mockDataPath: string,
-    apiPath: string,
-    shouldReplace: function,
-    replacePath: function,
-    isMocking: function
+    mockDataPath: '/my_mock_data_path',
+    apiPath: '/my_api_path',
   });
 });
 ````
 
-`mockDataPath: string`- set the path to be rerouted to. Default: '/mock_data'.
+### mockDataPath
 
-`apiPath: string`- set the path to be rerouted from. Default: '/api'.
+Type: `string`
+Default: `'/mock_data'`
 
-`shouldReplace: function`- takes a `request` object and decides if the path should be rerouted. Default: Checks the requested URL for `apiPath` and returns true if it's the beginning of the path.
+Set the path to be rerouted to.
 
-`replacePath: function`- takes a `request` object and replaces the URL with the routed path. Default: Simply replaces `apiPath` with `mockDataPath`, but adds the HTTP verb and `.json` at the end of the path. A GET request to '/api/user/5' turns into '/api/user/5.get.json'.
+### apiPath
 
-`isMocking: function`- decides if mocking is enabled. Default: Checks `$location` for a `apimock` variable and that it's set to `true`.
+Type: `string`
+Default: `'/api'`
+
+Set the path to be rerouted from.
 
 
 ## Samples
