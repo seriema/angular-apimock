@@ -1,0 +1,68 @@
+<div class="top-border"></div>
+
+<header>
+  <div class="container">
+    <div class="row">
+      <h1>Angular apiMock</h1>
+      <p class="lead">Automatically route your API calls to static JSON files, for hiccup free front&#8211;end development.</p>
+      <ul class="buttons">
+        <li><a href="https://raw.githubusercontent.com/seriema/angular-apimock/master/dist/angular-apimock.min.js" class="button">Download (v0.1)</a></li>
+        <li><a href="https://github.com/seriema/angular-apimock" class="button">View code</a></li>
+      </ul>
+    </div>
+  </div>
+</header>
+
+<div class="main-content" ng-controller="DemoBigCtrl">
+  <div class="container">
+    <div class="row">
+      <h2>Simple demo</h2>
+
+      <p>Let's pretend. You love Magic the Gathering cards and you're going to create an online database where people can search for different cards. You know you want to load it with AJAX, but you don't know what you should include yet so you can't write the API just yet. But you still want to create the front-end <em>as if</em> there was one!</p>
+
+      <p>It would look something like the below. Try typing something into the search field.</p>
+
+      <p ng-show="alerts.length > 0">It failed because there's no real API. Now add <code>?apimock=true</code> to the URL in your browsers addressbar. Right there at the top of the page, so it says <a href="http://johansson.jp/angular-apimock/#/demo-simple?apimock=true">http://johansson.jp/angular-apimock/#/demo-simple<strong>?apimock=true</strong></a>. Then click the button again.</p>
+
+      <p ng-show="alerts.length > 0">If you already changed your URL and see this, you might have to refresh the page as it seems Angular routing doesn't really refresh. Looking into fixing this.</p>
+    </div>
+
+    <div class="row">
+      <div class="col-sm-6 well">
+        <p>
+          <button type="submit" class="btn btn-primary" ng-click="getCards()">Get highscore</button>
+        </p>
+        <alert ng-repeat="alert in alerts" type="alert.type" close="closeAlert($index)">{{alert.text}}</alert>
+
+        <table class="table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Name</th>
+              <th>Score</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr ng-repeat="player in players">
+              <td>{{player.rank}}</td>
+              <td>{{player.name}}</td>
+              <td>{{player.score}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="row">
+      <p ng-show="players.length > 0">By using Angular apiMock you can play around with a static JSON file to get the final design and datastructure locked down.</p>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="container">
+    <div class="row">
+      <p><span class="highlight">♥</span> from <a href="http://johansson.jp">Seriema</a> <span class="highlight">+</span> <a href="http://redhorn.se">Redhorn</a></p>
+    </div>
+  </div>
+</footer>
