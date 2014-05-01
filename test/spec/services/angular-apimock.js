@@ -32,9 +32,6 @@ describe('Service: apiMock', function () {
 
       expect(result).toBe(false);
     });
-
-    // Remove param tested from the location.
-    $location.search('apiMock', null);
   });
 
   it('should detect apimock param in search queries', function () {
