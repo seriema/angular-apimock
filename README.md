@@ -110,7 +110,7 @@ angular.module('myModule', [])
 * Demo based on Magic The Gathering cards (reference to a //build presentation)
 * Demo for `isMocked`
 * Demo with [Interfake](https://github.com/basicallydan/interfake)
-* Handle queries (?search=banana)
+* Handle queries (?search=banana), not just ignore them.
 * Handle body data in POST requests
 * Generate sample JSON from JSON Schema (json-schema.org) and JSON LD (json-ld.org) (maybe a separate project?)
 * Simulate complete offline, e.g. fail all API calls to test for 404 etc. `apimock=auto`?
@@ -118,6 +118,7 @@ angular.module('myModule', [])
 * Test `apimock=true` in more scenarios
 * Remember mock-mode after page navigation
 * Plunkr demos
+* Visual queue that mock is happening. Maybe also console.log?
 
 
 ## Contribute
