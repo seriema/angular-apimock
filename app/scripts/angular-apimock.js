@@ -1,12 +1,14 @@
 /* Create the main module, `apiMock`. It's the one that needs to be included in
    your projects. E.g. `angular.module('myApp', ['apiMock'])`. You don't need
    to do anything else, but you can configure the paths for api-calls and mock
-   data by calling `.config(apiMockProvider)`. */
+   data by calling `.config(apiMockProvider)`.
+*/
 angular.module('apiMock', [])
 
 .config(function ($httpProvider) {
-/* This is where the magic happens. Configure $http to use our httpInterceptor
-   on all calls. It's what allows us to do automatic routing. */
+/* This is where the magic happens. Configure `$http` to use our
+   `httpInterceptor` on all calls. It's what allows us to do automatic routing.
+*/
   $httpProvider.interceptors.push('httpInterceptor');
 })
 
@@ -39,7 +41,8 @@ angular.module('apiMock', [])
                            it's set to `true` (or empty). E.g. `?apimock=true`.
    `_isLocalMock` method: takes a `request` object and decides if mocking is
                           overriden by checking the request object for a
-                          `apimock` property set to `true`. */
+                          `apimock` property set to `true`.
+*/
   var mockDataPath = '/mock_data';
   var apiPath = '/api';
   var $location;
