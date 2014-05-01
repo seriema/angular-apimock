@@ -91,14 +91,10 @@ Actually the basic idea here is to intercept http calls then do whatever we want
 angular.module('myModule', [])
 
 .config(function ($httpProvider) {
-/* This is where the magic happens. Configure $httpProvider to use our
-   httpInterceptor on all calls. It's what allows us to do automatic routing. */
   $httpProvider.interceptors.push('yourHttpInterceptor');
 })
 
 .service('yourHttpInterceptor', function($q) {
-/* The main service. Is jacked in as a interceptor on $http so it gets called
-   on every http call. This allows us to do our magic. */
   this.request = function (req) {
     if (req) {
       // Do whatever you want to the request here.
