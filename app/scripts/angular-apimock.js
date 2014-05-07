@@ -54,7 +54,11 @@ angular.module('apiMock', [])
   var p = ApiMock.prototype;
 
   p.shouldMock = function (req) {
-    return (this._isGlobalMock() || this._isLocalMock(req)) && this._isApiPath(req);
+		var mock = this._isLocalMock(req);
+		if (mock === undefined) {
+			mock = this._isGlobalMock();
+		}
+    return mock && this._isApiPath(req);
   };
 
   p.doMock = function (req) {
@@ -78,7 +82,7 @@ angular.module('apiMock', [])
   };
 
   p._isLocalMock = function (req) {
-    return !!req.apiMock;
+    return req.apiMock === undefined ? undefined : !!req.apiMock;
   };
 
   p._isGlobalMock = function () {
