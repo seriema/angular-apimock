@@ -9,11 +9,15 @@ describe('Service: apiMock', function () {
   var httpInterceptor;
   var apiMock;
   var $location;
+	var $http;
+	var $httpBackend;
 
-  beforeEach(inject(function (_httpInterceptor_, _apiMock_, _$location_) {
+  beforeEach(inject(function (_httpInterceptor_, _apiMock_, _$location_, _$http_, _$httpBackend_) {
 	  httpInterceptor = _httpInterceptor_;
     apiMock = _apiMock_;
     $location = _$location_;
+		$http = _$http_;
+		$httpBackend = _$httpBackend_;
   }));
 
 
@@ -42,6 +46,13 @@ describe('Service: apiMock', function () {
 			var result = apiMock._isLocalMock(request);
 
 			expect(result).to.equal(undefined);
+		});
+
+		it('should respond with status code if $http request contains status code override', function () {
+			var request = { apiMock: 404 };
+			var result = apiMock._isLocalMock(request);
+
+			expect(result).to.equal(404);
 		});
 	});
 
@@ -246,6 +257,45 @@ describe('Service: apiMock', function () {
 
 			apiMock.doMock(mockRequest);
 			expect(mockRequest.url).to.equal('/mock_data/pokemon.get.json');
+		});
+
+		it('should ignore query objects in URL, with just ?', function () {
+			var mockRequest = {
+				url: '/api/pokemon?name=Pikachu',
+				method: 'GET'
+			};
+
+			apiMock.doMock(mockRequest);
+			expect(mockRequest.url).to.equal('/mock_data/pokemon.get.json');
+		});
+
+		it('should return status if overriding request', function (done) {
+			var options = [ 200, 404, 500 ];
+
+			angular.forEach(options, function(option) {
+				var mockRequest = {
+					url: '/api/pokemon?name=Pikachu',
+					method: 'GET',
+					apiMock: option
+				};
+
+				$http(mockRequest)
+					.success(function() {
+						// this callback will be called asynchronously
+						// when the response is available
+						expect(true).to.equal(false);
+						done();
+					})
+					.error(function(data, status) {
+						// called asynchronously if an error occurs
+						// or server returns response with an error status.
+						expect(status).to.equal(option);
+						done();
+					});
+
+				$httpBackend.flush();
+			});
+
 		});
 	});
 

@@ -46,9 +46,11 @@ angular.module('apiMock', [])
   var mockDataPath = '/mock_data';
   var apiPath = '/api';
   var $location;
+	var $q;
 
-  function ApiMock(_$location) {
+  function ApiMock(_$location, _$q) {
     $location = _$location;
+		$q = _$q;
   }
 
   var p = ApiMock.prototype;
@@ -62,7 +64,14 @@ angular.module('apiMock', [])
   };
 
   p.doMock = function (req) {
-    // replace apiPath with mockDataPath.
+		if (typeof req.apiMock === 'number') {
+			var response = {
+				status: req.apiMock
+			};
+			return $q.reject(response);
+		}
+
+		// replace apiPath with mockDataPath.
     var path = req.url.substring(config.apiPath.length);
     req.url = config.mockDataPath + path;
 
@@ -75,6 +84,8 @@ angular.module('apiMock', [])
       req.url = req.url.slice(0, -1);
     }
     req.url += '.' + req.method.toLowerCase() + '.json';
+
+		return req;
   };
 
   p._isApiPath = function (req) {
@@ -119,8 +130,8 @@ angular.module('apiMock', [])
     angular.extend(config, options);
   };
 
-  this.$get = function ($location) {
-    return new ApiMock($location);
+  this.$get = function ($location, $q) {
+    return new ApiMock($location, $q);
   };
 })
 
@@ -130,11 +141,8 @@ angular.module('apiMock', [])
    `apiMock` to determine if a mock should be done, then do the actual mocking.
 */
   this.request = function (req) {
-		if (req.apiMock === 404) {
-			return $q.reject(req);
-		}
     if (req && apiMock.shouldMock(req)) {
-      apiMock.doMock(req);
+      req = apiMock.doMock(req);
     }
 
 		// Return the request or promise.
