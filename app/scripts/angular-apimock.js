@@ -82,7 +82,14 @@ angular.module('apiMock', [])
   };
 
   p._isLocalMock = function (req) {
-    return req.apiMock === undefined ? undefined : !!req.apiMock;
+		if (req.apiMock === undefined) {
+			return undefined;
+		}
+		else if (typeof req.apiMock === 'number') {
+			return req.apiMock;
+		}
+
+    return !!req.apiMock;
   };
 
   p._isGlobalMock = function () {
@@ -123,10 +130,14 @@ angular.module('apiMock', [])
    `apiMock` to determine if a mock should be done, then do the actual mocking.
 */
   this.request = function (req) {
+		if (req.apiMock === 404) {
+			return $q.reject(req);
+		}
     if (req && apiMock.shouldMock(req)) {
       apiMock.doMock(req);
     }
 
+		// Return the request or promise.
     return req || $q.when(req);
   };
 });

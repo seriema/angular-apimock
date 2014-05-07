@@ -23,7 +23,7 @@ describe('Service: apiMock', function () {
 			var request = { apiMock: true };
 
 			var result = apiMock._isLocalMock(request);
-			expect(result).toBe(true);
+			expect(result).to.equal(true);
 		});
 
 		it('should not mock if $http request disables it', function () {
@@ -33,7 +33,7 @@ describe('Service: apiMock', function () {
 				var request = { apiMock: option };
 				var result = apiMock._isLocalMock(request);
 
-				expect(result).toBe(false);
+				expect(result).to.equal(false);
 			});
 		});
 
@@ -41,7 +41,7 @@ describe('Service: apiMock', function () {
 			var request = { apiMock: undefined };
 			var result = apiMock._isLocalMock(request);
 
-			expect(result).toBe(undefined);
+			expect(result).to.equal(undefined);
 		});
 	});
 
@@ -50,7 +50,7 @@ describe('Service: apiMock', function () {
 
 		it('should detect apimock param in search queries', function () {
 			$location.url('/page?apimock=true');
-			expect(apiMock._isGlobalMock()).toBe(true);
+			expect(apiMock._isGlobalMock()).to.equal(true);
 		});
 
 		it('should return true when apimock param is equal to true. (http://server/?apimock=true)', function () {
@@ -75,7 +75,7 @@ describe('Service: apiMock', function () {
 
 				// Set location with the query string.
 				$location.search(key, value);
-				expect(apiMock._isGlobalMock()).toBe(true);
+				expect(apiMock._isGlobalMock()).to.equal(true);
 
 				// Remove param tested from the location.
 				$location.search(key, null);
@@ -105,7 +105,7 @@ describe('Service: apiMock', function () {
 
 				// Set location with the query string.
 				$location.search(key, value);
-				expect(apiMock._isGlobalMock()).toBe(false);
+				expect(apiMock._isGlobalMock()).to.equal(false);
 
 				// Remove param tested from the location.
 				$location.search(key, null);
@@ -113,7 +113,7 @@ describe('Service: apiMock', function () {
 		});
 
 		it('should return false when apimock param is not present in the query string. (http://server/)', function () {
-			expect(apiMock._isGlobalMock()).toBe(false);
+			expect(apiMock._isGlobalMock()).to.equal(false);
 		});
 	});
 
@@ -127,7 +127,7 @@ describe('Service: apiMock', function () {
 			};
 
 			var result = apiMock._isApiPath(mockRequest);
-			expect(result).toBe(true);
+			expect(result).to.equal(true);
 		});
 
 		it('should not detect /api path when its not present', function () {
@@ -137,7 +137,7 @@ describe('Service: apiMock', function () {
 			};
 
 			var result = apiMock._isApiPath(mockRequest);
-			expect(result).toBe(false);
+			expect(result).to.equal(false);
 		});
 
 		it('should not detect /api path when its not the first folder', function () {
@@ -147,7 +147,7 @@ describe('Service: apiMock', function () {
 			};
 
 			var result = apiMock._isApiPath(mockRequest);
-			expect(result).toBe(false);
+			expect(result).to.equal(false);
 		});
 	});
 
@@ -159,7 +159,7 @@ describe('Service: apiMock', function () {
 			var request = { url: '/api/pokemon/1', apiMock: false };
 			var result = apiMock.shouldMock(request);
 
-			expect(result).toBe(false);
+			expect(result).to.equal(false);
 		});
 
 		it('should override search queries if $http apimock is set to true', function () {
@@ -167,7 +167,7 @@ describe('Service: apiMock', function () {
 			var request = { url: '/api/pokemon/1', apiMock: true };
 			var result = apiMock.shouldMock(request);
 
-			expect(result).toBe(true);
+			expect(result).to.equal(true);
 		});
 	});
 
@@ -175,14 +175,14 @@ describe('Service: apiMock', function () {
 	/* This doesn't behave as when in the browser?
 		it('should detect apimock param after hash', function () {
 			$location.url('/#/view/?apimock=true');
-			expect(apiMock.isMocking()).toBe(true);
+			expect(apiMock.isMocking()).to.equal(true);
 		}); */
 
 /* Need to test with html5Mode turned on, but how?
   it('should detect apimock param after hash', inject(function($locationProvider) {
     $locationProvider.html5Mode(true);
     $location.url('/#/view/?apimock=true');
-    expect(apiMock.isMocking()).toBe(true);
+    expect(apiMock.isMocking()).to.equal(true);
   })); */
 
 
@@ -195,7 +195,7 @@ describe('Service: apiMock', function () {
 			};
 
 			apiMock.doMock(mockRequest);
-			expect(mockRequest.url).toBe('/mock_data/pokemon/1.get.json');
+			expect(mockRequest.url).to.equal('/mock_data/pokemon/1.get.json');
 		});
 
 		it('should correctly change path for POST requests', function () {
@@ -205,7 +205,7 @@ describe('Service: apiMock', function () {
 			};
 
 			apiMock.doMock(mockRequest);
-			expect(mockRequest.url).toBe('/mock_data/pokemon/1.post.json');
+			expect(mockRequest.url).to.equal('/mock_data/pokemon/1.post.json');
 		});
 
 		it('should correctly change path for DELETE requests', function () {
@@ -215,7 +215,7 @@ describe('Service: apiMock', function () {
 			};
 
 			apiMock.doMock(mockRequest);
-			expect(mockRequest.url).toBe('/mock_data/pokemon/1.delete.json');
+			expect(mockRequest.url).to.equal('/mock_data/pokemon/1.delete.json');
 		});
 
 		it('should correctly change path for PUT requests', function () {
@@ -225,7 +225,7 @@ describe('Service: apiMock', function () {
 			};
 
 			apiMock.doMock(mockRequest);
-			expect(mockRequest.url).toBe('/mock_data/pokemon/1.put.json');
+			expect(mockRequest.url).to.equal('/mock_data/pokemon/1.put.json');
 		});
 
 		it('should ignore query objects in URL, with /?', function () {
@@ -235,7 +235,7 @@ describe('Service: apiMock', function () {
 			};
 
 			apiMock.doMock(mockRequest);
-			expect(mockRequest.url).toBe('/mock_data/pokemon.get.json');
+			expect(mockRequest.url).to.equal('/mock_data/pokemon.get.json');
 		});
 
 		it('should ignore query objects in URL, with just ?', function () {
@@ -245,7 +245,7 @@ describe('Service: apiMock', function () {
 			};
 
 			apiMock.doMock(mockRequest);
-			expect(mockRequest.url).toBe('/mock_data/pokemon.get.json');
+			expect(mockRequest.url).to.equal('/mock_data/pokemon.get.json');
 		});
 	});
 
