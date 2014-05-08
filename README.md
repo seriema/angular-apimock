@@ -119,6 +119,7 @@ angular.module('myModule', [])
 * Remember mock-mode after page navigation
 * Plunkr demos
 * Visual queue that mock is happening. Maybe also console.log?
+* Work with $resource (maybe it does already?)
 
 
 ## Contribute
