@@ -86,7 +86,7 @@ No, but it works in a similar fashion: it routes HTTP calls. Our initial impleme
 Like disabling all network traffic yet things work? No, but it's a good idea. It would be perfect for presentation demo's when the WiFi is unreliable. If you have an idea of how to implement this, let us know!
 
 ### Can I mock when [...] or instead of URL replacing can I [...]?
-Actually the basic idea here is to intercept http calls then do whatever we want. This project, `angular-apimock`, aims to do things a certain way. Although everything is configurable and can be overriden in `.config()` you might want to create your own module. If so, here's the basics:
+Actually the basic idea here is to intercept http calls then do something that helps at design-time of the website. This project, `angular-apimock`, aims to do that through rerouting API calls to static JSON files. We've experimented with making that flexible so you could configure it to do whatever you want, the basic code is so simple it's probably easier to create your own. If so, here's the basics:
 ````
 angular.module('myModule', [])
 
@@ -104,6 +104,8 @@ angular.module('myModule', [])
   };
 });
 ````
+
+[This blog post](http://www.webdeveasy.com/interceptors-in-angularjs-and-useful-examples/) is pretty good at diving deeper into this.
 
 ## Wishlist
 
