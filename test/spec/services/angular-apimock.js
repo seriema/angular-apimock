@@ -297,6 +297,31 @@ describe('Service: apiMock', function () {
 			});
 
 		});
+
+		it('should have basic header data in $http request override', function (done) {
+			var mockRequest = {
+				url: '/api/pokemon?name=Pikachu',
+				method: 'GET',
+				apiMock: 404
+			};
+
+			$http(mockRequest)
+				.success(function() {
+					// this callback will be called asynchronously
+					// when the response is available
+					expect(true).to.equal(false);
+					done();
+				})
+				.error(function(data, status, headers) {
+					// called asynchronously if an error occurs
+					// or server returns response with an error status.
+					expect(headers['Content-Type']).to.equal('text/html; charset=utf-8');
+					expect(headers.Server).to.equal('Angular ApiMock');
+					done();
+				});
+
+			$httpBackend.flush();
+		});
 	});
 
 });

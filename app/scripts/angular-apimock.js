@@ -66,7 +66,11 @@ angular.module('apiMock', [])
   p.doMock = function (req) {
 		if (typeof req.apiMock === 'number') {
 			var response = {
-				status: req.apiMock
+				status: req.apiMock,
+				headers: {
+					'Content-Type': 'text/html; charset=utf-8',
+					'Server': 'Angular ApiMock'
+				}
 			};
 			return $q.reject(response);
 		}
