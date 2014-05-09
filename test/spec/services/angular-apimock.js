@@ -295,6 +295,8 @@ describe('Service: apiMock', function () {
 		it('should return status if overriding request', function (done) {
 			var options = [ 200, 404, 500 ];
 
+			$location.search('apiMock', true);
+
 			angular.forEach(options, function(option) {
 				var mockRequest = {
 					url: '/api/pokemon?name=Pikachu',
