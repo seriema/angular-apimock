@@ -170,7 +170,7 @@ module.exports = function (grunt) {
     'karma'
   ]);
 
-  grunt.registerTask('build', [
+  grunt.registerTask('dist', [
     'clean',
     'concat',
     'ngmin',
