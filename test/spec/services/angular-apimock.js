@@ -189,6 +189,20 @@ describe('Service: apiMock', function () {
 
 			expect(result).to.equal(true);
 		});
+
+		it('should not mock if no parameter is set even if path is valid API path', function () {
+			var request = { url: '/api/pokemon/1' };
+			var result = apiMock.shouldMock(request);
+
+			expect(result).to.equal(false);
+		});
+
+		it('should not mock if no parameter is set especially if path is invalid API path', function () {
+			var request = { url: '/banana/pokemon/1' };
+			var result = apiMock.shouldMock(request);
+
+			expect(result).to.equal(false);
+		});
 	});
 
 
