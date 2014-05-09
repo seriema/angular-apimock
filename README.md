@@ -1,6 +1,6 @@
 # ApiMock for AngularJS: UI-first development [![Build Status](https://travis-ci.org/seriema/angular-apimock.png?branch=master)](https://travis-ci.org/seriema/angular-apimock) [![devDependency Status](https://david-dm.org/seriema/angular-apimock/dev-status.png)](https://david-dm.org/seriema/angular-apimock#info=devDependencies)
 
-ApiMock is a minimal (0.3kb gzipped!) library for AngularJS that allows you to mock your HTTP API on _any_ platform, without know anything about servers. It routes your API calls to static JSON files with a simple flag in the browser URL.
+ApiMock is a minimal (0.4kb gzipped!) library for AngularJS that allows you to mock your HTTP API on _any_ platform, without know anything about servers. It routes your API calls to static JSON files with a simple flag in the browser URL.
 
 
 ## Example

@@ -40,22 +40,49 @@ angular.module('apiMock', []).config([
                         beginning of the path.
    `_isGlobalMock` method: decides if mocking is enabled by checking
                            `$location` for query parameter `apimock` and that
-                           it's set to `true` (or empty). E.g. `?apimock=true`.
+                           it's set to `true` or a status code.
+                           E.g. `?apimock=true`.
    `_isLocalMock` method: takes a `request` object and decides if mocking is
                           overriden by checking the request object for a
-                          `apimock` property set to `true`.
+                          `apimock` property set to `true` or a status code.
 */
   var mockDataPath = '/mock_data';
   var apiPath = '/api';
   var $location;
-  function ApiMock(_$location) {
+  var $q;
+  function determineMock(obj) {
+    switch (typeof obj) {
+    case 'undefined':
+      return undefined;
+    case 'number':
+      return isNaN(obj) || obj === 0 ? false : obj;
+    default:
+      return !!obj;
+    }
+  }
+  function ApiMock(_$location, _$q) {
     $location = _$location;
+    $q = _$q;
   }
   var p = ApiMock.prototype;
   p.shouldMock = function (req) {
-    return (this._isGlobalMock() || this._isLocalMock(req)) && this._isApiPath(req);
+    var mock = this._isLocalMock(req);
+    if (mock === undefined) {
+      mock = !!this._isGlobalMock();
+    }
+    return mock && this._isApiPath(req);
   };
   p.doMock = function (req) {
+    if (typeof req.apiMock === 'number') {
+      var response = {
+          status: req.apiMock,
+          headers: {
+            'Content-Type': 'text/html; charset=utf-8',
+            'Server': 'Angular ApiMock'
+          }
+        };
+      return $q.reject(response);
+    }
     // replace apiPath with mockDataPath.
     var path = req.url.substring(config.apiPath.length);
     req.url = config.mockDataPath + path;
@@ -67,27 +94,23 @@ angular.module('apiMock', []).config([
       req.url = req.url.slice(0, -1);
     }
     req.url += '.' + req.method.toLowerCase() + '.json';
+    return req;
   };
   p._isApiPath = function (req) {
     return req.url.indexOf(config.apiPath) === 0;
   };
   p._isLocalMock = function (req) {
-    return !!req.apiMock;
+    return determineMock(req.apiMock);
   };
   p._isGlobalMock = function () {
     var regex = /apimock/i;
-    var found = false;
+    var result;
     angular.forEach($location.search(), function (value, key) {
       if (regex.test(key)) {
-        // Update $location object with primitive boolean compatibility in case if string type.
-        if (value === true || angular.lowercase(value) === 'true') {
-          found = true;
-          $location.search(key, null);
-          $location.search('apimock', true);
-        }
+        result = determineMock(value);
       }
     });
-    return found;
+    return result;
   };
   var config = {
       mockDataPath: mockDataPath,
@@ -98,8 +121,9 @@ angular.module('apiMock', []).config([
   };
   this.$get = [
     '$location',
-    function ($location) {
-      return new ApiMock($location);
+    '$q',
+    function ($location, $q) {
+      return new ApiMock($location, $q);
     }
   ];
 }).service('httpInterceptor', [
@@ -112,8 +136,9 @@ angular.module('apiMock', []).config([
 */
     this.request = function (req) {
       if (req && apiMock.shouldMock(req)) {
-        apiMock.doMock(req);
+        req = apiMock.doMock(req);
       }
+      // Return the request or promise.
       return req || $q.when(req);
     };
   }
