@@ -97,14 +97,16 @@ angular.module('apiMock', [])
   };
 
   p._isLocalMock = function (req) {
-		if (req.apiMock === undefined) {
-			return undefined;
-		}
-		else if (typeof req.apiMock === 'number') {
-			return req.apiMock;
-		}
+		switch (typeof req.apiMock) {
+			case 'undefined':
+				return undefined;
 
-    return !!req.apiMock;
+			case 'number':
+				return req.apiMock;
+
+			default:
+				return !!req.apiMock;
+		}
   };
 
   p._isGlobalMock = function () {
