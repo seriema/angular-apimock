@@ -1,6 +1,6 @@
 # ApiMock for AngularJS: UI-first development [![Build Status](https://travis-ci.org/seriema/angular-apimock.png?branch=master)](https://travis-ci.org/seriema/angular-apimock) [![devDependency Status](https://david-dm.org/seriema/angular-apimock/dev-status.png)](https://david-dm.org/seriema/angular-apimock#info=devDependencies)
 
-ApiMock is a minimal (0.4kb gzipped!) library for AngularJS that allows you to mock your HTTP API on _any_ platform, without know anything about servers. It routes your API calls to static JSON files with a simple flag in the browser URL.
+ApiMock is a minimal (0.4kb gzipped!) library for AngularJS that allows you to mock your RESTful API by routing your API calls to static JSON files.
 
 
 ## Example
@@ -90,7 +90,7 @@ No, but it works in a similar fashion: it routes HTTP calls. Our initial impleme
 Like disabling all network traffic yet things work? No, but it's a good idea. It would be perfect for presentation demo's when the WiFi is unreliable. If you have an idea of how to implement this, let us know!
 
 ### Can I mock when [...] or instead of URL replacing can I [...]?
-Actually the basic idea here is to intercept http calls then do something that helps at design-time of the website. This project, `angular-apimock`, aims to do that through rerouting API calls to static JSON files. We've experimented with making that flexible so you could configure it to do whatever you want, the basic code is so simple it's probably easier to create your own. If so, here's the basics:
+Actually the basic idea here is to intercept http calls then do something that helps at design-time of the website. This project, `angular-apimock`, aims to do that through rerouting API calls to static JSON files. We've experimented with making that flexible so you could configure it to do whatever you want, but that requires so much from this project and the core functionality (http interceptors) is so simple it's probably easier to create your own. If so, here's the basics:
 ````
 angular.module('myModule', [])
 
