@@ -30,11 +30,19 @@ describe('Service: apiMock', function () {
 			expect(result).to.equal(true);
 		});
 
-		it('should not mock if $http request disables it', function () {
-			var options = [false, ''];
+		it('should return false when apimock param is equal to false, or a falsy value (except undefined and null).', function () {
+			// Define falsy values.
+			var values = [
+				false,
+				'',
+				0,
+				NaN
+				// undefined - is not valid because it's expected to return undefined
+				// null - is not valid because it clears $location
+			];
 
-			angular.forEach(options, function (option) {
-				var request = { apiMock: option };
+			angular.forEach(values, function(value) {
+				var request = { apiMock: value };
 				var result = apiMock._isLocalMock(request);
 
 				expect(result).to.equal(false);
@@ -64,26 +72,22 @@ describe('Service: apiMock', function () {
 			expect(apiMock._isGlobalMock()).to.equal(true);
 		});
 
-		it('should return true when apimock param is equal to true. (http://server/?apimock=true)', function () {
-			var options;
-			var key;
-			var value;
+		it('should return true when apimock param is equal to true, regardless of case on "apiMock". (http://server/?apimock=true)', function () {
+			var value = true;
 
 			// Define a valid query string.
-			options = [
-				{'apimock': true},
-				{'apiMock': true},
-				{'APIMOCK': true},
-				{'ApiMock': true},
-				{'apimock': 'true'},
-				{'apimock': 'True'},
-				{'apimock': 'TRUE'}
+			var keys = [
+				'apimock',
+				'apiMock',
+				'APIMOCK',
+				'ApiMock',
+				'apimock',
+				'apimock',
+				'apimock'
 			];
 
-			angular.forEach(options, function(option) {
-				key = Object.getOwnPropertyNames(option).pop();
-				value = option[key];
-
+			angular.forEach(keys, function(key) {
+//				console.log('value', value, 'key', key);
 				// Set location with the query string.
 				$location.search(key, value);
 				expect(apiMock._isGlobalMock()).to.equal(true);
@@ -91,29 +95,22 @@ describe('Service: apiMock', function () {
 				// Remove param tested from the location.
 				$location.search(key, null);
 			});
-
 		});
 
-		it('should return false when apimock param is equal to false, or an object different of typeof boolean.', function () {
-			var options;
-			var key;
-			var value;
+		it('should return false when apimock param is equal to false, or a falsy value (except undefined and null). (http://server?apimock=false)', function () {
+			var key = 'apiMock';
 
-			// Define a NOT valid query string.
-			options = [
-				{'apimock': false},
-				{'apimock': 'false'},
-				{'apimock': 'False'},
-				{'apimock': 'FALSE'},
-				{'apimock': 1},
-				{'apimock': 'not valid'},
-				{'apimock': 40}
+			// Define falsy values.
+			var values = [
+				false,
+				'',
+				0,
+				NaN
+				// undefined - is not valid because it's expected to return undefined
+				// null - is not valid because it clears $location
 			];
 
-			angular.forEach(options, function(option) {
-				key = Object.getOwnPropertyNames(option).pop();
-				value = option[key];
-
+			angular.forEach(values, function(value) {
 				// Set location with the query string.
 				$location.search(key, value);
 				expect(apiMock._isGlobalMock()).to.equal(false);
@@ -123,8 +120,20 @@ describe('Service: apiMock', function () {
 			});
 		});
 
-		it('should return false when apimock param is not present in the query string. (http://server/)', function () {
-			expect(apiMock._isGlobalMock()).to.equal(false);
+		it('should return undefined when apimock param is not present in the query string. (http://server?)', function () {
+			expect(apiMock._isGlobalMock()).to.equal(undefined);
+		});
+
+		it('should return undefined when apimock param is set to undefined through manual $location call.', function () {
+			$location.search('apiMock', undefined);
+			expect(apiMock._isGlobalMock()).to.equal(undefined);
+		});
+
+		it('should respond with status code if $http request contains status code override', function () {
+			$location.search('apiMock', 404);
+			var result = apiMock._isGlobalMock();
+
+			expect(result).to.equal(404);
 		});
 	});
 

@@ -48,6 +48,19 @@ angular.module('apiMock', [])
   var $location;
 	var $q;
 
+	function determineMock(obj) {
+		switch (typeof obj) {
+			case 'undefined':
+				return undefined;
+
+			case 'number':
+				return isNaN(obj) || obj === 0 ? false : obj;
+
+			default:
+				return !!obj;
+		}
+	}
+
   function ApiMock(_$location, _$q) {
     $location = _$location;
 		$q = _$q;
@@ -97,34 +110,20 @@ angular.module('apiMock', [])
   };
 
   p._isLocalMock = function (req) {
-		switch (typeof req.apiMock) {
-			case 'undefined':
-				return undefined;
-
-			case 'number':
-				return req.apiMock;
-
-			default:
-				return !!req.apiMock;
-		}
+		return determineMock(req.apiMock);
   };
 
   p._isGlobalMock = function () {
     var regex = /apimock/i;
-    var found = false;
+		var result;
 
     angular.forEach($location.search(), function(value, key) {
       if (regex.test(key)) {
-        // Update $location object with primitive boolean compatibility in case if string type.
-        if (value === true || angular.lowercase(value) === 'true') {
-          found = true;
-          $location.search(key, null);
-          $location.search('apimock', true);
-        }
+				result = determineMock(value);
       }
     });
 
-    return found;
+    return result;
   };
 
   var config = {
