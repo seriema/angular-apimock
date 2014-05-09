@@ -38,10 +38,11 @@ angular.module('apiMock', [])
                         beginning of the path.
    `_isGlobalMock` method: decides if mocking is enabled by checking
                            `$location` for query parameter `apimock` and that
-                           it's set to `true` (or empty). E.g. `?apimock=true`.
+                           it's set to `true` or a status code.
+                           E.g. `?apimock=true`.
    `_isLocalMock` method: takes a `request` object and decides if mocking is
                           overriden by checking the request object for a
-                          `apimock` property set to `true`.
+                          `apimock` property set to `true` or a status code.
 */
   var mockDataPath = '/mock_data';
   var apiPath = '/api';

@@ -34,6 +34,10 @@ angular.module('myApp', ['apiMock']) ...
 
 Now use `$http` as usual. When you're looking at your webpage and want to use mock data, just add `?apimock=true` to the _browser_ page URL. This way you never need to change your JavaScript!
 
+You can also do individual overrides right in the `config` object to `$http`. E.g. `$http( { url: '/...', method: GET, apiMock: true } )`.
+
+If you want to design/test your error-handling then you can give a HTTP status code instead of `true`. So `?apimock=401` will fail all requests with status code `401` (unauthorized). This is probably more useful on individual `$http` requests.
+
 ApiMock appends the HTTP-verb before `.json` so a GET-request to `/api/customers/5` will be routed to `/mock_data/customers/5.get.json`. Now just fill your `/mock_data` directory with all the JSON files you want to grab.
 
 
@@ -110,12 +114,10 @@ angular.module('myModule', [])
 ## Wishlist
 
 * Demo based on Magic The Gathering cards (reference to a //build presentation)
-* Demo for `isMocked`
+* Demo for checking mock-flag
 * Demo with [Interfake](https://github.com/basicallydan/interfake)
 * Handle queries (?search=banana), not just ignore them.
-* Handle body data in POST requests
-* Generate sample JSON from JSON Schema (json-schema.org) and JSON LD (json-ld.org) (maybe a separate project?)
-* Simulate complete offline, e.g. fail all API calls to test for 404 etc. `apimock=auto`?
+* Handle body data in POST requests?
 * Automatic fallback to apiMock if the real API doesn't answer (or gives an error)
 * Test `apimock=true` in more scenarios
 * Remember mock-mode after page navigation
