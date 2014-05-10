@@ -80,10 +80,7 @@ describe('Service: apiMock', function () {
 				'apimock',
 				'apiMock',
 				'APIMOCK',
-				'ApiMock',
-				'apimock',
-				'apimock',
-				'apimock'
+				'ApiMock'
 			];
 
 			angular.forEach(keys, function(key) {
@@ -121,15 +118,19 @@ describe('Service: apiMock', function () {
 		});
 
 		it('should return undefined when apimock param is not present in the query string. (http://server?)', function () {
-			expect(apiMock._isGlobalMock()).to.equal(undefined);
+			var result = apiMock._isGlobalMock();
+
+			expect(result).to.equal(undefined);
 		});
 
 		it('should return undefined when apimock param is set to undefined through manual $location call.', function () {
 			$location.search('apiMock', undefined);
-			expect(apiMock._isGlobalMock()).to.equal(undefined);
+			var result = apiMock._isGlobalMock();
+
+			expect(result).to.equal(undefined);
 		});
 
-		it('should respond with status code if $http request contains status code override', function () {
+		it('should respond with status code when apimock param is set to status code.', function () {
 			$location.search('apiMock', 404);
 			var result = apiMock._isGlobalMock();
 
@@ -202,6 +203,13 @@ describe('Service: apiMock', function () {
 			var result = apiMock.shouldMock(request);
 
 			expect(result).to.equal(false);
+		});
+
+		it('should return global mock flag if no request object is given', function () {
+			$location.url('/page?apimock=true');
+			var result = apiMock.shouldMock();
+
+			expect(result).to.equal(true);
 		});
 	});
 
