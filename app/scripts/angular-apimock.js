@@ -62,7 +62,36 @@ angular.module('apiMock', [])
 		}
 	}
 
-  function ApiMock(_$location, _$q) {
+	function httpStatusResponse(req) {
+		var response = {
+			status: req.apiMock,
+			headers: {
+				'Content-Type': 'text/html; charset=utf-8',
+				'Server': 'Angular ApiMock'
+			}
+		};
+		return $q.reject(response);
+	}
+
+	function mockDataResponse(req) {
+		// replace apiPath with mockDataPath.
+		var path = req.url.substring(config.apiPath.length);
+		req.url = config.mockDataPath + path;
+
+		// strip query strings (like ?search=banana).
+		var regex = /[a-zA-z0-9/.\-]*/;
+		req.url = regex.exec(req.url)[0];
+
+		// add file endings (method verb and .json).
+		if (req.url[req.url.length - 1] === '/') {
+			req.url = req.url.slice(0, -1);
+		}
+		req.url += '.' + req.method.toLowerCase() + '.json';
+
+		return req;
+	}
+
+	function ApiMock(_$location, _$q) {
     $location = _$location;
 		$q = _$q;
   }
@@ -81,34 +110,12 @@ angular.module('apiMock', [])
     return mock && this._isApiPath(req);
   };
 
-  p.doMock = function (req) {
-		if (typeof req.apiMock === 'number') {
-			var response = {
-				status: req.apiMock,
-				headers: {
-					'Content-Type': 'text/html; charset=utf-8',
-					'Server': 'Angular ApiMock'
-				}
-			};
-			return $q.reject(response);
+	p.doMock = function (req) {
+		if (req && typeof req.apiMock === 'number') {
+			return httpStatusResponse(req);
 		}
-
-		// replace apiPath with mockDataPath.
-    var path = req.url.substring(config.apiPath.length);
-    req.url = config.mockDataPath + path;
-
-    // strip query strings (like ?search=banana).
-    var regex = /[a-zA-z0-9/.\-]*/;
-    req.url = regex.exec(req.url)[0];
-
-    // add file endings (method verb and .json).
-    if (req.url[req.url.length-1] === '/') {
-      req.url = req.url.slice(0, -1);
-    }
-    req.url += '.' + req.method.toLowerCase() + '.json';
-
-		return req;
-  };
+		return mockDataResponse(req);
+	};
 
   p._isApiPath = function (req) {
     return req && req.url.indexOf(config.apiPath) === 0;
