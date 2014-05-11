@@ -53,7 +53,7 @@ describe('Service: apiMock', function () {
 			var request = { apiMock: undefined };
 			var result = apiMock._isLocalMock(request);
 
-			expect(result).to.equal(undefined);
+			expect(result).to.undefined;
 		});
 
 		it('should respond with status code if $http request contains status code override', function () {
@@ -120,14 +120,14 @@ describe('Service: apiMock', function () {
 		it('should return undefined when apimock param is not present in the query string. (http://server?)', function () {
 			var result = apiMock._isGlobalMock();
 
-			expect(result).to.equal(undefined);
+			expect(result).to.be.undefined;
 		});
 
 		it('should return undefined when apimock param is set to undefined through manual $location call.', function () {
 			$location.search('apiMock', undefined);
 			var result = apiMock._isGlobalMock();
 
-			expect(result).to.equal(undefined);
+			expect(result).to.be.undefined;
 		});
 
 		it('should respond with status code when apimock param is set to status code.', function () {
