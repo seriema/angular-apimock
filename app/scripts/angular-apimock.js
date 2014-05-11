@@ -55,7 +55,7 @@ angular.module('apiMock', [])
 				return undefined;
 
 			case 'number':
-				return isNaN(obj) || obj === 0 ? false : obj;
+				return !obj ? false : obj;
 
 			default:
 				return !!obj;
