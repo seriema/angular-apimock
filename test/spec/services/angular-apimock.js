@@ -205,11 +205,19 @@ describe('Service: apiMock', function () {
 			expect(result).to.equal(false);
 		});
 
-		it('should return global mock flag if no request object is given', function () {
+		it('should return global mock flag if no request flag is set', function () {
+			$location.url('/page?apimock=true');
+			var request = { url: '/api/pokemon/1' };
+			var result = apiMock.shouldMock(request);
+
+			expect(result).to.equal(true);
+		});
+
+		it('should return false if no request object is given, even though global mock flag is set', function () {
 			$location.url('/page?apimock=true');
 			var result = apiMock.shouldMock();
 
-			expect(result).to.equal(true);
+			expect(result).to.equal(false);
 		});
 	});
 
