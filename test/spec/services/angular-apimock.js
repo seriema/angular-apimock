@@ -348,6 +348,7 @@ describe('Service: apiMock', function () {
 					done();
 				})
 				.error(function(data, status, headers) {
+					expect(headers).to.exist;
 					expect(headers['Content-Type']).to.equal('text/html; charset=utf-8');
 					expect(headers.Server).to.equal('Angular ApiMock');
 					done();
