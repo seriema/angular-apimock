@@ -9,7 +9,10 @@ module.exports = function(config) {
     // testing framework to use (jasmine/mocha/qunit/...)
     frameworks: ['mocha', 'chai'],
 
-    // list of files / patterns to load in the browser
+		// reporter style
+		reporters: [ 'dots' ],
+
+		// list of files / patterns to load in the browser
     files: [
       'app/bower_components/angular/angular.js',
       'app/bower_components/angular-mocks/angular-mocks.js',
