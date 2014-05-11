@@ -29,7 +29,7 @@ module.exports = function (grunt) {
 		bump: {
 			options: {
 				files: ['package.json'],
-				updateConfigs: [],
+				updateConfigs: ['yeoman'],
 				commit: true,
 				commitMessage: 'Release v%VERSION%',
 				commitFiles: ['-a'], // '-a' for all files
@@ -187,11 +187,13 @@ module.exports = function (grunt) {
   ]);
 
   grunt.registerTask('dist', [
-    'clean',
+    'test',
+		'clean',
+		'bump-only',
     'concat',
     'ngmin',
     'uglify',
-		'bump'
+		'bump-commit'
   ]);
 
   grunt.registerTask('default', [
