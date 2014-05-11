@@ -60,29 +60,17 @@ angular.module('apiMock', []).config([
       return !!obj;
     }
   }
-  function ApiMock(_$location, _$q) {
-    $location = _$location;
-    $q = _$q;
+  function httpStatusResponse(req) {
+    var response = {
+        status: req.apiMock,
+        headers: {
+          'Content-Type': 'text/html; charset=utf-8',
+          'Server': 'Angular ApiMock'
+        }
+      };
+    return $q.reject(response);
   }
-  var p = ApiMock.prototype;
-  p.shouldMock = function (req) {
-    var mock = this._isLocalMock(req);
-    if (mock === undefined) {
-      mock = !!this._isGlobalMock();
-    }
-    return mock && this._isApiPath(req);
-  };
-  p.doMock = function (req) {
-    if (typeof req.apiMock === 'number') {
-      var response = {
-          status: req.apiMock,
-          headers: {
-            'Content-Type': 'text/html; charset=utf-8',
-            'Server': 'Angular ApiMock'
-          }
-        };
-      return $q.reject(response);
-    }
+  function mockDataResponse(req) {
     // replace apiPath with mockDataPath.
     var path = req.url.substring(config.apiPath.length);
     req.url = config.mockDataPath + path;
@@ -95,12 +83,30 @@ angular.module('apiMock', []).config([
     }
     req.url += '.' + req.method.toLowerCase() + '.json';
     return req;
+  }
+  function ApiMock(_$location, _$q) {
+    $location = _$location;
+    $q = _$q;
+  }
+  var p = ApiMock.prototype;
+  p.shouldMock = function (req) {
+    var mock = this._isLocalMock(req);
+    if (mock === undefined) {
+      mock = !!this._isGlobalMock();
+    }
+    return !!(mock && this._isApiPath(req));
+  };
+  p.doMock = function (req) {
+    if (req && typeof req.apiMock === 'number') {
+      return httpStatusResponse(req);
+    }
+    return mockDataResponse(req);
   };
   p._isApiPath = function (req) {
-    return req.url.indexOf(config.apiPath) === 0;
+    return req && req.url.indexOf(config.apiPath) === 0;
   };
   p._isLocalMock = function (req) {
-    return determineMock(req.apiMock);
+    return req && determineMock(req.apiMock);
   };
   p._isGlobalMock = function () {
     var regex = /apimock/i;
