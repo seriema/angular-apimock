@@ -322,7 +322,7 @@ describe('Service: apiMock', function () {
 
 				$http(mockRequest)
 					.success(function() {
-						expect(true).to.be.false;
+						expect(true).to.be.false; // Todo: How to fail the test if this happens?
 						done();
 					})
 					.error(function(data, status) {
@@ -344,7 +344,7 @@ describe('Service: apiMock', function () {
 
 			$http(mockRequest)
 				.success(function() {
-					expect(true).to.be.false;
+					expect(true).to.be.false; // Todo: How to fail the test if this happens?
 					done();
 				})
 				.error(function(data, status, headers) {
