@@ -190,7 +190,8 @@ module.exports = function (grunt) {
     'clean',
     'concat',
     'ngmin',
-    'uglify'
+    'uglify',
+		'bump'
   ]);
 
   grunt.registerTask('default', [
