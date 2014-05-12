@@ -111,7 +111,7 @@ angular.module('apiMock', [])
   };
 
 	p.shouldAutoMock = function (req) {
-		return $location.search().apiMock === 'auto' || req.apiMock === 'auto';
+		return ($location.search().apiMock === 'auto' || req.apiMock === 'auto') && this._isApiPath(req);
 	};
 
 	p.doMock = function (req) {
@@ -121,11 +121,11 @@ angular.module('apiMock', [])
 		return mockDataResponse(req);
 	};
 
-	p.prepare = function (req) {
+	p.prepareFallback = function (req) {
 		fallbacks.push(req);
 	};
 
-	p.remove = function (res) {
+	p.removeFallback = function (res) {
 		var found = false;
 		angular.forEach(fallbacks, function (fallback, index) {
 			if (fallback.method === res.config.method && fallback.url === res.config.url) {
@@ -179,7 +179,7 @@ angular.module('apiMock', [])
 */
   this.request = function (req) {
 		if (req && apiMock.shouldAutoMock(req)) {
-			apiMock.prepare(req);
+			apiMock.prepareFallback(req);
 		}
 		else
     if (req && apiMock.shouldMock(req)) {
@@ -191,13 +191,13 @@ angular.module('apiMock', [])
   };
 
 	this.response = function (res) {
-		apiMock.remove(res);
+		apiMock.removeFallback(res);
 
 		return res || $q.when(res);
 	};
 
 	this.responseError = function (rejection) {
-		if (apiMock.remove(rejection) && apiMock.shouldMock(rejection.config)) {
+		if (apiMock.removeFallback(rejection)) {
 			return apiMock.doMock(rejection.config);
 		}
 
