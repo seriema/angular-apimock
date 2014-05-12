@@ -116,8 +116,9 @@ angular.module('myModule', [])
 * Demo based on Magic The Gathering cards (reference to a //build presentation)
 * Demo for checking mock-flag
 * Demo with [Interfake](https://github.com/basicallydan/interfake)
-* Handle queries (?search=banana), not just ignore them.
+* Handle queries (?search=banana), not just ignore them
 * Handle body data in POST requests?
+* HTTP response overrides (200?) shouldn't always go to $http.error()
 * Automatic fallback to apiMock if the real API doesn't answer (or gives an error)
 * Test `apimock=true` in more scenarios
 * Remember mock-mode after page navigation
