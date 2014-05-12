@@ -438,6 +438,29 @@ describe('Service: apiMock', function () {
 
 			$httpBackend.flush();
 		});
+
+		it('should work as usual if no flag is set', function (done) {
+			// Don't include apimock flag.
+			var mockRequest = {
+				url: '/api/people/pokemon',
+				method: 'GET'
+			};
+
+			// Do a call, and expect it to fail.
+			$httpBackend.when('GET', '/api/people/pokemon').respond(404);
+
+			$http(mockRequest)
+				.success(function() {
+					expect(true).to.be.false; // Todo: How to fail the test if this happens?
+					done();
+				})
+				.error(function() {
+					done();
+				});
+
+			$httpBackend.flush();
+		});
+
 	});
 
 });
