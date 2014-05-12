@@ -374,6 +374,31 @@ describe('Service: apiMock', function () {
 			// Do a call, and expect it to recover from fail.
 			$httpBackend.when('GET', '/api/people/pokemon').respond(404);
 			$httpBackend.when('GET', '/mock_data/people/pokemon.get.json').respond(200);
+
+			$http(mockRequest)
+				.success(function() {
+					done();
+				})
+				.error(function() {
+					expect(true).to.be.false; // Todo: How to fail the test if this happens?
+					done();
+				});
+
+			$httpBackend.flush();
+		});
+
+		it('should automatically mock when request fails, with local flag auto', function (done) {
+			// Include local flag: auto
+			var mockRequest = {
+				url: '/api/people/pokemon',
+				method: 'GET',
+				apiMock: 'auto'
+			};
+
+			// Do a call, and expect it to recover from fail.
+			$httpBackend.when('GET', '/api/people/pokemon').respond(404);
+			$httpBackend.when('GET', '/mock_data/people/pokemon.get.json').respond(200);
+
 			$http(mockRequest)
 				.success(function() {
 					done();

@@ -111,7 +111,7 @@ angular.module('apiMock', [])
   };
 
 	p.shouldAutoMock = function (req) {
-		return $location.search('apiMock') === 'auto' || req.apiMock === 'auto';
+		return $location.search().apiMock === 'auto' || req.apiMock === 'auto';
 	};
 
 	p.doMock = function (req) {
