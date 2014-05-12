@@ -42,6 +42,12 @@ module.exports = function (grunt) {
 			}
 		},
 
+		changelog: {
+			options: {
+				// We'll use defaults for everything. https://github.com/btford/grunt-conventional-changelog
+			}
+		},
+
     // Watches files for changes and runs tasks based on the changed files
     watch: {
       js: {
@@ -193,6 +199,7 @@ module.exports = function (grunt) {
     'concat',
     'ngmin',
     'uglify',
+		'changelog',
 		'bump-commit'
   ]);
 
