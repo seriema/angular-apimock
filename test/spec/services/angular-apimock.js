@@ -307,8 +307,12 @@ describe('Service: apiMock', function () {
 			apiMock.doMock(mockRequest);
 			expect(mockRequest.url).to.equal('/mock_data/pokemon.get.json');
 		});
+	});
 
-		it('should return status if overriding request', function (done) {
+
+	describe('httpInterceptor', function () {
+
+		it('should return status if overriding request with status', function (done) {
 			var options = [ 200, 404, 500 ];
 
 			$location.search('apiMock', true);
@@ -335,7 +339,7 @@ describe('Service: apiMock', function () {
 
 		});
 
-		it('should have basic header data in $http request override', function (done) {
+		it('should have basic header data in $http request status override', function (done) {
 			var mockRequest = {
 				url: '/api/pokemon?name=Pikachu',
 				method: 'GET',
