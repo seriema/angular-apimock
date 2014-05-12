@@ -128,9 +128,9 @@ angular.module('apiMock', [])
 	p.remove = function (res) {
 		var found = false;
 		angular.forEach(fallbacks, function (fallback, index) {
-			if (fallback.method === res.method && fallback.url === res.url) {
+			if (fallback.method === res.config.method && fallback.url === res.config.url) {
 				found = true;
-				fallbacks.removeAt(index);
+				fallbacks.splice(index, 1);
 			}
 		});
 
@@ -197,8 +197,8 @@ angular.module('apiMock', [])
 	};
 
 	this.responseError = function (rejection) {
-		if (apiMock.remove(rejection)) {
-			return apiMock.doMock(rejection);
+		if (apiMock.remove(rejection) && apiMock.shouldMock(rejection.config)) {
+			return apiMock.doMock(rejection.config);
 		}
 
 		return $q.reject(rejection);
