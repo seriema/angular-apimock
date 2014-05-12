@@ -48,6 +48,7 @@ angular.module('apiMock', [])
   var apiPath = '/api';
   var $location;
 	var $q;
+	var fallbacks = [];
 
 	function determineMock(obj) {
 		switch (typeof obj) {
@@ -56,6 +57,9 @@ angular.module('apiMock', [])
 
 			case 'number':
 				return !obj ? false : obj;
+
+//			case 'string':
+//				return obj === 'auto' ? true : !!obj;
 
 			default:
 				return !!obj;
@@ -106,11 +110,31 @@ angular.module('apiMock', [])
     return !!(mock && this._isApiPath(req));
   };
 
+	p.shouldAutoMock = function (req) {
+		return $location.search('apiMock') === 'auto' || req.apiMock === 'auto';
+	};
+
 	p.doMock = function (req) {
 		if (req && typeof req.apiMock === 'number') {
 			return httpStatusResponse(req);
 		}
 		return mockDataResponse(req);
+	};
+
+	p.prepare = function (req) {
+		fallbacks.push(req);
+	};
+
+	p.remove = function (res) {
+		var found = false;
+		angular.forEach(fallbacks, function (fallback, index) {
+			if (fallback.method === res.method && fallback.url === res.url) {
+				found = true;
+				fallbacks.removeAt(index);
+			}
+		});
+
+		return found;
 	};
 
   p._isApiPath = function (req) {
@@ -154,6 +178,10 @@ angular.module('apiMock', [])
    `apiMock` to determine if a mock should be done, then do the actual mocking.
 */
   this.request = function (req) {
+		if (req && apiMock.shouldAutoMock(req)) {
+			apiMock.prepare(req);
+		}
+		else
     if (req && apiMock.shouldMock(req)) {
       req = apiMock.doMock(req);
     }
@@ -161,4 +189,18 @@ angular.module('apiMock', [])
 		// Return the request or promise.
     return req || $q.when(req);
   };
+
+	this.response = function (res) {
+		apiMock.remove(res);
+
+		return res || $q.when(res);
+	};
+
+	this.responseError = function (rejection) {
+		if (apiMock.remove(rejection)) {
+			return apiMock.doMock(rejection);
+		}
+
+		return $q.reject(rejection);
+	};
 });

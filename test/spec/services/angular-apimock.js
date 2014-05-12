@@ -360,6 +360,59 @@ describe('Service: apiMock', function () {
 
 			$httpBackend.flush();
 		});
+
+		it('should automatically mock when request fails, with global flag auto', function (done) {
+			// Set global flag: auto
+			$location.search('apiMock', 'auto');
+
+			// Don't include override
+			var mockRequest = {
+				url: '/api/people/pokemon',
+				method: 'GET'
+			};
+
+			// Do a call, and expect it to recover from fail.
+			$httpBackend.when('GET', '/api/people/pokemon').respond(404);
+			$httpBackend.when('GET', '/mock_data/people/pokemon.get.json').respond(200);
+			$http(mockRequest)
+				.success(function() {
+					done();
+				})
+				.error(function() {
+					expect(true).to.be.false; // Todo: How to fail the test if this happens?
+					done();
+				});
+
+			$httpBackend.flush();
+		});
+
+		it('cant automatically mock request failure if the URL is an invalid API url', function (done) {
+			// Set global flag: auto
+			$location.search('apiMock', 'auto');
+
+			// Don't include override, but use an URL that doesn't pass the isApiPath test.
+			var mockRequest = {
+				url: '/something/people/pokemon',
+				method: 'GET'
+			};
+
+			// Verify the API path is invalid.
+			expect(apiMock._isApiPath(mockRequest)).to.be.false;
+
+			// Do a call, and expect it to fail.
+			$httpBackend.when('GET', '/something/people/pokemon').respond(404);
+			$http(mockRequest)
+				.success(function() {
+					expect(true).to.be.false; // Todo: How to fail the test if this happens?
+					done();
+				})
+				.error(function(data, status) {
+					expect(status).to.equal(404);
+					done();
+				});
+
+			$httpBackend.flush();
+		});
 	});
 
 });
