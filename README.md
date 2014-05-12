@@ -38,6 +38,8 @@ You can also do individual overrides right in the `config` object to `$http`. E.
 
 If you want to design/test your error-handling then you can give a HTTP status code instead of `true`. So `?apimock=401` will fail all requests with status code `401` (unauthorized). This is probably more useful on individual `$http` requests.
 
+You can also set it to automatically reroute API calls that fail. Just set the parameter to `auto` (`apimock=auto` in browser or $http call).
+
 ApiMock appends the HTTP-verb before `.json` so a GET-request to `/api/customers/5` will be routed to `/mock_data/customers/5.get.json`. Now just fill your `/mock_data` directory with all the JSON files you want to grab.
 
 
