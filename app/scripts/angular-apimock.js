@@ -176,6 +176,7 @@ angular.module('apiMock', [])
 /* The main service. Is jacked in as a interceptor on `$http` so it gets called
    on every http call. This allows us to do our magic. It uses the provider
    `apiMock` to determine if a mock should be done, then do the actual mocking.
+   If the 'auto' flag is set then it prepares it to be recovered later, if needed.
 */
   this.request = function (req) {
 		if (req && apiMock.shouldAutoMock(req)) {
