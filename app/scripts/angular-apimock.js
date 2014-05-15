@@ -43,6 +43,7 @@ angular.module('apiMock', [])
    `_isLocalMock` method: takes a `request` object and decides if mocking is
                           overriden by checking the request object for a
                           `apimock` property set to `true` or a status code.
+   `_countFallbacks` method: returns the current number of fallbacks in queue.
 */
   var mockDataPath = '/mock_data';
   var apiPath = '/api';
@@ -135,6 +136,10 @@ angular.module('apiMock', [])
 		});
 
 		return found;
+	};
+
+	p._countFallbacks = function () {
+		return fallbacks.length;
 	};
 
   p._isApiPath = function (req) {

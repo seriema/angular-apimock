@@ -330,6 +330,7 @@ describe('Service: apiMock', function () {
 						done();
 					})
 					.error(function(data, status) {
+						expect(apiMock._countFallbacks()).to.equal(0);
 						expect(status).to.equal(option);
 						done();
 					});
@@ -352,6 +353,7 @@ describe('Service: apiMock', function () {
 					done();
 				})
 				.error(function(data, status, headers) {
+					expect(apiMock._countFallbacks()).to.equal(0);
 					expect(headers).to.exist;
 					expect(headers['Content-Type']).to.equal('text/html; charset=utf-8');
 					expect(headers.Server).to.equal('Angular ApiMock');
@@ -377,6 +379,7 @@ describe('Service: apiMock', function () {
 
 			$http(mockRequest)
 				.success(function() {
+					expect(apiMock._countFallbacks()).to.equal(0);
 					done();
 				})
 				.error(function() {
@@ -401,6 +404,7 @@ describe('Service: apiMock', function () {
 
 			$http(mockRequest)
 				.success(function() {
+					expect(apiMock._countFallbacks()).to.equal(0);
 					done();
 				})
 				.error(function() {
@@ -432,6 +436,7 @@ describe('Service: apiMock', function () {
 					done();
 				})
 				.error(function(data, status) {
+					expect(apiMock._countFallbacks()).to.equal(0);
 					expect(status).to.equal(404);
 					done();
 				});
@@ -455,6 +460,7 @@ describe('Service: apiMock', function () {
 					done();
 				})
 				.error(function() {
+					expect(apiMock._countFallbacks()).to.equal(0);
 					done();
 				});
 
