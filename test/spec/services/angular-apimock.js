@@ -11,6 +11,9 @@ describe('Service: apiMock', function () {
   var $location;
 	var $http;
 	var $httpBackend;
+	var defaultApiPath;
+	var defaultMockPath;
+	var defaultRequest;
 
   beforeEach(inject(function (_httpInterceptor_, _apiMock_, _$location_, _$http_, _$httpBackend_) {
 	  httpInterceptor = _httpInterceptor_;
@@ -18,7 +21,17 @@ describe('Service: apiMock', function () {
     $location = _$location_;
 		$http = _$http_;
 		$httpBackend = _$httpBackend_;
-  }));
+		defaultApiPath = '/api/pokemon';
+		defaultMockPath = '/mock_data/pokemon.get.json';
+		defaultRequest = {
+			url: defaultApiPath,
+			method: 'GET'
+		};
+	}));
+
+	afterEach(function () {
+		$httpBackend.verifyNoOutstandingExpectation();
+	});
 
 
 	describe('_isLocalMock', function () {
@@ -312,16 +325,187 @@ describe('Service: apiMock', function () {
 
 	describe('httpInterceptor', function () {
 
-		it('should return status if overriding request with status', function (done) {
-			var options = [ 200, 404, 500 ];
+		describe('flag', function () {
 
-			$location.search('apiMock', true);
+			it('should work without flag', function (done) {
+				$httpBackend.expect('GET', defaultApiPath).respond({});
+				$http(defaultRequest)
+					.success(function() {
+						done();
+					})
+					.error(function() {
+						expect(true).to.be.false; // Todo: How to fail the test if this happens?
+						done();
+					});
+				$httpBackend.flush();
+			});
 
-			angular.forEach(options, function(option) {
+			it('should accept only global flag set', function (done) {
+				$location.search('apiMock', true);
+
+				$httpBackend.expect('GET', defaultMockPath).respond({});
+				$http(defaultRequest)
+					.success(function() {
+						done();
+					})
+					.error(function() {
+						expect(true).to.be.false; // Todo: How to fail the test if this happens?
+						done();
+					});
+				$httpBackend.flush();
+			});
+
+			it('should accept only local flag set', function (done) {
+				defaultRequest.apiMock = true;
+
+				$httpBackend.expect('GET', defaultMockPath).respond({});
+				$http(defaultRequest)
+					.success(function() {
+						done();
+					})
+					.error(function() {
+						expect(true).to.be.false; // Todo: How to fail the test if this happens?
+						done();
+					});
+				$httpBackend.flush();
+			});
+
+			it('should accept local flag overriding global flag', function (done) {
+				$location.search('apiMock', false);
+				defaultRequest.apiMock = true;
+
+				$httpBackend.expect('GET', defaultMockPath).respond({});
+				$http(defaultRequest)
+					.success(function() {
+						done();
+					})
+					.error(function() {
+						expect(true).to.be.false; // Todo: How to fail the test if this happens?
+						done();
+					});
+				$httpBackend.flush();
+			});
+
+			it('should work as usual if no flag is set', function (done) {
+				// Don't include apimock flag.
+				var mockRequest = {
+					url: '/api/people/pokemon',
+					method: 'GET'
+				};
+
+				// Do a call, and expect it to fail.
+				$httpBackend.when('GET', '/api/people/pokemon').respond(404);
+
+				$http(mockRequest)
+					.success(function() {
+						expect(true).to.be.false; // Todo: How to fail the test if this happens?
+						done();
+					})
+					.error(function() {
+						expect(apiMock._countFallbacks()).to.equal(0);
+						done();
+					});
+
+				$httpBackend.flush();
+			});
+		});
+
+
+		describe('command auto', function () {
+
+			it('should automatically mock when request fails', function (done) {
+				// Set global flag: auto
+				$location.search('apiMock', 'auto');
+
+				// Don't include override
+				var mockRequest = {
+					url: '/api/people/pokemon',
+					method: 'GET'
+				};
+
+				// Do a call, and expect it to recover from fail.
+				$httpBackend.when('GET', '/api/people/pokemon').respond(404);
+				$httpBackend.when('GET', '/mock_data/people/pokemon.get.json').respond(200);
+
+				$http(mockRequest)
+					.success(function() {
+						expect(apiMock._countFallbacks()).to.equal(0);
+						done();
+					})
+					.error(function() {
+						expect(true).to.be.false; // Todo: How to fail the test if this happens?
+						done();
+					});
+
+				$httpBackend.flush();
+			});
+
+			it('cant automatically mock request on failure if the URL is an invalid API url', function (done) {
+				// Set global flag: auto
+				$location.search('apiMock', 'auto');
+
+				// Don't include override, but use an URL that doesn't pass the isApiPath test.
+				var mockUrl = '/something/people/pokemon';
+				var mockVerb = 'GET';
+				var mockRequest = {
+					url: mockUrl,
+					method: mockVerb
+				};
+
+				// Do a call, and expect it to fail.
+				$httpBackend.when(mockVerb, mockUrl).respond(404);
+				$http(mockRequest)
+					.success(function(data) {
+						console.log('status', data);
+						expect(true).to.be.false; // Todo: How to fail the test if this happens?
+						done();
+					})
+					.error(function(data, status) {
+						expect(apiMock._countFallbacks()).to.equal(0);
+						expect(status).to.equal(404);
+						done();
+					});
+
+				$httpBackend.flush();
+			});
+		});
+
+
+		describe('command HTTP status', function () {
+
+			it('should return status', function (done) {
+				var options = [ 200, 404, 500 ];
+
+				$location.search('apiMock', true);
+
+				angular.forEach(options, function(option) {
+					var mockRequest = {
+						url: '/api/pokemon?name=Pikachu',
+						method: 'GET',
+						apiMock: option
+					};
+
+					$http(mockRequest)
+						.success(function() {
+							expect(true).to.be.false; // Todo: How to fail the test if this happens?
+							done();
+						})
+						.error(function(data, status) {
+							expect(apiMock._countFallbacks()).to.equal(0);
+							expect(status).to.equal(option);
+							done();
+						});
+
+					$httpBackend.flush();
+				});
+
+			});
+
+			it('should have basic header data in $http request status override', function (done) {
 				var mockRequest = {
 					url: '/api/pokemon?name=Pikachu',
 					method: 'GET',
-					apiMock: option
+					apiMock: 404
 				};
 
 				$http(mockRequest)
@@ -329,144 +513,54 @@ describe('Service: apiMock', function () {
 						expect(true).to.be.false; // Todo: How to fail the test if this happens?
 						done();
 					})
-					.error(function(data, status) {
+					.error(function(data, status, headers) {
 						expect(apiMock._countFallbacks()).to.equal(0);
-						expect(status).to.equal(option);
+						expect(headers).to.exist;
+						expect(headers['Content-Type']).to.equal('text/html; charset=utf-8');
+						expect(headers.Server).to.equal('Angular ApiMock');
 						done();
 					});
 
 				$httpBackend.flush();
 			});
-
 		});
 
-		it('should have basic header data in $http request status override', function (done) {
-			var mockRequest = {
-				url: '/api/pokemon?name=Pikachu',
-				method: 'GET',
-				apiMock: 404
-			};
 
-			$http(mockRequest)
-				.success(function() {
-					expect(true).to.be.false; // Todo: How to fail the test if this happens?
-					done();
-				})
-				.error(function(data, status, headers) {
-					expect(apiMock._countFallbacks()).to.equal(0);
-					expect(headers).to.exist;
-					expect(headers['Content-Type']).to.equal('text/html; charset=utf-8');
-					expect(headers.Server).to.equal('Angular ApiMock');
-					done();
-				});
+		describe('command mock', function () {
 
-			$httpBackend.flush();
+			it('should mock calls with valid API url', function (done) {
+				$location.search('apiMock', true);
+
+				$httpBackend.expect('GET', defaultMockPath).respond({});
+				$http(defaultRequest)
+					.success(function() {
+						done();
+					})
+					.error(function() {
+						expect(true).to.be.false; // Todo: How to fail the test if this happens?
+						done();
+					});
+				$httpBackend.flush();
+			});
+
+			it('should not mock calls with invalid API url', function (done) {
+				$location.search('apiMock', true);
+
+				var invalidApiPath = '/something/pikachu';
+				defaultRequest.url = invalidApiPath;
+
+				$httpBackend.expect('GET', invalidApiPath).respond(404);
+				$http(defaultRequest)
+					.success(function() {
+						expect(true).to.be.false; // Todo: How to fail the test if this happens?
+						done();
+					})
+					.error(function(data, status) {
+						expect(status).to.equal(404);
+						done();
+					});
+				$httpBackend.flush();
+			});
 		});
-
-		it('should automatically mock when request fails, with global flag auto', function (done) {
-			// Set global flag: auto
-			$location.search('apiMock', 'auto');
-
-			// Don't include override
-			var mockRequest = {
-				url: '/api/people/pokemon',
-				method: 'GET'
-			};
-
-			// Do a call, and expect it to recover from fail.
-			$httpBackend.when('GET', '/api/people/pokemon').respond(404);
-			$httpBackend.when('GET', '/mock_data/people/pokemon.get.json').respond(200);
-
-			$http(mockRequest)
-				.success(function() {
-					expect(apiMock._countFallbacks()).to.equal(0);
-					done();
-				})
-				.error(function() {
-					expect(true).to.be.false; // Todo: How to fail the test if this happens?
-					done();
-				});
-
-			$httpBackend.flush();
-		});
-
-		it('should automatically mock when request fails, with local flag auto', function (done) {
-			// Include local flag: auto
-			var mockRequest = {
-				url: '/api/people/pokemon',
-				method: 'GET',
-				apiMock: 'auto'
-			};
-
-			// Do a call, and expect it to recover from fail.
-			$httpBackend.when('GET', '/api/people/pokemon').respond(404);
-			$httpBackend.when('GET', '/mock_data/people/pokemon.get.json').respond(200);
-
-			$http(mockRequest)
-				.success(function() {
-					expect(apiMock._countFallbacks()).to.equal(0);
-					done();
-				})
-				.error(function() {
-					expect(true).to.be.false; // Todo: How to fail the test if this happens?
-					done();
-				});
-
-			$httpBackend.flush();
-		});
-
-		it('cant automatically mock request failure if the URL is an invalid API url', function (done) {
-			// Set global flag: auto
-			$location.search('apiMock', 'auto');
-
-			// Don't include override, but use an URL that doesn't pass the isApiPath test.
-			var mockRequest = {
-				url: '/something/people/pokemon',
-				method: 'GET'
-			};
-
-			// Verify the API path is invalid.
-			expect(apiMock._isApiPath(mockRequest)).to.be.false;
-
-			// Do a call, and expect it to fail.
-			$httpBackend.when('GET', '/something/people/pokemon').respond(404);
-			$http(mockRequest)
-				.success(function() {
-					expect(true).to.be.false; // Todo: How to fail the test if this happens?
-					done();
-				})
-				.error(function(data, status) {
-					expect(apiMock._countFallbacks()).to.equal(0);
-					expect(status).to.equal(404);
-					done();
-				});
-
-			$httpBackend.flush();
-		});
-
-		it('should work as usual if no flag is set', function (done) {
-			// Don't include apimock flag.
-			var mockRequest = {
-				url: '/api/people/pokemon',
-				method: 'GET'
-			};
-
-			// Do a call, and expect it to fail.
-			$httpBackend.when('GET', '/api/people/pokemon').respond(404);
-
-			$http(mockRequest)
-				.success(function() {
-					expect(true).to.be.false; // Todo: How to fail the test if this happens?
-					done();
-				})
-				.error(function() {
-					expect(apiMock._countFallbacks()).to.equal(0);
-					done();
-				});
-
-			$httpBackend.flush();
-		});
-
 	});
-
 });
