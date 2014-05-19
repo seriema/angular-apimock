@@ -1,212 +1,253 @@
 /* Create the main module, `apiMock`. It's the one that needs to be included in
-   your projects. E.g. `angular.module('myApp', ['apiMock'])`. You don't need
-   to do anything else, but you can configure the paths for api-calls and mock
-   data by calling `.config(apiMockProvider)`.
-*/
+ * your projects. E.g. `angular.module('myApp', ['apiMock'])`. You don't need
+ * to do anything else, but you can configure the paths for api-calls and mock
+ * data by calling `app.config(function (apiMockProvider) { ... });`.
+ */
 angular.module('apiMock', [])
 
-.config(function ($httpProvider) {
-/* This is where the magic happens. Configure `$http` to use our
-   `httpInterceptor` on all calls. It's what allows us to do automatic routing.
-*/
-  $httpProvider.interceptors.push('httpInterceptor');
-})
+	.config(function ($httpProvider) {
+		/* This is where the magic happens. Configure `$http` to use our
+		 `httpInterceptor` on all calls. It's what allows us to do automatic routing.
+		 */
+		$httpProvider.interceptors.push('httpInterceptor');
+	})
 
-.provider('apiMock', function () {
-/* This is the Provider for apiMock. It's used by `httpInterceptor` to determine
-   when and how to do the mocking (routing).
+	.provider('apiMock', function () {
+		/* This is the Provider for apiMock. It's used by `httpInterceptor` to support
+		 * mocking.
+		 *
+		 * Config options:
+		 * `mockDataPath` string: the path to be rerouted to. Default: `/mock_data`.
+		 * `apiPath` string: the path to be rerouted from. Default: `/api`.
+		 *
+		 * Public interface:
+		 * `onRequest` method: takes a `request` object and decides if mocking should
+		 *   be done on this request. It checks global and local apiMock flags to see
+		 *   if it should mock. It also checks the request URL if it starts with `apiPath`.
+		 *   If the request is to have a `recover` attempt it's put in the fallbacks list.
+		 *   A GET request to `/api/user/5?option=full` turns into `/mock_data/user/5.get.json`.
+		 * `onResponse` method: takes a `request` object and simply removes it from list
+		 *   of fallbacks for `recover`.
+		 * `recover` method: if request has been marked for recover `onRequest` then it
+		 *   will reroute to mock data. This is only to be called on response error.
+		 *
+		 * Private members:
+		 * `_countFallbacks` method: returns the current number of fallbacks in queue.
+		 *   Only used for unit testing.
+		 */
 
-   Config options:
-   `mockDataPath` string: the path to be rerouted to. Default: `/mock_data`.
-   `apiPath` string: the path to be rerouted from. Default: `/api`.
+		// Helper objects
+		//
 
-   Public interface:
-   `shouldMock' method: takes a `request` object and decides if mocking should
-                        be done on this request. It checks global and local
-                        apiMock flags to see if it should mock. It also checks
-                        the request URL if it starts with `apiPath`.
-   `doMock` method: takes a `request` object and modifies it. Specifically it
-                    changes the request URL to the `mockDataPath`. It also
-                    appends the HTTP verb and .json to the path. Note: query
-                    parameters (e.g. ?search=banana) are stripped. A GET
-                    request to `/api/user/5?option=full` turns into
-                    `/mock_data/user/5.get.json`.
+		var mockDataPath = '/mock_data';
+		var apiPath = '/api';
+		var $location;
+		var $q;
+		var fallbacks = [];
 
-   Private members:
-   `_isApiPath` method: takes a `request` object and checks the requested
-                        URL for `apiPath` and returns true if it's the
-                        beginning of the path.
-   `_isGlobalMock` method: decides if mocking is enabled by checking
-                           `$location` for query parameter `apimock` and that
-                           it's set to `true` or a status code.
-                           E.g. `?apimock=true`.
-   `_isLocalMock` method: takes a `request` object and decides if mocking is
-                          overriden by checking the request object for a
-                          `apimock` property set to `true` or a status code.
-   `_countFallbacks` method: returns the current number of fallbacks in queue.
-*/
-  var mockDataPath = '/mock_data';
-  var apiPath = '/api';
-  var $location;
-	var $q;
-	var fallbacks = [];
+		// Helper methods
+		//
 
-	function determineMock(obj) {
-		switch (typeof obj) {
-			case 'undefined':
-				return undefined;
-
-			case 'number':
-				return !obj ? false : obj;
-
-//			case 'string':
-//				return obj === 'auto' ? true : !!obj;
-
-			default:
-				return !!obj;
+		function httpStatusResponse(status) {
+			var response = {
+				status: status,
+				headers: {
+					'Content-Type': 'text/html; charset=utf-8',
+					'Server': 'Angular ApiMock'
+				}
+			};
+			return $q.reject(response);
 		}
-	}
 
-	function httpStatusResponse(req) {
-		var response = {
-			status: req.apiMock,
-			headers: {
-				'Content-Type': 'text/html; charset=utf-8',
-				'Server': 'Angular ApiMock'
+		function getParameter(req) {
+			var mockValue = localMock(req);
+			if (mockValue === undefined) {
+				mockValue = globalMock();
+			}
+
+			return mockValue;
+		}
+
+		function reroute(req) {
+			if (!isApiPath(req.url)) {
+				return req;
+			}
+
+			// replace apiPath with mockDataPath.
+			var path = req.url.substring(config.apiPath.length);
+			req.url = config.mockDataPath + path;
+
+			// strip query strings (like ?search=banana).
+			var regex = /[a-zA-z0-9/.\-]*/;
+			req.url = regex.exec(req.url)[0];
+
+			// add file endings (method verb and .json).
+			if (req.url[req.url.length - 1] === '/') {
+				req.url = req.url.slice(0, -1);
+			}
+			req.url += '.' + req.method.toLowerCase() + '.json';
+
+			return req;
+		}
+
+		function detectParameter(keys) {
+			var regex = /apimock/i;
+			var result;
+
+			angular.forEach(keys, function (value, key) {
+				if (regex.test(key)) {
+					result = value;
+				}
+			});
+
+			return result;
+		}
+
+		function localMock(req) {
+			return detectParameter(req);
+		}
+
+		function globalMock() {
+			return detectParameter($location.search());
+		}
+
+		function getCommand(mockValue) {
+			switch (typeof mockValue) {
+				case 'number':
+					if (mockValue !== 0) {
+						return { type: 'respond', value: mockValue };
+					}
+					break;
+
+				case 'string':
+					if (mockValue.toLowerCase() === 'auto') {
+						return { type: 'recover' };
+					}
+					if (mockValue.toLowerCase() === 'true') {
+						return { type: 'reroute' };
+					}
+					break;
+
+				case 'boolean':
+					if (mockValue === true) {
+						return { type: 'reroute' };
+					}
+					break;
+			}
+
+			return { type: 'ignore' };
+		}
+
+		var prepareFallback = function (req) {
+			if (isApiPath(req.url)) {
+				fallbacks.push(req);
 			}
 		};
-		return $q.reject(response);
-	}
 
-	function mockDataResponse(req) {
-		// replace apiPath with mockDataPath.
-		var path = req.url.substring(config.apiPath.length);
-		req.url = config.mockDataPath + path;
+		var removeFallback = function (res) {
+			var found = false;
+			angular.forEach(fallbacks, function (fallback, index) {
+				if (fallback.method === res.method && fallback.url === res.url) {
+					found = true;
+					fallbacks.splice(index, 1);
+				}
+			});
 
-		// strip query strings (like ?search=banana).
-		var regex = /[a-zA-z0-9/.\-]*/;
-		req.url = regex.exec(req.url)[0];
+			return found;
+		};
 
-		// add file endings (method verb and .json).
-		if (req.url[req.url.length - 1] === '/') {
-			req.url = req.url.slice(0, -1);
+		var isApiPath = function (url) {
+			return url.indexOf(config.apiPath) === 0;
+		};
+
+		function ApiMock(_$location, _$q) {
+			$location = _$location;
+			$q = _$q;
 		}
-		req.url += '.' + req.method.toLowerCase() + '.json';
 
-		return req;
-	}
+		// Expose public interface for provider instance
+		//
 
-	function ApiMock(_$location, _$q) {
-    $location = _$location;
-		$q = _$q;
-  }
+		var p = ApiMock.prototype;
 
-  var p = ApiMock.prototype;
+		p._countFallbacks = function () {
+			return fallbacks.length;
+		};
 
-  p.shouldMock = function (req) {
-		var mock = this._isLocalMock(req);
-		if (mock === undefined) {
-			mock = !!this._isGlobalMock();
-		}
-    return !!(mock && this._isApiPath(req));
-  };
+		p.onRequest = function (req) {
+			var param = getParameter(req);
+			var command = getCommand(param);
 
-	p.shouldAutoMock = function (req) {
-		return ($location.search().apiMock === 'auto' || req.apiMock === 'auto') && this._isApiPath(req);
-	};
+			switch (command.type) {
+				case 'reroute':
+					return reroute(req);
+				case 'recover':
+					prepareFallback(req);
+					return req;
+				case 'respond':
+					return httpStatusResponse(command.value);
+				case 'ignore':
+					return req;
 
-	p.doMock = function (req) {
-		if (req && typeof req.apiMock === 'number') {
-			return httpStatusResponse(req);
-		}
-		return mockDataResponse(req);
-	};
-
-	p.prepareFallback = function (req) {
-		fallbacks.push(req);
-	};
-
-	p.removeFallback = function (res) {
-		var found = false;
-		angular.forEach(fallbacks, function (fallback, index) {
-			if (fallback.method === res.config.method && fallback.url === res.config.url) {
-				found = true;
-				fallbacks.splice(index, 1);
+				default:
+					return req;
 			}
-		});
+		};
 
-		return found;
-	};
+		p.onResponse = function (res) {
+			removeFallback(res);
+			return res;
+		};
 
-	p._countFallbacks = function () {
-		return fallbacks.length;
-	};
+		p.recover = function (rej) {
+			if (rej.config === undefined) {// Why is this called with regular response object sometimes?
+				return false;
+			}
 
-  p._isApiPath = function (req) {
-    return req && req.url.indexOf(config.apiPath) === 0;
-  };
+			if (removeFallback(rej.config)) {
+				return reroute(rej.config);
+			}
 
-  p._isLocalMock = function (req) {
-		return req && determineMock(req.apiMock);
-  };
+			return false;
+		};
 
-  p._isGlobalMock = function () {
-    var regex = /apimock/i;
-		var result;
+		var config = {
+			mockDataPath: mockDataPath,
+			apiPath: apiPath
+		};
 
-    angular.forEach($location.search(), function(value, key) {
-      if (regex.test(key)) {
-				result = determineMock(value);
-      }
-    });
 
-    return result;
-  };
+		// Expose Provider interface
+		//
 
-  var config = {
-    mockDataPath: mockDataPath,
-    apiPath: apiPath
-  };
+		this.config = function (options) {
+			angular.extend(config, options);
+		};
 
-  this.config = function (options) {
-    angular.extend(config, options);
-  };
+		this.$get = function ($location, $q) {
+			return new ApiMock($location, $q);
+		};
+	})
 
-  this.$get = function ($location, $q) {
-    return new ApiMock($location, $q);
-  };
-})
+	.service('httpInterceptor', function($q, apiMock) {
+		/* The main service. Is jacked in as a interceptor on `$http` so it gets called
+		 * on every http call. This allows us to do our magic. It uses the provider
+		 * `apiMock` to determine if a mock should be done, then do the actual mocking.
+		 */
+		this.request = function (req) {
+			req = apiMock.onRequest(req);
 
-.service('httpInterceptor', function($q, apiMock) {
-/* The main service. Is jacked in as a interceptor on `$http` so it gets called
-   on every http call. This allows us to do our magic. It uses the provider
-   `apiMock` to determine if a mock should be done, then do the actual mocking.
-   If the 'auto' flag is set then it prepares it to be recovered later, if needed.
-*/
-  this.request = function (req) {
-		if (req && apiMock.shouldAutoMock(req)) {
-			apiMock.prepareFallback(req);
-		}
-		else
-    if (req && apiMock.shouldMock(req)) {
-      req = apiMock.doMock(req);
-    }
+			// Return the request or promise.
+			return req || $q.when(req);
+		};
 
-		// Return the request or promise.
-    return req || $q.when(req);
-  };
+		this.response = function (res) {
+			res = apiMock.onResponse(res);
 
-	this.response = function (res) {
-		apiMock.removeFallback(res);
+			return res || $q.when(res);
+		};
 
-		return res || $q.when(res);
-	};
-
-	this.responseError = function (rejection) {
-		if (apiMock.removeFallback(rejection)) {
-			return apiMock.doMock(rejection.config);
-		}
-
-		return $q.reject(rejection);
-	};
-});
+		this.responseError = function (rej) {
+			return apiMock.recover(rej) || $q.reject(rej);
+		};
+	});
