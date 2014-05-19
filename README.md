@@ -158,11 +158,10 @@ angular.module('myModule', [])
 * Handle queries (?search=banana), not just ignore them
 * Handle body data in POST requests?
 * HTTP response overrides (200?) shouldn't always go to $http.error()
-* Automatic fallback to apiMock if the real API doesn't answer (or gives an error)
 * Test `apimock=true` in more scenarios
 * Remember mock-mode after page navigation
 * Plunkr demos
-* Visual queue that mock is happening. Maybe also console.log?
+* Visual queue that mock is happening. Maybe also $log?
 * Work with $resource (maybe it does already?)
 
 
