@@ -45,6 +45,41 @@ ApiMock appends the HTTP-verb before `.json` so a GET-request to `/api/customers
 
 ## Options
 
+### Usage
+
+ApiMock supports several operation modes. They're set globally and/or locally, where globally means on the browser URL and locally means in the $http request. There's only one parameter, `apiMock` (case-insensitive).
+
+#### apiMock
+
+Type: `boolean/string/number`
+
+Default: `undefined`
+
+Values:
+
+`true`: reroutes all requests
+
+`false`: turns off rerouting
+
+`auto`: will try the original request, if it fails then it tries to recover with a reroute
+
+`404`, `500`, etc: will reject all requests with the given HTTP status code
+
+##### Global flag
+
+In the browser URL, just append `?apiMock=command` where `command` is described above (`true`, `auto`, etc).
+
+##### Local flag
+
+In the JavaScript, where you do the `$http` request, the request object needs an attribute `apiMock` with the value set to the command described above (`true`, `auto`, etc).
+
+E.g.
+````
+$http({ method: 'GET', url: '...', apiMock: true });
+````
+
+### Config
+
 ApiMock follows a simple concept: reroute HTTP requests, from `apiPath` to `mockDataPath`. So you can change the paths but any deeper configuration is probably easier to write your own `httpInterceptor` (check the FAQ).
 
 Configure is done through `apiMockProvider.config()`. Add this to your AngularJS config file (e.g. `app.js`):
@@ -57,16 +92,18 @@ Configure is done through `apiMockProvider.config()`. Add this to your AngularJS
 });
 ````
 
-### mockDataPath
+#### mockDataPath
 
 Type: `string`
+
 Default: `'/mock_data'`
 
 Set the path to be rerouted to.
 
-### apiPath
+#### apiPath
 
 Type: `string`
+
 Default: `'/api'`
 
 Set the path to be rerouted from.
