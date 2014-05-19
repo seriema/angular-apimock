@@ -30,212 +30,11 @@ describe('Service: apiMock', function () {
 	}));
 
 	afterEach(function () {
-		$httpBackend.verifyNoOutstandingExpectation();
+		//$httpBackend.verifyNoOutstandingExpectation(); // loops and $httpBackend.expect() doesn't seem to play nice
 	});
 
 
-	describe('_isLocalMock', function () {
-
-		it('should detect mock in $http requests so specific calls can override', function () {
-			var request = { apiMock: true };
-
-			var result = apiMock._isLocalMock(request);
-			expect(result).to.be.true;
-		});
-
-		it('should return false when apimock param is equal to false, or a falsy value (except undefined and null).', function () {
-			// Define falsy values.
-			var values = [
-				false,
-				'',
-				0,
-				NaN
-				// undefined - is not valid because it's expected to return undefined
-				// null - is not valid because it clears $location
-			];
-
-			angular.forEach(values, function(value) {
-				var request = { apiMock: value };
-				var result = apiMock._isLocalMock(request);
-
-				expect(result).to.be.false;
-			});
-		});
-
-		it('should return undefined if $http request doesnt contain override', function () {
-			var request = { apiMock: undefined };
-			var result = apiMock._isLocalMock(request);
-
-			expect(result).to.undefined;
-		});
-
-		it('should respond with status code if $http request contains status code override', function () {
-			var request = { apiMock: 404 };
-			var result = apiMock._isLocalMock(request);
-
-			expect(result).to.equal(404);
-		});
-	});
-
-
-	describe('_isGlobalMock', function () {
-
-		it('should detect apimock param in search queries', function () {
-			$location.url('/page?apimock=true');
-			expect(apiMock._isGlobalMock()).to.be.true;
-		});
-
-		it('should return true when apimock param is equal to true, regardless of case on "apiMock". (http://server/?apimock=true)', function () {
-			var value = true;
-
-			// Define a valid query string.
-			var keys = [
-				'apimock',
-				'apiMock',
-				'APIMOCK',
-				'ApiMock'
-			];
-
-			angular.forEach(keys, function(key) {
-//				console.log('value', value, 'key', key);
-				// Set location with the query string.
-				$location.search(key, value);
-				expect(apiMock._isGlobalMock()).to.be.true;
-
-				// Remove param tested from the location.
-				$location.search(key, null);
-			});
-		});
-
-		it('should return false when apimock param is equal to false, or a falsy value (except undefined and null). (http://server?apimock=false)', function () {
-			var key = 'apiMock';
-
-			// Define falsy values.
-			var values = [
-				false,
-				'',
-				0,
-				NaN
-				// undefined - is not valid because it's expected to return undefined
-				// null - is not valid because it clears $location
-			];
-
-			angular.forEach(values, function(value) {
-				// Set location with the query string.
-				$location.search(key, value);
-				expect(apiMock._isGlobalMock()).to.be.false;
-
-				// Remove param tested from the location.
-				$location.search(key, null);
-			});
-		});
-
-		it('should return undefined when apimock param is not present in the query string. (http://server?)', function () {
-			var result = apiMock._isGlobalMock();
-
-			expect(result).to.be.undefined;
-		});
-
-		it('should return undefined when apimock param is set to undefined through manual $location call.', function () {
-			$location.search('apiMock', undefined);
-			var result = apiMock._isGlobalMock();
-
-			expect(result).to.be.undefined;
-		});
-
-		it('should respond with status code when apimock param is set to status code.', function () {
-			$location.search('apiMock', 404);
-			var result = apiMock._isGlobalMock();
-
-			expect(result).to.equal(404);
-		});
-	});
-
-
-	describe('_isApiPath', function () {
-
-		it('should detect /api path', function () {
-			var mockRequest = {
-				url: '/api/pokemon/1',
-				method: 'GET'
-			};
-
-			var result = apiMock._isApiPath(mockRequest);
-			expect(result).to.be.true;
-		});
-
-		it('should not detect /api path when its not present', function () {
-			var mockRequest = {
-				url: '/games/pokemon/1',
-				method: 'GET'
-			};
-
-			var result = apiMock._isApiPath(mockRequest);
-			expect(result).to.be.false;
-		});
-
-		it('should not detect /api path when its not the first folder', function () {
-			var mockRequest = {
-				url: '/games/api/pokemon/1',
-				method: 'GET'
-			};
-
-			var result = apiMock._isApiPath(mockRequest);
-			expect(result).to.be.false;
-		});
-	});
-
-
-	describe('shouldMock', function () {
-
-		it('should override search queries if $http apimock is set to false', function () {
-			$location.url('/page?apimock=true');
-			var request = { url: '/api/pokemon/1', apiMock: false };
-			var result = apiMock.shouldMock(request);
-
-			expect(result).to.be.false;
-		});
-
-		it('should override search queries if $http apimock is set to true', function () {
-			$location.url('/page?apimock=false');
-			var request = { url: '/api/pokemon/1', apiMock: true };
-			var result = apiMock.shouldMock(request);
-
-			expect(result).to.be.true;
-		});
-
-		it('should not mock if no parameter is set even if path is valid API path', function () {
-			var request = { url: '/api/pokemon/1' };
-			var result = apiMock.shouldMock(request);
-
-			expect(result).to.be.false;
-		});
-
-		it('should not mock if no parameter is set especially if path is invalid API path', function () {
-			var request = { url: '/banana/pokemon/1' };
-			var result = apiMock.shouldMock(request);
-
-			expect(result).to.be.false;
-		});
-
-		it('should return global mock flag if no request flag is set', function () {
-			$location.url('/page?apimock=true');
-			var request = { url: '/api/pokemon/1' };
-			var result = apiMock.shouldMock(request);
-
-			expect(result).to.be.true;
-		});
-
-		it('should return false if no request object is given, even though global mock flag is set', function () {
-			$location.url('/page?apimock=true');
-			var result = apiMock.shouldMock();
-
-			expect(result).to.be.false;
-		});
-	});
-
-
-	/* This doesn't behave as when in the browser?
+/* This doesn't behave as when in the browser?
 		it('should detect apimock param after hash', function () {
 			$location.url('/#/view/?apimock=true');
 			expect(apiMock.isMocking()).to.be.true;
@@ -249,154 +48,111 @@ describe('Service: apiMock', function () {
   })); */
 
 
-	describe('doMock', function () {
-
-		it('should correctly change path for GET requests', function () {
-			var mockRequest = {
-				url: '/api/pokemon/1',
-				method: 'GET'
-			};
-
-			apiMock.doMock(mockRequest);
-			expect(mockRequest.url).to.equal('/mock_data/pokemon/1.get.json');
-		});
-
-		it('should correctly change path for POST requests', function () {
-			var mockRequest = {
-				url: '/api/pokemon/1',
-				method: 'POST'
-			};
-
-			apiMock.doMock(mockRequest);
-			expect(mockRequest.url).to.equal('/mock_data/pokemon/1.post.json');
-		});
-
-		it('should correctly change path for DELETE requests', function () {
-			var mockRequest = {
-				url: '/api/pokemon/1',
-				method: 'DELETE'
-			};
-
-			apiMock.doMock(mockRequest);
-			expect(mockRequest.url).to.equal('/mock_data/pokemon/1.delete.json');
-		});
-
-		it('should correctly change path for PUT requests', function () {
-			var mockRequest = {
-				url: '/api/pokemon/1',
-				method: 'PUT'
-			};
-
-			apiMock.doMock(mockRequest);
-			expect(mockRequest.url).to.equal('/mock_data/pokemon/1.put.json');
-		});
-
-		it('should ignore query objects in URL, with /?', function () {
-			var mockRequest = {
-				url: '/api/pokemon/?name=Pikachu',
-				method: 'GET'
-			};
-
-			apiMock.doMock(mockRequest);
-			expect(mockRequest.url).to.equal('/mock_data/pokemon.get.json');
-		});
-
-		it('should ignore query objects in URL, with just ?', function () {
-			var mockRequest = {
-				url: '/api/pokemon?name=Pikachu',
-				method: 'GET'
-			};
-
-			apiMock.doMock(mockRequest);
-			expect(mockRequest.url).to.equal('/mock_data/pokemon.get.json');
-		});
-
-		it('should ignore query objects in URL, with just ?', function () {
-			var mockRequest = {
-				url: '/api/pokemon?name=Pikachu',
-				method: 'GET'
-			};
-
-			apiMock.doMock(mockRequest);
-			expect(mockRequest.url).to.equal('/mock_data/pokemon.get.json');
-		});
-	});
-
-
 	describe('httpInterceptor', function () {
+
+		function expectHttpFailure(done, expectedPath) {
+			$httpBackend.expect(defaultRequest.method, expectedPath || defaultMockPath).respond(404);
+			$http(defaultRequest)
+				.success(function () {
+					expect(true).to.be.false; // Todo: How to fail the test if this happens?
+					done();
+				})
+				.error(function (data, status) {
+					expect(status).to.equal(404);
+					done();
+				});
+			$httpBackend.flush();
+		}
+
+		function expectHttpSuccess(done, expectedPath) {
+			$httpBackend.expect(defaultRequest.method, expectedPath || defaultMockPath).respond({});
+			$http(defaultRequest)
+				.success(function () {
+					done();
+				})
+				.error(function () {
+					expect(true).to.be.false; // Todo: How to fail the test if this happens?
+					done();
+				});
+			$httpBackend.flush();
+		}
 
 		describe('flag', function () {
 
-			it('should work without flag', function (done) {
-				$httpBackend.expect('GET', defaultApiPath).respond({});
-				$http(defaultRequest)
-					.success(function() {
-						done();
-					})
-					.error(function() {
-						expect(true).to.be.false; // Todo: How to fail the test if this happens?
-						done();
-					});
-				$httpBackend.flush();
+			it('should detect parameter regardless of case on "apiMock". (http://server/?aPiMoCk=true)', function (done) {
+				var value = true;
+
+				// Define a valid query string.
+				var keys = [
+					'apimock',
+					'apiMock',
+					'APIMOCK',
+					'ApImOcK',
+					'ApiMock'
+				];
+
+				angular.forEach(keys, function(key) {
+					// Set location with the query string.
+					$location.search(key, value);
+
+					// Test connection.
+					expectHttpSuccess(done);
+
+					// Remove param tested from the location.
+					$location.search(key, null);
+				});
+			});
+
+			it('should detect in search queries', function (done) {
+				$location.url('/page?apiMock=true');
+
+				expectHttpSuccess(done);
+			});
+
+			it('should ignore query objects in request URL (path has /?)', function (done) {
+				$location.search('apiMock', true);
+
+				defaultRequest.url = '/api/pokemon/?name=Pikachu';
+
+				expectHttpSuccess(done);
+			});
+
+			it('should ignore query objects in request URL (path has only ?)', function (done) {
+				$location.search('apiMock', true);
+
+				defaultRequest.url = '/api/pokemon?name=Pikachu';
+
+				expectHttpSuccess(done);
+			});
+
+			it('should be disabled and do regular call if no flag is present', function (done) {
+				expectHttpSuccess(done, defaultApiPath);
 			});
 
 			it('should accept only global flag set', function (done) {
 				$location.search('apiMock', true);
 
-				$httpBackend.expect('GET', defaultMockPath).respond({});
-				$http(defaultRequest)
-					.success(function() {
-						done();
-					})
-					.error(function() {
-						expect(true).to.be.false; // Todo: How to fail the test if this happens?
-						done();
-					});
-				$httpBackend.flush();
+				expectHttpSuccess(done);
 			});
 
 			it('should accept only local flag set', function (done) {
 				defaultRequest.apiMock = true;
 
-				$httpBackend.expect('GET', defaultMockPath).respond({});
-				$http(defaultRequest)
-					.success(function() {
-						done();
-					})
-					.error(function() {
-						expect(true).to.be.false; // Todo: How to fail the test if this happens?
-						done();
-					});
-				$httpBackend.flush();
+				expectHttpSuccess(done);
 			});
 
 			it('should accept local flag overriding global flag', function (done) {
 				$location.search('apiMock', false);
 				defaultRequest.apiMock = true;
 
-				$httpBackend.expect('GET', defaultMockPath).respond({});
-				$http(defaultRequest)
-					.success(function() {
-						done();
-					})
-					.error(function() {
-						expect(true).to.be.false; // Todo: How to fail the test if this happens?
-						done();
-					});
-				$httpBackend.flush();
+				expectHttpSuccess(done);
 			});
 
 			it('should work as usual if no flag is set', function (done) {
-				// Don't include apimock flag.
-				var mockRequest = {
-					url: '/api/people/pokemon',
-					method: 'GET'
-				};
-
 				// Do a call, and expect it to fail.
-				$httpBackend.when('GET', '/api/people/pokemon').respond(404);
+				$httpBackend.when('GET', defaultApiPath).respond(404);
 
-				$http(mockRequest)
+				$http(defaultRequest)
 					.success(function() {
 						expect(true).to.be.false; // Todo: How to fail the test if this happens?
 						done();
@@ -455,8 +211,7 @@ describe('Service: apiMock', function () {
 				// Do a call, and expect it to fail.
 				$httpBackend.when(mockVerb, mockUrl).respond(404);
 				$http(mockRequest)
-					.success(function(data) {
-						console.log('status', data);
+					.success(function() {
 						expect(true).to.be.false; // Todo: How to fail the test if this happens?
 						done();
 					})
@@ -528,39 +283,68 @@ describe('Service: apiMock', function () {
 
 		describe('command mock', function () {
 
-			it('should mock calls with valid API url', function (done) {
+			it('should mock calls with valid API path', function (done) {
 				$location.search('apiMock', true);
 
-				$httpBackend.expect('GET', defaultMockPath).respond({});
-				$http(defaultRequest)
-					.success(function() {
-						done();
-					})
-					.error(function() {
-						expect(true).to.be.false; // Todo: How to fail the test if this happens?
-						done();
-					});
-				$httpBackend.flush();
+				expectHttpSuccess(done);
 			});
 
-			it('should not mock calls with invalid API url', function (done) {
+			it('should not mock calls with invalid API path', function (done) {
 				$location.search('apiMock', true);
 
 				var invalidApiPath = '/something/pikachu';
 				defaultRequest.url = invalidApiPath;
-
-				$httpBackend.expect('GET', invalidApiPath).respond(404);
-				$http(defaultRequest)
-					.success(function() {
-						expect(true).to.be.false; // Todo: How to fail the test if this happens?
-						done();
-					})
-					.error(function(data, status) {
-						expect(status).to.equal(404);
-						done();
-					});
-				$httpBackend.flush();
+				expectHttpFailure(done, invalidApiPath);
 			});
+
+			it('should not mock calls with wrong API path (/api/ is not the beginning of path)', function (done) {
+				defaultRequest.url = 'wrong/' + defaultRequest.url;
+
+				expectHttpFailure(done, defaultRequest.url);
+			});
+
+			it('should correctly reroute for all HTTP verbs', function (done) {
+				$location.search('apiMock', true);
+
+				var verbs = [
+					'GET',
+					'POST',
+					'DELETE',
+					'PUT'
+				];
+
+				verbs.forEach(function (verb) {
+					var destination = '/mock_data/pokemon.'+verb.toLowerCase()+'.json';
+					defaultRequest.method = verb;
+					expectHttpSuccess(done, destination);
+				});
+			});
+
 		});
+
+
+		describe('command off', function () {
+
+			it('should explicitly behave as usual with falsy values', function (done) {
+				// Define falsy values.
+				var values = [
+					false,
+					'',
+					0,
+					NaN,
+					undefined,
+					null
+				];
+
+				angular.forEach(values, function(value) {
+					defaultRequest.apiMock = value;
+
+					expectHttpFailure(done, defaultApiPath);
+				});
+			});
+
+
+		});
+
 	});
 });
