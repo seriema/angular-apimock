@@ -172,6 +172,22 @@ module.exports = function (grunt) {
       }
     },
 
+		nugetpack: {
+			dist: {
+				src: 'package.nuspec',
+				dest: 'nuget/',
+				options: {
+					version: '<%= yeoman.version %>'
+				}
+			}
+		},
+
+		nugetpush: {
+			dist: {
+				src: 'nuget/Angular-ApiMock.<%= yeoman.version =>.nupkg'
+			}
+		},
+
     // Test settings
     karma: {
       unit: {
@@ -200,7 +216,9 @@ module.exports = function (grunt) {
     'ngmin',
     'uglify',
 		'changelog',
-		'bump-commit'
+		'nugetpack',
+		'bump-commit',
+		'nugetpush'
   ]);
 
   grunt.registerTask('default', [
