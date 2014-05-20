@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+    <metadata>
+	<id>Angular-ApiMock</id>
+	<version>0.1.5</version>
+	<title>Angular ApiMock</title>
+	<authors>John-Philip Johansson,Joel Lundberg</authors>
+	<owners>John-Philip Johansson,Joel Lundberg</owners>
+	<licenseUrl>https://github.com/seriema/angular-apimock/blob/master/LICENSE</licenseUrl>
+	<projectUrl>https://github.com/seriema/angular-apimock</projectUrl>
+	<requireLicenseAcceptance>false</requireLicenseAcceptance>
+	<description>Automatically route your API calls to static JSON files, for hiccup free front–end development.</description>
+	<summary>Automatically route your API calls to static JSON files, for hiccup free front–end development.</summary>
+	<language>en-US</language>
+	<tags>javascript angular angularjs mock</tags>
+	<dependencies>
+	    <dependency id="AngularJS.Core" version="1.2.15" />
+	</dependencies>
+    </metadata>
+    <files>
+	<file src="angular-apimock.js" target="content\Scripts\angular-apimock.js" />
+	<file src="angular-apimock.min.js" target="content\Scripts\angular-apimock.min.js" />
+    </files>
+</package>
