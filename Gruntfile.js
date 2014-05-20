@@ -31,7 +31,7 @@ module.exports = function (grunt) {
 				files: ['package.json', 'bower.json'],
 				updateConfigs: ['yeoman'],
 				commit: true,
-				commitMessage: 'Release v%VERSION%',
+				commitMessage: 'Release v%VERSION%. See CHANGELOG.md',
 				commitFiles: ['-a'], // '-a' for all files
 				createTag: true,
 				tagName: 'v%VERSION%',
