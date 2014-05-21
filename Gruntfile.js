@@ -22,7 +22,7 @@ module.exports = function (grunt) {
     yeoman: {
       // configurable paths
       version: require('./bower.json').version,
-      app: require('./bower.json').appPath || 'app',
+      app: require('./bower.json').appPath,
       dist: 'dist'
     },
 
