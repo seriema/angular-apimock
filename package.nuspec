@@ -18,7 +18,7 @@
 	</dependencies>
     </metadata>
     <files>
-	<file src="dist/angular-apimock.js" target="content\Scripts\angular-apimock.js" />
-	<file src="dist/angular-apimock.min.js" target="content\Scripts\angular-apimock.min.js" />
+	<file src="dist/angular-apimock.js" target="content/Scripts/angular-apimock.js" />
+	<file src="dist/angular-apimock.min.js" target="content/Scripts/angular-apimock.min.js" />
     </files>
 </package>
