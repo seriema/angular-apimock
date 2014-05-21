@@ -120,11 +120,11 @@ angular.module('apiMock', [])
 					break;
 
 				case 'string':
-					if (mockValue.toLowerCase() === 'auto') {
-						return { type: 'recover' };
-					}
-					if (mockValue.toLowerCase() === 'true') {
-						return { type: 'reroute' };
+					switch(mockValue.toLowerCase()) {
+						case 'auto':
+							return { type: 'recover' };
+						case 'true':
+							return { type: 'reroute' };
 					}
 					break;
 
