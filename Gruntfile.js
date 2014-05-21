@@ -184,7 +184,7 @@ module.exports = function (grunt) {
 
 		nugetpush: {
 			dist: {
-				src: 'nuget/Angular-ApiMock.nupkg'
+				src: 'nuget/Angular-ApiMock.<%= yeoman.version %>.nupkg'
 			}
 		},
 
