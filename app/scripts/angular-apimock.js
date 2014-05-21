@@ -39,56 +39,16 @@ angular.module('apiMock', [])
 		// Helper objects
 		//
 
-		var mockDataPath = '/mock_data';
-		var apiPath = '/api';
 		var $location;
 		var $q;
+		var config = {
+			mockDataPath: '/mock_data',
+			apiPath: '/api'
+		};
 		var fallbacks = [];
 
 		// Helper methods
 		//
-
-		function httpStatusResponse(status) {
-			var response = {
-				status: status,
-				headers: {
-					'Content-Type': 'text/html; charset=utf-8',
-					'Server': 'Angular ApiMock'
-				}
-			};
-			return $q.reject(response);
-		}
-
-		function getParameter(req) {
-			var mockValue = localMock(req);
-			if (mockValue === undefined) {
-				mockValue = globalMock();
-			}
-
-			return mockValue;
-		}
-
-		function reroute(req) {
-			if (!isApiPath(req.url)) {
-				return req;
-			}
-
-			// replace apiPath with mockDataPath.
-			var path = req.url.substring(config.apiPath.length);
-			req.url = config.mockDataPath + path;
-
-			// strip query strings (like ?search=banana).
-			var regex = /[a-zA-z0-9/.\-]*/;
-			req.url = regex.exec(req.url)[0];
-
-			// add file endings (method verb and .json).
-			if (req.url[req.url.length - 1] === '/') {
-				req.url = req.url.slice(0, -1);
-			}
-			req.url += '.' + req.method.toLowerCase() + '.json';
-
-			return req;
-		}
 
 		function detectParameter(keys) {
 			var regex = /apimock/i;
@@ -107,8 +67,13 @@ angular.module('apiMock', [])
 			return detectParameter(req);
 		}
 
-		function globalMock() {
-			return detectParameter($location.search());
+		function getParameter(req) {
+			var mockValue = localMock(req);
+			if (mockValue === undefined) {
+				mockValue = globalMock();
+			}
+
+			return mockValue;
 		}
 
 		function getCommand(mockValue) {
@@ -138,13 +103,33 @@ angular.module('apiMock', [])
 			return { type: 'ignore' };
 		}
 
-		var prepareFallback = function (req) {
+
+		function globalMock() {
+			return detectParameter($location.search());
+		}
+
+		function httpStatusResponse(status) {
+			var response = {
+				status: status,
+				headers: {
+					'Content-Type': 'text/html; charset=utf-8',
+					'Server': 'Angular ApiMock'
+				}
+			};
+			return $q.reject(response);
+		}
+
+		function isApiPath(url) {
+			return url.indexOf(config.apiPath) === 0;
+		}
+
+		function prepareFallback(req) {
 			if (isApiPath(req.url)) {
 				fallbacks.push(req);
 			}
-		};
+		}
 
-		var removeFallback = function (res) {
+		function removeFallback(res) {
 			var found = false;
 			angular.forEach(fallbacks, function (fallback, index) {
 				if (fallback.method === res.method && fallback.url === res.url) {
@@ -154,19 +139,37 @@ angular.module('apiMock', [])
 			});
 
 			return found;
-		};
+		}
 
-		var isApiPath = function (url) {
-			return url.indexOf(config.apiPath) === 0;
-		};
+		function reroute(req) {
+			if (!isApiPath(req.url)) {
+				return req;
+			}
+
+			// replace apiPath with mockDataPath.
+			var path = req.url.substring(config.apiPath.length);
+			req.url = config.mockDataPath + path;
+
+			// strip query strings (like ?search=banana).
+			var regex = /[a-zA-z0-9/.\-]*/;
+			req.url = regex.exec(req.url)[0];
+
+			// add file endings (method verb and .json).
+			if (req.url[req.url.length - 1] === '/') {
+				req.url = req.url.slice(0, -1);
+			}
+			req.url += '.' + req.method.toLowerCase() + '.json';
+
+			return req;
+		}
+
+		// Expose public interface for provider instance
+		//
 
 		function ApiMock(_$location, _$q) {
 			$location = _$location;
 			$q = _$q;
 		}
-
-		// Expose public interface for provider instance
-		//
 
 		var p = ApiMock.prototype;
 
@@ -210,12 +213,6 @@ angular.module('apiMock', [])
 
 			return false;
 		};
-
-		var config = {
-			mockDataPath: mockDataPath,
-			apiPath: apiPath
-		};
-
 
 		// Expose Provider interface
 		//
