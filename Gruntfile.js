@@ -184,7 +184,7 @@ module.exports = function (grunt) {
 
 		nugetpush: {
 			dist: {
-				src: 'nuget/Angular-ApiMock.<%= yeoman.version =>.nupkg'
+				src: 'nuget/Angular-ApiMock.nupkg'
 			}
 		},
 
@@ -208,10 +208,8 @@ module.exports = function (grunt) {
     'karma'
   ]);
 
-  grunt.registerTask('dist', [
-    'test',
+  grunt.registerTask('_publish', [
 		'clean',
-		'bump-only',
     'concat',
     'ngmin',
     'uglify',
@@ -221,7 +219,12 @@ module.exports = function (grunt) {
 		'nugetpush'
   ]);
 
-  grunt.registerTask('default', [
+	grunt.registerTask('publish', ['publish:patch']);
+	grunt.registerTask('publish:patch', ['test', 'bump-only:patch', '_publish']);
+	grunt.registerTask('publish:minor', ['test', 'bump-only:minor', '_publish']);
+	grunt.registerTask('publish:major', ['test', 'bump-only:major', '_publish']);
+
+	grunt.registerTask('default', [
     'newer:jshint',
     'test',
     'build'
