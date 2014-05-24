@@ -40,6 +40,7 @@ angular.module('apiMock', [])
 		//
 
 		var $location;
+		var $log;
 		var $q;
 		var config = {
 			mockDataPath: '/mock_data',
@@ -116,6 +117,7 @@ angular.module('apiMock', [])
 					'Server': 'Angular ApiMock'
 				}
 			};
+			$log.info('apiMock: mocking HTTP status to ' + status);
 			return $q.reject(response);
 		}
 
@@ -147,18 +149,22 @@ angular.module('apiMock', [])
 			}
 
 			// replace apiPath with mockDataPath.
-			var path = req.url.substring(config.apiPath.length);
-			req.url = config.mockDataPath + path;
+			var oldPath = req.url;
+			var newPath = req.url.substring(config.apiPath.length);
+			newPath = config.mockDataPath + newPath;
 
 			// strip query strings (like ?search=banana).
 			var regex = /[a-zA-z0-9/.\-]*/;
-			req.url = regex.exec(req.url)[0];
+			newPath = regex.exec(newPath)[0];
 
 			// add file endings (method verb and .json).
-			if (req.url[req.url.length - 1] === '/') {
-				req.url = req.url.slice(0, -1);
+			if (newPath[newPath.length - 1] === '/') {
+				newPath = newPath.slice(0, -1);
 			}
-			req.url += '.' + req.method.toLowerCase() + '.json';
+			newPath += '.' + req.method.toLowerCase() + '.json';
+
+			req.url = newPath;
+			$log.info('apiMock: rerouting ' + oldPath + ' to ' + newPath);
 
 			return req;
 		}
@@ -166,8 +172,9 @@ angular.module('apiMock', [])
 		// Expose public interface for provider instance
 		//
 
-		function ApiMock(_$location, _$q) {
+		function ApiMock(_$location, _$log, _$q) {
 			$location = _$location;
+			$log = _$log;
 			$q = _$q;
 		}
 
@@ -208,6 +215,7 @@ angular.module('apiMock', [])
 			}
 
 			if (removeFallback(rej.config)) {
+				$log.info('apiMock: recovering from failure at ' + rej.config.url);
 				return reroute(rej.config);
 			}
 
@@ -221,8 +229,8 @@ angular.module('apiMock', [])
 			angular.extend(config, options);
 		};
 
-		this.$get = function ($location, $q) {
-			return new ApiMock($location, $q);
+		this.$get = function ($location, $log, $q) {
+			return new ApiMock($location, $log, $q);
 		};
 	})
 

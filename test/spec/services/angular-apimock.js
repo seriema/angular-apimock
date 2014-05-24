@@ -11,16 +11,18 @@ describe('Service: apiMock', function () {
   var $location;
 	var $http;
 	var $httpBackend;
+	var $log;
 	var defaultApiPath;
 	var defaultMockPath;
 	var defaultRequest;
 
-  beforeEach(inject(function (_httpInterceptor_, _apiMock_, _$location_, _$http_, _$httpBackend_) {
+  beforeEach(inject(function (_httpInterceptor_, _apiMock_, _$location_, _$http_, _$httpBackend_, _$log_) {
 	  httpInterceptor = _httpInterceptor_;
     apiMock = _apiMock_;
     $location = _$location_;
 		$http = _$http_;
 		$httpBackend = _$httpBackend_;
+		$log = _$log_;
 		defaultApiPath = '/api/pokemon';
 		defaultMockPath = '/mock_data/pokemon.get.json';
 		defaultRequest = {
@@ -343,6 +345,43 @@ describe('Service: apiMock', function () {
 				});
 			});
 
+		});
+
+		describe('$log.info', function () {
+
+			it('should show when rerouting', function (done) {
+				$location.search('apiMock', true);
+
+				$httpBackend.expect(defaultRequest.method, defaultMockPath).respond({});
+				$http(defaultRequest).success(function () {
+					expect($log.info.logs[0][0]).to.equal('apiMock: rerouting ' + defaultApiPath + ' to ' + defaultMockPath);
+					done();
+				}).error(function() { console.log('banan'); expect(false).to.be.true; done(); });
+				$httpBackend.flush();
+			});
+
+			it('should show when recovering', function (done) {
+				$location.search('apiMock', 'auto');
+
+//				$httpBackend.expect(defaultRequest.method, defaultMockPath).respond({});
+				$httpBackend.expect(defaultRequest.method, defaultApiPath).respond(404);
+				$http(defaultRequest).success(function () {
+					expect($log.info.logs[0][0]).to.equal('apiMock: recovering from failure at ' + defaultApiPath);
+					done();
+				}).error(function() { console.log('banan'); expect(false).to.be.true; done(); });
+				$httpBackend.flush();
+			});
+
+			it('should show when responding (mocking HTTP status)', function (done) {
+				$location.search('apiMock', 404);
+
+				$httpBackend.expect(defaultRequest.method, defaultApiPath).respond(404);
+				$http(defaultRequest).error(function () {
+					expect($log.info.logs[0][0]).to.equal('apiMock: mocking HTTP status to 404');
+					done();
+				}).success(function() { console.log('banan'); expect(false).to.be.true; done(); });
+				$httpBackend.flush();
+			});
 
 		});
 
