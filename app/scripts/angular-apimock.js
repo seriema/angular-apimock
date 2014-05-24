@@ -80,7 +80,7 @@ angular.module('apiMock', [])
 		function getCommand(mockValue) {
 			switch (typeof mockValue) {
 				case 'number':
-					if (mockValue !== 0) {
+					if (mockValue !== 0 && !isNaN(mockValue)) {
 						return { type: 'respond', value: mockValue };
 					}
 					break;
