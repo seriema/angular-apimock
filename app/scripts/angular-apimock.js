@@ -234,7 +234,7 @@ angular.module('apiMock', [])
 		};
 	})
 
-	.service('httpInterceptor', function($q, apiMock) {
+	.service('httpInterceptor', function($injector, $q, apiMock) {
 		/* The main service. Is jacked in as a interceptor on `$http` so it gets called
 		 * on every http call. This allows us to do our magic. It uses the provider
 		 * `apiMock` to determine if a mock should be done, then do the actual mocking.
@@ -253,6 +253,12 @@ angular.module('apiMock', [])
 		};
 
 		this.responseError = function (rej) {
-			return apiMock.recover(rej) || $q.reject(rej);
+			var recover = apiMock.recover(rej);
+			if (recover) {
+				var $http = $injector.get('$http');
+				return $http(recover);
+			}
+
+			return $q.reject(rej);
 		};
 	});
