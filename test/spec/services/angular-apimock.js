@@ -166,17 +166,16 @@ describe('Service: apiMock', function () {
 				// Set global flag to auto
 				$location.search('apiMock', 'auto');
 			});
-/*
+
 			it('should automatically mock when request fails', function () {
 				// Do a call, and expect it to recover from fail.
-				defaultExpectPath = defaultApiPath;
-				$httpBackend.expect('GET', defaultApiPath).respond(404); // TODO
+				$httpBackend.expect('GET', defaultApiPath).respond(404);
 
 				expectHttpSuccess(function() {
 					expect(apiMock._countFallbacks()).to.equal(0);
 				});
 			});
-*/
+
 			it('cant automatically mock request on failure if the URL is an invalid API url', function () {
 				// Don't include override, but use an URL that doesn't pass the isApiPath test.
 				defaultExpectPath = '/something/people/pokemon';
@@ -321,17 +320,16 @@ describe('Service: apiMock', function () {
 					expect($log.info.logs[0][0]).to.equal('apiMock: rerouting ' + defaultApiPath + ' to ' + defaultMockPath);
 				});
 			});
-/*
+
 			it('should log when command is auto', function () {
 				$location.search('apiMock', 'auto');
 
-				$httpBackend.expect(defaultRequest.method, defaultMockPath).respond({}); // TODO
-				defaultExpectPath = defaultApiPath;
+				$httpBackend.expect(defaultRequest.method, defaultApiPath).respond(404);
 				expectHttpSuccess(function () {
 					expect($log.info.logs[0][0]).to.equal('apiMock: recovering from failure at ' + defaultApiPath);
 				});
 			});
-*/
+
 			it('should log when command is a HTTP status', function () {
 				$location.search('apiMock', 404);
 
