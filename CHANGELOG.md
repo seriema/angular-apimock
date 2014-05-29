@@ -1,3 +1,20 @@
+<a name="0.1.6"></a>
+### 0.1.6 (2014-05-29)
+
+
+#### Bug Fixes
+
+* **apimock:**
+  * fix command 'auto' ([acfc2371](http://github.com/seriema/angular-apimock/commit/acfc2371079be8f428a02e31ece05e1d90bb5c38))
+  * treat NaN as false for command ([a28544d4](http://github.com/seriema/angular-apimock/commit/a28544d43c5d11f65095b6950fba75bd07553578))
+* **nuget:** fix nuget push task ([e77e6e7f](http://github.com/seriema/angular-apimock/commit/e77e6e7f96a8da6510390b3e70ca49b0ab4d4a6a))
+
+
+#### Features
+
+* **apimock:** add logging through $log ([9d93551f](http://github.com/seriema/angular-apimock/commit/9d93551f3801483a2cd479c972a89a033e88fcab))
+
+
 <a name="0.1.5"></a>
 ### 0.1.5 (2014-05-19)
 
