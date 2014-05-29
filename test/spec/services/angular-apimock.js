@@ -217,6 +217,7 @@ describe('Service: apiMock', function () {
 			});
 
 			it('should have basic header data in $http request status override', function () {
+				// Cannot use $http.expect() because HTTP status doesn't do a request
 				$http(defaultRequest)
 					.success(fail)
 					.error(function(data, status, headers) {
