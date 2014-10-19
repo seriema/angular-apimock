@@ -214,11 +214,15 @@ module.exports = function (grunt) {
     'karma'
   ]);
 
-  grunt.registerTask('_publish', [
+	grunt.registerTask('build', [
 		'clean',
-    'concat',
-    'uglify',
+		'concat',
 		'ngAnnotate',
+		'uglify'
+	]);
+
+  grunt.registerTask('_publish', [
+		'build',
 		'changelog',
 		'nugetpack',
 		'bump-commit',
@@ -232,7 +236,6 @@ module.exports = function (grunt) {
 
 	grunt.registerTask('default', [
     'newer:jshint',
-    'test',
-    'build'
+    'test'
   ]);
 };
