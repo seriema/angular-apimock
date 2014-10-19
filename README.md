@@ -108,6 +108,14 @@ Default: `'/api'`
 
 Set the path to be rerouted from.
 
+#### disable
+
+Type: `boolean`
+
+Default: `false`
+
+Disable apiMock completely. Used for production.
+
 
 ## Samples
 

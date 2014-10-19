@@ -44,7 +44,8 @@ angular.module('apiMock', [])
 		var $q;
 		var config = {
 			mockDataPath: '/mock_data',
-			apiPath: '/api'
+			apiPath: '/api',
+			disable: false
 		};
 		var fallbacks = [];
 
@@ -185,6 +186,10 @@ angular.module('apiMock', [])
 		};
 
 		p.onRequest = function (req) {
+			if (config.disable) {
+				return req;
+			}
+
 			var param = getParameter(req);
 			var command = getCommand(param);
 
@@ -205,11 +210,19 @@ angular.module('apiMock', [])
 		};
 
 		p.onResponse = function (res) {
+			if (config.disable) {
+				return res;
+			}
+
 			removeFallback(res);
 			return res;
 		};
 
 		p.recover = function (rej) {
+			if (config.disable) {
+				return false;
+			}
+
 			if (rej.config === undefined) {// Why is this called with regular response object sometimes?
 				return false;
 			}

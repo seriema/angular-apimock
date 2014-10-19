@@ -6,6 +6,12 @@ describe('Service: apiMock', function () {
   // load the service's module
   beforeEach(module('apiMock'));
 
+	// Hack (?) to get the provider so we can call .config()
+	var apiMockProvider;
+  beforeEach(module(function(_apiMockProvider_){
+		apiMockProvider = _apiMockProvider_;
+	}));
+
   // instantiate services
   var httpInterceptor;
   var apiMock;
@@ -328,6 +334,44 @@ describe('Service: apiMock', function () {
 			});
 
 		});
+
+
+		describe('disable option', function () {
+
+			beforeEach(function() {
+				apiMockProvider.config({disable: true});
+			});
+
+			afterEach(function() {
+				apiMockProvider.config({disable: false});
+			});
+
+			it('should override command mock', function () {
+				var key = 'apimock';
+				$location.search(key, true);
+
+				// Test connection.
+				expectMockDisabled();
+				expectHttpFailure();
+
+				// Remove param tested from the location.
+				$location.search(key, null);
+			});
+
+			it('should override command auto', function () {
+				var key = 'apimock';
+				$location.search(key, 'auto');
+
+				// Test connection.
+				expectMockDisabled();
+				expectHttpFailure();
+
+				// Remove param tested from the location.
+				$location.search(key, null);
+			});
+
+		});
+
 
 		describe('$log.info', function () {
 
