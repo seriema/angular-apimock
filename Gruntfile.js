@@ -134,7 +134,7 @@ module.exports = function (grunt) {
 
     // Allow the use of non-minsafe AngularJS files. Automatically makes it
     // minsafe compatible so Uglify does not destroy the ng references
-    ngmin: {
+		ngAnnotate: {
       dist: {
         src: ['<%= yeoman.dist %>/angular-apimock.js'],
         dest: '<%= yeoman.dist %>/angular-apimock.js'
@@ -217,8 +217,8 @@ module.exports = function (grunt) {
   grunt.registerTask('_publish', [
 		'clean',
     'concat',
-    'ngmin',
     'uglify',
+		'ngAnnotate',
 		'changelog',
 		'nugetpack',
 		'bump-commit',
