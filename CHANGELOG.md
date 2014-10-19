@@ -1,3 +1,12 @@
+<a name="0.1.7"></a>
+### 0.1.7 (2014-10-19)
+
+
+#### Features
+
+* **apimock:** add disable config (#15) ([9e7b14a1](http://github.com/seriema/angular-apimock/commit/9e7b14a1d893a321835aa2d453a4aab5b60c01e5))
+
+
 <a name="0.1.6"></a>
 ### 0.1.6 (2014-05-29)
 

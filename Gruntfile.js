@@ -223,8 +223,8 @@ module.exports = function (grunt) {
 
   grunt.registerTask('_publish', [
 		'build',
-		'changelog',
 		'nugetpack',
+		'changelog',
 		'bump-commit',
 		'nugetpush'
   ]);
