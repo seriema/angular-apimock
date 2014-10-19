@@ -57,14 +57,22 @@ describe('Service: apiMock', function () {
   })); */
 
 
+	// TODO: Add test for $http config overrides.
 	describe('httpInterceptor', function () {
+
+		function expectMockEnabled() {
+		}
+
+		function expectMockDisabled() {
+			defaultExpectPath = defaultApiPath;
+		}
 
 		function expectHttpFailure(done, fail) {
 			$httpBackend.expect(defaultRequest.method, defaultExpectPath).respond(404);
 
 			$http(defaultRequest)
 				.success(function () {
-					expect(true).to.be.false; // Todo: How to fail the test if this happens?
+					assertFail(); // Todo: How to fail the test if this happens?
 					fail && fail();
 				})
 				.error(function (data, status) {
@@ -83,7 +91,7 @@ describe('Service: apiMock', function () {
 					done && done();
 				})
 				.error(function () {
-					expect(true).to.be.false; // Todo: How to fail the test if this happens?
+					assertFail();
 					fail && fail();
 				});
 
@@ -91,12 +99,12 @@ describe('Service: apiMock', function () {
 			$httpBackend.flush();
 		}
 
-		function fail() {
+		function assertFail() {
 			expect(true).to.be.false; // Todo: How to fail the test if this happens?
 		}
 
 
-		describe('flag', function () {
+		describe('flag detection', function () {
 
 			it('should detect parameter regardless of case on "apiMock". (http://server/?aPiMoCk=true)', function () {
 				var value = true;
@@ -115,6 +123,7 @@ describe('Service: apiMock', function () {
 					$location.search(key, value);
 
 					// Test connection.
+					expectMockEnabled();
 					expectHttpSuccess();
 
 					// Remove param tested from the location.
@@ -125,23 +134,26 @@ describe('Service: apiMock', function () {
 			it('should detect in search queries', function () {
 				$location.url('/page?apiMock=true');
 
+				expectMockEnabled();
 				expectHttpSuccess();
 			});
 
 			it('should be disabled and do regular call if no flag is present', function () {
-				defaultExpectPath = defaultApiPath;
+				expectMockDisabled();
 				expectHttpSuccess();
 			});
 
 			it('should accept only global flag set', function () {
 				$location.search('apiMock', true);
 
+				expectMockEnabled();
 				expectHttpSuccess();
 			});
 
 			it('should accept only local flag set', function () {
 				defaultRequest.apiMock = true;
 
+				expectMockEnabled();
 				expectHttpSuccess();
 			});
 
@@ -149,12 +161,12 @@ describe('Service: apiMock', function () {
 				$location.search('apiMock', false);
 				defaultRequest.apiMock = true;
 
+				expectMockEnabled();
 				expectHttpSuccess();
 			});
 
 			it('should work as usual if no flag is set', function () {
-				defaultExpectPath = defaultApiPath;
-
+				expectMockDisabled();
 				expectHttpFailure();
 			});
 		});
@@ -165,6 +177,11 @@ describe('Service: apiMock', function () {
 			beforeEach(function () {
 				// Set global flag to auto
 				$location.search('apiMock', 'auto');
+			});
+
+			afterEach(function () {
+				// Remove global flag
+				$location.search('apiMock', null);
 			});
 
 			it('should automatically mock when request fails', function () {
@@ -206,7 +223,7 @@ describe('Service: apiMock', function () {
 
 					// Cannot use $http.expect() because HTTP status doesn't do a request
 					$http(defaultRequest)
-						.success(fail)
+						.success(assertFail)
 						.error(function(data, status) {
 							expect(apiMock._countFallbacks()).to.equal(0);
 							expect(status).to.equal(option);
@@ -219,7 +236,7 @@ describe('Service: apiMock', function () {
 			it('should have basic header data in $http request status override', function () {
 				// Cannot use $http.expect() because HTTP status doesn't do a request
 				$http(defaultRequest)
-					.success(fail)
+					.success(assertFail)
 					.error(function(data, status, headers) {
 						expect(apiMock._countFallbacks()).to.equal(0);
 						expect(headers).to.exist;
@@ -303,7 +320,7 @@ describe('Service: apiMock', function () {
 
 				angular.forEach(values, function (value) {
 					defaultRequest.apiMock = value;
-					defaultExpectPath = defaultApiPath;
+					expectMockDisabled();
 
 					expectHttpFailure();
 				});
@@ -339,7 +356,7 @@ describe('Service: apiMock', function () {
 					.error(function () {
 						expect($log.info.logs[0][0]).to.equal('apiMock: mocking HTTP status to 404');
 					})
-					.success(fail);
+					.success(assertFail);
 
 				$rootScope.$digest();
 			});
