@@ -6,3 +6,9 @@ before_script:
   - 'bower install'
   - "export DISPLAY=:99.0"
   - "sh -e /etc/init.d/xvfb start"
+env:
+  global:
+    - secure: L+EPka9O38GaLwg3xqr6p9rwvwy4MnQH0Fba8Qlt1M5QzLRz3e9JdVvxCQrQlETR5Guc5CN1dLOQFhVyYoCFNcOs3VkeD/mnegq16LwFE9vcmxySRqleUja3eCQ4HQJP99pSiCHYQVGvoZUf82nYNz6bh7JusbGapyyUF4Nl1TU=
+    - secure: l7fKnvanXbaLGAhlwyFRgNsSy8H5O13nbAU1AujLy9sP5tHnjHjvNLklV+wHw929h2L3pLi0OCMthDQPyA+4LnTNix6UW2f7p1tOwAxOqEWUSitWHway1pNOR9CZbpGVfdcoML/RGNgt1iwtEC9TyhxhbFw1pGZj8GLfCOVdthk=
+addons:
+  sauce_connect: true
