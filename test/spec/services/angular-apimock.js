@@ -20,8 +20,10 @@ describe('Service: apiMock', function () {
 	var $httpBackend;
 	var $log;
 	var $rootScope;
+
 	var defaultApiPath;
 	var defaultMockPath;
+	var defaultExpectMethod;
 	var defaultExpectPath;
 	var defaultRequest;
 
@@ -37,9 +39,10 @@ describe('Service: apiMock', function () {
 		defaultApiPath = '/api/pokemon';
 		defaultMockPath = '/mock_data/pokemon.get.json';
 		defaultExpectPath = defaultMockPath;
+    defaultExpectMethod = 'GET';
 		defaultRequest = {
 			url: defaultApiPath,
-			method: 'GET'
+			method: defaultExpectMethod
 		};
 	}));
 
@@ -74,7 +77,7 @@ describe('Service: apiMock', function () {
 		}
 
 		function expectHttpFailure(done, fail) {
-			$httpBackend.expect(defaultRequest.method, defaultExpectPath).respond(404);
+			$httpBackend.expect(defaultExpectMethod, defaultExpectPath).respond(404);
 
 			$http(defaultRequest)
 				.success(function () {
@@ -90,7 +93,7 @@ describe('Service: apiMock', function () {
 		}
 
 		function expectHttpSuccess(done, fail) {
-			$httpBackend.expect(defaultRequest.method, defaultExpectPath).respond({});
+			$httpBackend.expect(defaultExpectMethod, defaultExpectPath).respond({});
 
 			$http(defaultRequest)
 				.success(function () {
