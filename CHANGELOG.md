@@ -1,3 +1,17 @@
+<a name="0.1.8"></a>
+### 0.1.8 (2015-03-22)
+
+
+#### Bug Fixes
+
+* **apimock:** Adjust for PR19. Always use 'GET' requests. ([0ae1ba57](http://github.com/seriema/angular-apimock/commit/0ae1ba571359f80a30a04f05c6a18b620932668e))
+
+
+#### Features
+
+* **apimock:** update Angular dependencies in Bower to latest (below 2.x). ([8847c192](http://github.com/seriema/angular-apimock/commit/8847c192e50ed82576e6ae0e736c547ebdb1def8))
+
+
 <a name="0.1.7"></a>
 ### 0.1.7 (2014-10-19)
 

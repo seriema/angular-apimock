@@ -1,4 +1,4 @@
-/*! Angular API Mock v0.1.7
+/*! Angular API Mock v0.1.8
  * Licensed with MIT
  * Made with ♥ from Seriema + Redhorn */
 /* Create the main module, `apiMock`. It's the one that needs to be included in
