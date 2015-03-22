@@ -109,7 +109,7 @@ describe('Service: apiMock', function () {
 		}
 
 		function assertFail() {
-			expect(true).to.be.false; // Todo: How to fail the test if this happens?
+			expect(true).to.be.false; // Todo: How to fail properly? There should be a method for that.
 		}
 
 
