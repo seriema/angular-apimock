@@ -164,9 +164,10 @@ angular.module('apiMock', [])
 			}
 			newPath += '.' + req.method.toLowerCase() + '.json';
 
+			req.method = 'GET';
 			req.url = newPath;
 			$log.info('apiMock: rerouting ' + oldPath + ' to ' + newPath);
-
+			
 			return req;
 		}
 
