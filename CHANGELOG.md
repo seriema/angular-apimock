@@ -1,3 +1,12 @@
+<a name"0.1.9"></a>
+### 0.1.9 (2015-06-19)
+
+
+#### Features
+
+* **travis:** add Sauce Labs testing to CI ([33755130](https://github.com/seriema/angular-apimock/commit/33755130))
+
+
 <a name="0.1.8"></a>
 ### 0.1.8 (2015-03-22)
 
