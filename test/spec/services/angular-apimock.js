@@ -29,8 +29,8 @@ describe('Service: apiMock', function () {
 
   beforeEach(inject(function (_httpInterceptor_, _apiMock_, _$location_, _$http_, _$httpBackend_, _$log_, _$rootScope_) {
 	  httpInterceptor = _httpInterceptor_;
-    apiMock = _apiMock_;
-    $location = _$location_;
+    	apiMock = _apiMock_;
+    	$location = _$location_;
 		$http = _$http_;
 		$httpBackend = _$httpBackend_;
 		$log = _$log_;
@@ -39,7 +39,7 @@ describe('Service: apiMock', function () {
 		defaultApiPath = '/api/pokemon';
 		defaultMockPath = '/mock_data/pokemon.get.json';
 		defaultExpectPath = defaultMockPath;
-    defaultExpectMethod = 'GET';
+    	defaultExpectMethod = 'GET';
 		defaultRequest = {
 			url: defaultApiPath,
 			method: defaultExpectMethod
@@ -267,12 +267,14 @@ describe('Service: apiMock', function () {
 
 			it('should ignore query objects in request URL (path has /?)', function () {
 				defaultRequest.url = '/api/pokemon/?name=Pikachu';
+				defaultExpectPath = '/mock_data/pokemon/_name=Pikachu.get.json';
 
 				expectHttpSuccess();
 			});
 
 			it('should ignore query objects in request URL (path has only ?)', function () {
 				defaultRequest.url = '/api/pokemon?name=Pikachu';
+				defaultExpectPath = '/mock_data/pokemon_name=Pikachu.get.json';
 
 				expectHttpSuccess();
 			});
