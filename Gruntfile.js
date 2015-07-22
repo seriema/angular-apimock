@@ -190,9 +190,39 @@ module.exports = function (grunt) {
 
     // Test settings
     karma: {
-      unit: {
+      options: {
         configFile: 'karma.conf.js',
         singleRun: true
+      },
+      angular12: {
+        files: [{
+          src: [
+            'test/ref/angular-v1.2.js',
+            'test/ref/angular-mocks-v1.2.js',
+            '<%= watch.js.files %>',
+            '<%= watch.jsTest.files %>'
+          ]}
+        ]
+      },
+      angular13: {
+        files: [{
+          src: [
+            'test/ref/angular-v1.3.js',
+            'test/ref/angular-mocks-v1.3.js',
+            '<%= watch.js.files %>',
+            '<%= watch.jsTest.files %>'
+          ]}
+        ]
+      },
+      angular14: {
+        files: [{
+          src: [
+            'test/ref/angular-v1.4.js',
+            'test/ref/angular-mocks-v1.4.js',
+            '<%= watch.js.files %>',
+            '<%= watch.jsTest.files %>'
+          ]}
+        ]
       }
     }
   });
