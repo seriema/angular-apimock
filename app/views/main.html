@@ -30,8 +30,8 @@
 
 			<p>The default paths are <code>/mock_data</code> for getting .json files and <code>/api</code> for using the real API. You can change this with <code>config()</code> during the <code>config()</code> operation of your module.</p>
 
-			<pre><code>.config(function (httpInterceptorProvider) {
-  httpInterceptorProvider.config({
+			<pre><code>.config(function (apiMockProvider) {
+  apiMockProvider.config({
     mockDataPath: '/mock_data',
     apiPath: '/api'
   });
