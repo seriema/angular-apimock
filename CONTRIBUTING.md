@@ -7,7 +7,7 @@ Below we've gathered some guidelines on how to report bugs, request features, or
 
 ## Bugs
 
-Any bug reports are welcome. Check [issues](issues/) if it is already logged or fixed before creating a new issue.
+Any bug reports are welcome. Check [issues](https://github.com/seriema/angular-apimock/issues/) if it is already logged or fixed before creating a new issue.
 
 Focus on a [reduced test case](https://css-tricks.com/reduced-test-cases/) and do any or all of these:
 - Create a [Plunker](http://plnkr.co) sample (use the `$http` config syntax for `apiMock`)
@@ -17,19 +17,19 @@ Focus on a [reduced test case](https://css-tricks.com/reduced-test-cases/) and d
 
 ## Features
 
-Feature requests are more than welcome. Check [issues](issues/) to find or add an issue where we can discuss the feature before any code is written. Consider impacts on current users.
+Feature requests are more than welcome. Check [issues](https://github.com/seriema/angular-apimock/issues/) to find or add an issue where we can discuss the feature before any code is written. Consider impacts on current users.
 
 Do any or all of these:
 - Demonstrate usage with real or pseudo code (think [dreamcode](http://nobackend.org/dreamcode.html))
-- Create a [unit test](tree/master/test/spec)
+- Create a [unit test](test/spec)
 - Write a clear use case for when this feature would be useful for others
 - Create a demo for the [website](http://johansson.jp/angular-apimock/#/)
-- Write documentation for the [README](tree/master/README.md)
+- Write documentation for the [README](README.md)
 
 
 ## PRs (pull-requests)
 
-Please follow these guidelines for PRs. Make sure you're familiar with [GitHub PRs](https://help.github.com/articles/using-pull-requests) and issues. PRs for [the wishlist in the README](tree/master/README.md#wishlist) would be especially awesome!
+Please follow these guidelines for PRs. Make sure you're familiar with [GitHub PRs](https://help.github.com/articles/using-pull-requests) and issues. PRs for [the wishlist in the README](README.md#wishlist) would be especially awesome!
 
 Helpful steps:
 
@@ -42,13 +42,13 @@ Helpful steps:
 
 Never run `grunt publish`! Just use `grunt` or `grunt test` to verify that your code is working.
 
-Don't change the [CHANGELOG](tree/master/CHANGELOG.md) file. It's auto-generated when publishing a new version of ApiMock.
+Don't change the [CHANGELOG](CHANGELOG.md) file. It's auto-generated when publishing a new version of ApiMock.
 
 ### Code guidelines
 
-Follow the conventions (indentation, newlines, etc) in [.editorconfig](tree/master/.editorconfig). Most editors have a plugin for [EditorConfig](http://editorconfig.org) that helps you.
+Follow the conventions (indentation, newlines, etc) in [.editorconfig](.editorconfig). Most editors have a plugin for [EditorConfig](http://editorconfig.org) that helps you.
 
-See [.jshintrc](tree/master/.jshintrc) for the [JSHint](http://jshint.com) conventions (use semicolon, single quote marks, etc). Run `grunt jshint` to check that your code fulfills those settings. Otherwise just follow the conventions you see in the existing code.
+See [.jshintrc](.jshintrc) for the [JSHint](http://jshint.com) conventions (use semicolon, single quote marks, etc). Run `grunt jshint` to check that your code fulfills those settings. Otherwise just follow the conventions you see in the existing code.
 
 ### Commit guidelines
 
@@ -62,7 +62,7 @@ Don't commit unnecessary changes (like white-space differences). Github for [Win
 
 #### Commit messages
 
-We use a [conventional changelog tool](https://github.com/btford/grunt-conventional-changelog) to generate the [CHANGELOG](tree/master/CHANGELOG.md) so commit message formatting is really important. Check our [commit history](commits/master) to see how it's used.
+We use a [conventional changelog tool](https://github.com/btford/grunt-conventional-changelog) to generate the [CHANGELOG](CHANGELOG.md) so commit message formatting is really important. Check our [commit history](https://github.com/seriema/angular-apimock/commits/master) to see how it's used.
 
 ##### Summary message
 
