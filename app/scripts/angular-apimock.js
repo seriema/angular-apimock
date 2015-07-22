@@ -154,9 +154,21 @@ angular.module('apiMock', [])
 			var newPath = req.url.substring(config.apiPath.length);
 			newPath = config.mockDataPath + newPath;
 
-			// strip query strings (like ?search=banana).
-			var regex = /[a-zA-z0-9/.\-]*/;
+			//replace ? with _ in case the params are in the url string directly
+			newPath = newPath.replace(/\?/,'_' );
+
+			// keep query strings (like ?search=banana), strip other characters.
+			var regex = /[a-zA-z0-9=&/.\-]*/;
 			newPath = regex.exec(newPath)[0];
+
+			//Test for params
+			if (typeof req.params === 'object') {
+				//use the requests paramSerialize method to convert to string
+				//and concatenate to the newPath
+				newPath = newPath + '_' + req.paramSerializer(req.params);
+				//Kill the params property so they aren't added back on to the end of the url
+				req.params = undefined;
+			}
 
 			// add file endings (method verb and .json).
 			if (newPath[newPath.length - 1] === '/') {

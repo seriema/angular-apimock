@@ -1,6 +1,6 @@
 {
   "name": "angular-apimock",
-  "version": "0.1.8",
+  "version": "0.1.9",
   "main": "dist/angular-apimock.min.js",
 	"appPath": "app",
   "ignore": [
