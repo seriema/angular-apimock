@@ -1,6 +1,6 @@
 # ApiMock for AngularJS: UI-first development [![Build Status](https://travis-ci.org/seriema/angular-apimock.png?branch=master)](https://travis-ci.org/seriema/angular-apimock) [![devDependency Status](https://david-dm.org/seriema/angular-apimock/dev-status.png)](https://david-dm.org/seriema/angular-apimock#info=devDependencies)
 
-ApiMock is a minimal (0.3kb gzipped!) library for AngularJS that allows you to mock your HTTP API on _any_ platform, without know anything about servers. It routes your API calls to static JSON files with a simple flag in the browser URL.
+ApiMock is a minimal (0.5kb gzipped!) library for AngularJS that allows you to mock your RESTful API by routing your API calls to static JSON files.
 
 
 ## Example
@@ -34,10 +34,51 @@ angular.module('myApp', ['apiMock']) ...
 
 Now use `$http` as usual. When you're looking at your webpage and want to use mock data, just add `?apimock=true` to the _browser_ page URL. This way you never need to change your JavaScript!
 
+You can also do individual overrides right in the `config` object to `$http`. E.g. `$http( { url: '/...', method: GET, apiMock: true } )`.
+
+If you want to design/test your error-handling then you can give a HTTP status code instead of `true`. So `?apimock=401` will fail all requests with status code `401` (unauthorized). This is probably more useful on individual `$http` requests.
+
+You can also set it to automatically reroute API calls that fail. Just set the parameter to `auto` (`apimock=auto` in browser or $http call).
+
 ApiMock appends the HTTP-verb before `.json` so a GET-request to `/api/customers/5` will be routed to `/mock_data/customers/5.get.json`. Now just fill your `/mock_data` directory with all the JSON files you want to grab.
 
 
 ## Options
+
+### Usage
+
+ApiMock supports several operation modes. They're set globally and/or locally, where globally means on the browser URL and locally means in the $http request. There's only one parameter, `apiMock` (case-insensitive).
+
+#### apiMock
+
+Type: `boolean/string/number`
+
+Default: `undefined`
+
+Values:
+
+`true`: reroutes all requests
+
+`false`: turns off rerouting
+
+`auto`: will try the original request, if it fails then it tries to recover with a reroute
+
+`404`, `500`, etc: will reject all requests with the given HTTP status code
+
+##### Global flag
+
+In the browser URL, just append `?apiMock=command` where `command` is described above (`true`, `auto`, etc).
+
+##### Local flag
+
+In the JavaScript, where you do the `$http` request, the request object needs an attribute `apiMock` with the value set to the command described above (`true`, `auto`, etc).
+
+E.g.
+````
+$http({ method: 'GET', url: '...', apiMock: true });
+````
+
+### Config
 
 ApiMock follows a simple concept: reroute HTTP requests, from `apiPath` to `mockDataPath`. So you can change the paths but any deeper configuration is probably easier to write your own `httpInterceptor` (check the FAQ).
 
@@ -51,16 +92,18 @@ Configure is done through `apiMockProvider.config()`. Add this to your AngularJS
 });
 ````
 
-### mockDataPath
+#### mockDataPath
 
 Type: `string`
+
 Default: `'/mock_data'`
 
 Set the path to be rerouted to.
 
-### apiPath
+#### apiPath
 
 Type: `string`
+
 Default: `'/api'`
 
 Set the path to be rerouted from.
@@ -86,7 +129,7 @@ No, but it works in a similar fashion: it routes HTTP calls. Our initial impleme
 Like disabling all network traffic yet things work? No, but it's a good idea. It would be perfect for presentation demo's when the WiFi is unreliable. If you have an idea of how to implement this, let us know!
 
 ### Can I mock when [...] or instead of URL replacing can I [...]?
-Actually the basic idea here is to intercept http calls then do whatever we want. This project, `angular-apimock`, aims to do things a certain way. Although everything is configurable and can be overriden in `.config()` you might want to create your own module. If so, here's the basics:
+Actually the basic idea here is to intercept http calls then do something that helps at design-time of the website. This project, `angular-apimock`, aims to do that through rerouting API calls to static JSON files. We've experimented with making that flexible so you could configure it to do whatever you want, but that requires so much from this project and the core functionality (http interceptors) is so simple it's probably easier to create your own. If so, here's the basics:
 ````
 angular.module('myModule', [])
 
@@ -105,20 +148,21 @@ angular.module('myModule', [])
 });
 ````
 
+[This blog post](http://www.webdeveasy.com/interceptors-in-angularjs-and-useful-examples/) is pretty good at diving deeper into this.
+
 ## Wishlist
 
 * Demo based on Magic The Gathering cards (reference to a //build presentation)
-* Demo for `isMocked`
+* Demo for checking mock-flag
 * Demo with [Interfake](https://github.com/basicallydan/interfake)
-* Handle queries (?search=banana), not just ignore them.
-* Handle body data in POST requests
-* Generate sample JSON from JSON Schema (json-schema.org) and JSON LD (json-ld.org) (maybe a separate project?)
-* Simulate complete offline, e.g. fail all API calls to test for 404 etc. `apimock=auto`?
-* Automatic fallback to apiMock if the real API doesn't answer (or gives an error)
+* Handle queries (?search=banana), not just ignore them
+* Handle body data in POST requests?
+* HTTP response overrides (200?) shouldn't always go to $http.error()
 * Test `apimock=true` in more scenarios
 * Remember mock-mode after page navigation
 * Plunkr demos
-* Visual queue that mock is happening. Maybe also console.log?
+* Visual queue that mock is happening. Maybe also $log?
+* Work with $resource (maybe it does already?)
 
 
 ## Contribute

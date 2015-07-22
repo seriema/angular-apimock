@@ -4,7 +4,7 @@
  *
  * Supports the following:
  * 		- Extends clike syntax
- * 		- Support for PHP 5.3 and 5.4 (namespaces, traits, etc)
+ * 		- Support for PHP 5.3+ (namespaces, traits, generators, etc)
  * 		- Smarter constant and function matching
  *
  * Adds the following new token classes:
@@ -12,15 +12,29 @@
  */
 
 Prism.languages.php = Prism.languages.extend('clike', {
-	'keyword': /\b(and|or|xor|array|as|break|case|cfunction|class|const|continue|declare|default|die|do|else|elseif|enddeclare|endfor|endforeach|endif|endswitch|endwhile|extends|for|foreach|function|include|include_once|global|if|new|return|static|switch|use|require|require_once|var|while|abstract|interface|public|implements|private|protected|parent|throw|null|echo|print|trait|namespace|final|yield|goto|instanceof|finally|try|catch)\b/ig,
-	'constant': /\b[A-Z0-9_]{2,}\b/g
+	'keyword': /\b(and|or|xor|array|as|break|case|cfunction|class|const|continue|declare|default|die|do|else|elseif|enddeclare|endfor|endforeach|endif|endswitch|endwhile|extends|for|foreach|function|include|include_once|global|if|new|return|static|switch|use|require|require_once|var|while|abstract|interface|public|implements|private|protected|parent|throw|null|echo|print|trait|namespace|final|yield|goto|instanceof|finally|try|catch)\b/i,
+	'constant': /\b[A-Z0-9_]{2,}\b/,
+	'comment': {
+		pattern: /(^|[^\\])(\/\*[\w\W]*?\*\/|(^|[^:])(\/\/).*?(\r?\n|$))/,
+		lookbehind: true
+	}
+});
+
+// Shell-like comments are matched after strings, because they are less
+// common than strings containing hashes...
+Prism.languages.insertBefore('php', 'class-name', {
+	'shell-comment': {
+		pattern: /(^|[^\\])#.*?(\r?\n|$)/,
+		lookbehind: true,
+		alias: 'comment'
+	}
 });
 
 Prism.languages.insertBefore('php', 'keyword', {
-	'delimiter': /(\?>|&lt;\?php|&lt;\?)/ig,
-	'variable': /(\$\w+)\b/ig,
+	'delimiter': /(\?>|<\?php|<\?)/i,
+	'variable': /(\$\w+)\b/i,
 	'package': {
-		pattern: /(\\|namespace\s+|use\s+)[\w\\]+/g,
+		pattern: /(\\|namespace\s+|use\s+)[\w\\]+/,
 		lookbehind: true,
 		inside: {
 			punctuation: /\\/
@@ -31,7 +45,7 @@ Prism.languages.insertBefore('php', 'keyword', {
 // Must be defined after the function pattern
 Prism.languages.insertBefore('php', 'operator', {
 	'property': {
-		pattern: /(->)[\w]+/g,
+		pattern: /(->)[\w]+/,
 		lookbehind: true
 	}
 });
@@ -48,11 +62,20 @@ if (Prism.languages.markup) {
 
 		env.tokenStack = [];
 
-		env.code = env.code.replace(/(?:&lt;\?php|&lt;\?|<\?php|<\?)[\w\W]*?(?:\?&gt;|\?>)/ig, function(match) {
+		env.backupCode = env.code;
+		env.code = env.code.replace(/(?:<\?php|<\?)[\w\W]*?(?:\?>)/ig, function(match) {
 			env.tokenStack.push(match);
 
 			return '{{{PHP' + env.tokenStack.length + '}}}';
 		});
+	});
+
+	// Restore env.code for other plugins (e.g. line-numbers)
+	Prism.hooks.add('before-insert', function(env) {
+		if (env.language === 'php') {
+			env.code = env.backupCode;
+			delete env.backupCode;
+		}
 	});
 
 	// Re-insert the tokens after highlighting
@@ -78,9 +101,9 @@ if (Prism.languages.markup) {
 	// Add the rules before all others
 	Prism.languages.insertBefore('php', 'comment', {
 		'markup': {
-			pattern: /(&lt;|<)[^?]\/?(.*?)(>|&gt;)/g,
+			pattern: /<[^?]\/?(.*?)>/,
 			inside: Prism.languages.markup
 		},
-		'php': /\{\{\{PHP[0-9]+\}\}\}/g
+		'php': /\{\{\{PHP[0-9]+\}\}\}/
 	});
 }
