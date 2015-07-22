@@ -175,7 +175,7 @@ angular.module('myModule', [])
 
 ## Contribute
 
-ApiMock started as a concept at a large eCommerce project years ago. Having the backend team completely separate from the frontend team created some constraints that needed to be solved. Now it's been cleaned up and simplified for AngularJS. We'd love any feedback so feel free to raise [an issue](https://github.com/seriema/angular-apimock/issues) or do a [pull request](https://github.com/seriema/angular-apimock/pulls) (make sure you run `grunt`). If you want to implement something from the Wishlist, that would be awesome too!
+ApiMock started as a concept on a large eCommerce project years ago. We'd love to get feedback or help to improve things. If you want to contribute, take a look at [CONTRIBUTING](tree/master/CONTRIBUTING.md).
 
 
 ♥ from [Seriema](http://johansson.jp) + [Redhorn](http://redhorn.se/)
