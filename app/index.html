@@ -7,7 +7,6 @@
   <body ng-app="testApp">
 
     <div ng-controller="MainCtrl">
-      <h1 ng-hide="{{apiMocked}}">Add '?apimock=true' to the URL above to do a mock API call.</h1>
       <p>
         Name: {{name}}
       </p>
@@ -32,25 +31,22 @@
     <script>
       var app = angular.module('testApp', ['apiMock']);
 
-      app.config(function (apiMockDefaultImplProvider, $locationProvider) {
-        apiMockDefaultImplProvider.config({
-          mockDataPath: '/mock_data',
+      app.config(function (apiMockProvider) {
+        apiMockProvider.config({
+          mockDataPath: 'mock_data',
           apiPath: '/api'
         });
-
-        $locationProvider.html5Mode(true);
       });
 
-      app.controller('MainCtrl', function ($scope, $http, apiMockDefaultImpl, $location) {
+      app.controller('MainCtrl', function ($scope, $http, $location) {
         $scope.name = '';
-        $scope.apiMocked = apiMockDefaultImpl.isGlobalMock();
 
         $scope.$location = $location;
 
         $http.get('/api/people/pikachu').success(function(data) {
           $scope.name = data.name;
         }).error(function(data) {
-          $scope.name = data;
+          $scope.name = 'No connection :( Now add ?apimock=true to the browser addressbar and try again ;)';
         });
       });
     </script>
