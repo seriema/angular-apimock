@@ -52,14 +52,14 @@ module.exports = function (grunt) {
     watch: {
       js: {
         files: ['<%= yeoman.app %>/scripts/{,*/}*.js'],
-        tasks: ['newer:jshint:all', 'test'],
+        tasks: ['newer:jshint:all', 'karma:headless'],
         options: {
           livereload: true
         }
       },
       jsTest: {
         files: ['test/spec/{,*/}*.js'],
-        tasks: ['newer:jshint:test', 'karma']
+        tasks: ['newer:jshint:test', 'karma:headless']
       },
       gruntfile: {
         files: ['Gruntfile.js']
@@ -193,6 +193,9 @@ module.exports = function (grunt) {
       options: {
         configFile: 'karma.conf.js',
         singleRun: true
+      },
+      headless: {
+        browsers: ['PhantomJS']
       },
       angular12: {
         files: [{
