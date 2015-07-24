@@ -3,19 +3,19 @@
 
 describe('Service: apiMock', function () {
 
-  // load the service's module
-  beforeEach(module('apiMock'));
+	// load the service's module
+	beforeEach(module('apiMock'));
 
 	// Hack (?) to get the provider so we can call .config()
 	var apiMockProvider;
-  beforeEach(module(function(_apiMockProvider_){
+	beforeEach(module(function(_apiMockProvider_){
 		apiMockProvider = _apiMockProvider_;
 	}));
 
-  // instantiate services
-  var httpInterceptor;
-  var apiMock;
-  var $location;
+	// instantiate services
+	var httpInterceptor;
+	var apiMock;
+	var $location;
 	var $http;
 	var $httpBackend;
 	var $log;
@@ -27,10 +27,10 @@ describe('Service: apiMock', function () {
 	var defaultExpectPath;
 	var defaultRequest;
 
-  beforeEach(inject(function (_httpInterceptor_, _apiMock_, _$location_, _$http_, _$httpBackend_, _$log_, _$rootScope_) {
-	  httpInterceptor = _httpInterceptor_;
-    apiMock = _apiMock_;
-    $location = _$location_;
+	beforeEach(inject(function (_httpInterceptor_, _apiMock_, _$location_, _$http_, _$httpBackend_, _$log_, _$rootScope_) {
+		httpInterceptor = _httpInterceptor_;
+		apiMock = _apiMock_;
+		$location = _$location_;
 		$http = _$http_;
 		$httpBackend = _$httpBackend_;
 		$log = _$log_;
@@ -39,7 +39,7 @@ describe('Service: apiMock', function () {
 		defaultApiPath = '/api/pokemon';
 		defaultMockPath = '/mock_data/pokemon.get.json';
 		defaultExpectPath = defaultMockPath;
-    defaultExpectMethod = 'GET';
+		defaultExpectMethod = 'GET';
 		defaultRequest = {
 			url: defaultApiPath,
 			method: defaultExpectMethod
@@ -59,11 +59,11 @@ describe('Service: apiMock', function () {
 		}); */
 
 /* Need to test with html5Mode turned on, but how?
-  it('should detect apimock param after hash', inject(function($locationProvider) {
-    $locationProvider.html5Mode(true);
-    $location.url('/#/view/?apimock=true');
-    expect(apiMock.isMocking()).to.be.true;
-  })); */
+	it('should detect apimock param after hash', inject(function($locationProvider) {
+		$locationProvider.html5Mode(true);
+		$location.url('/#/view/?apimock=true');
+		expect(apiMock.isMocking()).to.be.true;
+	})); */
 
 
 	// TODO: Add test for $http config overrides.

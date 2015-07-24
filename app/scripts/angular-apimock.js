@@ -22,18 +22,18 @@ angular.module('apiMock', [])
 		 *
 		 * Public interface:
 		 * `onRequest` method: takes a `request` object and decides if mocking should
-		 *   be done on this request. It checks global and local apiMock flags to see
-		 *   if it should mock. It also checks the request URL if it starts with `apiPath`.
-		 *   If the request is to have a `recover` attempt it's put in the fallbacks list.
-		 *   A GET request to `/api/user/5?option=full` turns into `/mock_data/user/5.get.json`.
+		 *	 be done on this request. It checks global and local apiMock flags to see
+		 *	 if it should mock. It also checks the request URL if it starts with `apiPath`.
+		 *	 If the request is to have a `recover` attempt it's put in the fallbacks list.
+		 *	 A GET request to `/api/user/5?option=full` turns into `/mock_data/user/5.get.json`.
 		 * `onResponse` method: takes a `request` object and simply removes it from list
-		 *   of fallbacks for `recover`.
+		 *	 of fallbacks for `recover`.
 		 * `recover` method: if request has been marked for recover `onRequest` then it
-		 *   will reroute to mock data. This is only to be called on response error.
+		 *	 will reroute to mock data. This is only to be called on response error.
 		 *
 		 * Private members:
 		 * `_countFallbacks` method: returns the current number of fallbacks in queue.
-		 *   Only used for unit testing.
+		 *	 Only used for unit testing.
 		 */
 
 		// Helper objects

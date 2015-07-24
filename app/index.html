@@ -1,54 +1,54 @@
 <!doctype html>
 <html>
-  <head>
-    <meta charset="utf-8">
-    <title>Angular API Mock test page</title>
-  </head>
-  <body ng-app="testApp">
+	<head>
+		<meta charset="utf-8">
+		<title>Angular API Mock test page</title>
+	</head>
+	<body ng-app="testApp">
 
-    <div ng-controller="MainCtrl">
-      <p>
-        Name: {{name}}
-      </p>
+		<div ng-controller="MainCtrl">
+			<p>
+				Name: {{name}}
+			</p>
 
-      <h2>Debug info</h2>
-      <p>
-        $location.protocol() = {{$location.protocol()}}<br>
-        $location.host() = {{$location.host()}}<br>
-        $location.port() = {{$location.port()}}<br>
-        $location.path() = {{$location.path()}}<br>
-        $location.search() = {{$location.search()}}<br>
-        $location.hash() = {{$location.hash()}}<br>
-      </p>
+			<h2>Debug info</h2>
+			<p>
+				$location.protocol() = {{$location.protocol()}}<br>
+				$location.host() = {{$location.host()}}<br>
+				$location.port() = {{$location.port()}}<br>
+				$location.path() = {{$location.path()}}<br>
+				$location.search() = {{$location.search()}}<br>
+				$location.hash() = {{$location.hash()}}<br>
+			</p>
 
-    </div>
+		</div>
 
 
 
-    <script src="bower_components/angular/angular.js"></script>
-    <script src="scripts/angular-apimock.js"></script>
+		<script src="bower_components/angular/angular.js"></script>
+		<script src="scripts/angular-apimock.js"></script>
 
-    <script>
-      var app = angular.module('testApp', ['apiMock']);
+		<script>
+			var app = angular.module('testApp', ['apiMock']);
 
-      app.config(function (apiMockProvider) {
-        apiMockProvider.config({
-          mockDataPath: 'mock_data',
-          apiPath: '/api'
-        });
-      });
+			app.config(function (apiMockProvider) {
+				apiMockProvider.config({
+					mockDataPath: 'mock_data',
+					apiPath: '/api'
+				});
+			});
 
-      app.controller('MainCtrl', function ($scope, $http, $location) {
-        $scope.name = '';
+			app.controller('MainCtrl', function ($scope, $http, $location) {
+				$scope.name = '';
 
-        $scope.$location = $location;
+				$scope.$location = $location;
 
-        $http.get('/api/people/pikachu').success(function(data) {
-          $scope.name = data.name;
-        }).error(function(data) {
-          $scope.name = 'No connection :( Now add ?apimock=true to the browser addressbar and try again ;)';
-        });
-      });
-    </script>
-  </body>
+				$http.get('/api/people/pikachu').success(function(data) {
+					$scope.name = data.name;
+				}).error(function(data) {
+					$scope.name = 'No connection :( Now add ?apimock=true to the browser addressbar and try again ;)';
+				});
+			});
+		</script>
+	</body>
 </html>

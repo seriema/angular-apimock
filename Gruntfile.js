@@ -9,22 +9,22 @@
 
 module.exports = function (grunt) {
 
-  // Load grunt tasks automatically
-  require('load-grunt-tasks')(grunt);
+	// Load grunt tasks automatically
+	require('load-grunt-tasks')(grunt);
 
-  // Time how long tasks take. Can help when optimizing build times
-  require('time-grunt')(grunt);
+	// Time how long tasks take. Can help when optimizing build times
+	require('time-grunt')(grunt);
 
-  // Define the configuration for all the tasks
-  grunt.initConfig({
+	// Define the configuration for all the tasks
+	grunt.initConfig({
 
-    // Project settings
-    yeoman: {
-      // configurable paths
-      version: require('./bower.json').version,
-      app: require('./bower.json').appPath,
-      dist: 'dist'
-    },
+		// Project settings
+		yeoman: {
+			// configurable paths
+			version: require('./bower.json').version,
+			app: require('./bower.json').appPath,
+			dist: 'dist'
+		},
 
 		bump: {
 			options: {
@@ -48,129 +48,129 @@ module.exports = function (grunt) {
 			}
 		},
 
-    // Watches files for changes and runs tasks based on the changed files
-    watch: {
-      js: {
-        files: ['<%= yeoman.app %>/scripts/{,*/}*.js'],
-        tasks: ['newer:jshint:all', 'karma:headless'],
-        options: {
-          livereload: true
-        }
-      },
-      jsTest: {
-        files: ['test/spec/{,*/}*.js'],
-        tasks: ['newer:jshint:test', 'karma:headless']
-      },
-      gruntfile: {
-        files: ['Gruntfile.js']
-      },
-      livereload: {
-        options: {
-          livereload: '<%= connect.options.livereload %>'
-        },
-        files: [
-          '<%= yeoman.app %>/{,*/}*.html'
-        ]
-      }
-    },
+		// Watches files for changes and runs tasks based on the changed files
+		watch: {
+			js: {
+				files: ['<%= yeoman.app %>/scripts/{,*/}*.js'],
+				tasks: ['newer:jshint:all', 'karma:headless'],
+				options: {
+					livereload: true
+				}
+			},
+			jsTest: {
+				files: ['test/spec/{,*/}*.js'],
+				tasks: ['newer:jshint:test', 'karma:headless']
+			},
+			gruntfile: {
+				files: ['Gruntfile.js']
+			},
+			livereload: {
+				options: {
+					livereload: '<%= connect.options.livereload %>'
+				},
+				files: [
+					'<%= yeoman.app %>/{,*/}*.html'
+				]
+			}
+		},
 
-    // The actual grunt server settings
-    connect: {
-      options: {
-        port: 9000,
-        // Change this to '0.0.0.0' to access the server from outside.
-        hostname: 'localhost',
-        livereload: 35729
-      },
-      test: {
-        options: {
-          port: 9001,
-          base: [
-            'test',
-            '<%= yeoman.app %>'
-          ]
-        }
-      },
-      livereload: {
-        options: {
-          open: true,
-          base: [
-            '<%= yeoman.app %>'
-          ]
-        }
-      }
-    },
+		// The actual grunt server settings
+		connect: {
+			options: {
+				port: 9000,
+				// Change this to '0.0.0.0' to access the server from outside.
+				hostname: 'localhost',
+				livereload: 35729
+			},
+			test: {
+				options: {
+					port: 9001,
+					base: [
+						'test',
+						'<%= yeoman.app %>'
+					]
+				}
+			},
+			livereload: {
+				options: {
+					open: true,
+					base: [
+						'<%= yeoman.app %>'
+					]
+				}
+			}
+		},
 
-    // Make sure code styles are up to par and there are no obvious mistakes
-    jshint: {
-      options: {
-        jshintrc: '.jshintrc',
-        reporter: require('jshint-stylish')
-      },
-      all: [
-        'Gruntfile.js',
-        '<%= yeoman.app %>/scripts/{,*/}*.js'
-      ],
-      test: {
-        options: {
-          jshintrc: 'test/.jshintrc'
-        },
-        src: ['test/spec/{,*/}*.js']
-      }
-    },
+		// Make sure code styles are up to par and there are no obvious mistakes
+		jshint: {
+			options: {
+				jshintrc: '.jshintrc',
+				reporter: require('jshint-stylish')
+			},
+			all: [
+				'Gruntfile.js',
+				'<%= yeoman.app %>/scripts/{,*/}*.js'
+			],
+			test: {
+				options: {
+					jshintrc: 'test/.jshintrc'
+				},
+				src: ['test/spec/{,*/}*.js']
+			}
+		},
 
-    // Empties folders to start fresh
-    clean: {
-      dist: {
-        files: [{
-          dot: true,
-          src: [
-            '<%= yeoman.dist %>/*',
-            '!<%= yeoman.dist %>/.git*'
-          ]
-        }]
-      }
-    },
+		// Empties folders to start fresh
+		clean: {
+			dist: {
+				files: [{
+					dot: true,
+					src: [
+						'<%= yeoman.dist %>/*',
+						'!<%= yeoman.dist %>/.git*'
+					]
+				}]
+			}
+		},
 
-    // Allow the use of non-minsafe AngularJS files. Automatically makes it
-    // minsafe compatible so Uglify does not destroy the ng references
+		// Allow the use of non-minsafe AngularJS files. Automatically makes it
+		// minsafe compatible so Uglify does not destroy the ng references
 		ngAnnotate: {
-      dist: {
-        src: ['<%= yeoman.dist %>/angular-apimock.js'],
-        dest: '<%= yeoman.dist %>/angular-apimock.js'
-      }
-    },
+			dist: {
+				src: ['<%= yeoman.dist %>/angular-apimock.js'],
+				dest: '<%= yeoman.dist %>/angular-apimock.js'
+			}
+		},
 
-    // Replace Google CDN references
-    cdnify: {
-      dist: {
-        html: ['<%= yeoman.dist %>/*.html']
-      }
-    },
+		// Replace Google CDN references
+		cdnify: {
+			dist: {
+				html: ['<%= yeoman.dist %>/*.html']
+			}
+		},
 
-    uglify: {
-      options: {
-        preserveComments: 'some',
-        report: 'gzip'
-      },
-      dist: {
-        files: {
-          '<%= yeoman.dist %>/angular-apimock.min.js': [
-            '<%= yeoman.dist %>/angular-apimock.js'
-          ]
-        }
-      }
-    },
+		uglify: {
+			options: {
+				preserveComments: 'some',
+				report: 'gzip'
+			},
+			dist: {
+				files: {
+					'<%= yeoman.dist %>/angular-apimock.min.js': [
+						'<%= yeoman.dist %>/angular-apimock.js'
+					]
+				}
+			}
+		},
 
-    concat: {
-      options: {
-        banner: '/*! Angular API Mock v<%= yeoman.version %>\n * Licensed with MIT\n * Made with ♥ from Seriema + Redhorn */\n',
-      },
-      dist: {
-        src: '<%= yeoman.app %>/scripts/**/*.js',
-        dest: '<%= yeoman.dist %>/angular-apimock.js'
-      }
-    },
+		concat: {
+			options: {
+				banner: '/*! Angular API Mock v<%= yeoman.version %>\n * Licensed with MIT\n * Made with ♥ from Seriema + Redhorn */\n',
+			},
+			dist: {
+				src: '<%= yeoman.app %>/scripts/**/*.js',
+				dest: '<%= yeoman.dist %>/angular-apimock.js'
+			}
+		},
 
 		nugetpack: {
 			dist: {
@@ -188,64 +188,64 @@ module.exports = function (grunt) {
 			}
 		},
 
-    // Test settings
-    karma: {
-      options: {
-        configFile: 'karma.conf.js',
-        singleRun: true
-      },
-      headless: {
-        browsers: ['PhantomJS']
-      },
-      angular12: {
-        files: [{
-          src: [
-            'test/ref/angular-v1.2.js',
-            'test/ref/angular-mocks-v1.2.js',
-            '<%= watch.js.files %>',
-            '<%= watch.jsTest.files %>'
-          ]}
-        ]
-      },
-      angular13: {
-        files: [{
-          src: [
-            'test/ref/angular-v1.3.js',
-            'test/ref/angular-mocks-v1.3.js',
-            '<%= watch.js.files %>',
-            '<%= watch.jsTest.files %>'
-          ]}
-        ]
-      },
-      angular14: {
-        files: [{
-          src: [
-            'test/ref/angular-v1.4.js',
-            'test/ref/angular-mocks-v1.4.js',
-            '<%= watch.js.files %>',
-            '<%= watch.jsTest.files %>'
-          ]}
-        ]
-      }
-    }
-  });
+		// Test settings
+		karma: {
+			options: {
+				configFile: 'karma.conf.js',
+				singleRun: true
+			},
+			headless: {
+				browsers: ['PhantomJS']
+			},
+			angular12: {
+				files: [{
+					src: [
+						'test/ref/angular-v1.2.js',
+						'test/ref/angular-mocks-v1.2.js',
+						'<%= watch.js.files %>',
+						'<%= watch.jsTest.files %>'
+					]}
+				]
+			},
+			angular13: {
+				files: [{
+					src: [
+						'test/ref/angular-v1.3.js',
+						'test/ref/angular-mocks-v1.3.js',
+						'<%= watch.js.files %>',
+						'<%= watch.jsTest.files %>'
+					]}
+				]
+			},
+			angular14: {
+				files: [{
+					src: [
+						'test/ref/angular-v1.4.js',
+						'test/ref/angular-mocks-v1.4.js',
+						'<%= watch.js.files %>',
+						'<%= watch.jsTest.files %>'
+					]}
+				]
+			}
+		}
+	});
 
-  grunt.registerTask('serve', [
-    'connect',
-    'watch:js'
-  ]);
+	grunt.registerTask('serve', [
+		'connect',
+		'watch:js'
+	]);
 
-  grunt.registerTask('test', [
-    'newer:jshint',
-    'connect:test',
-    'karma'
-  ]);
+	grunt.registerTask('test', [
+		'newer:jshint',
+		'connect:test',
+		'karma'
+	]);
 
-  grunt.registerTask('fulltest', [
-    'jshint',
-    'connect:test',
-    'karma'
-  ]);
+	grunt.registerTask('fulltest', [
+		'jshint',
+		'connect:test',
+		'karma'
+	]);
 
 	grunt.registerTask('build', [
 		'clean',
@@ -254,13 +254,13 @@ module.exports = function (grunt) {
 		'uglify'
 	]);
 
-  grunt.registerTask('_publish', [
+	grunt.registerTask('_publish', [
 		'build',
 		'nugetpack',
 		'changelog',
 		'bump-commit',
 		'nugetpush'
-  ]);
+	]);
 
 	grunt.registerTask('publish', ['publish:patch']);
 	grunt.registerTask('publish:patch', ['fulltest', 'bump-only:patch', '_publish']);
@@ -268,8 +268,8 @@ module.exports = function (grunt) {
 	grunt.registerTask('publish:major', ['fulltest', 'bump-only:major', '_publish']);
 
 	grunt.registerTask('default', [
-    'newer:jshint',
-    'test',
-    'build'
-  ]);
+		'newer:jshint',
+		'test',
+		'build'
+	]);
 };
