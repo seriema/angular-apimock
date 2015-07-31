@@ -45,12 +45,48 @@ angular.module('apiMock', [])
 		var config = {
 			mockDataPath: '/mock_data',
 			apiPath: '/api',
-			disable: false
+			disable: false,
+			stripQueries: true
 		};
 		var fallbacks = [];
 
 		// Helper methods
 		//
+
+		function serialize(obj) {
+			var str = [];
+
+			obj = sortObjPropertiesAlpha(obj);
+			for(var p in obj){
+				if (obj.hasOwnProperty(p)) {
+					var value = encodeURIComponent(obj[p]);
+					//If the value is a string make it lowercase
+					if (typeof value === 'string') {
+						value = value.toLowerCase();
+					}
+					str.push(encodeURIComponent(p) + '=' + value);
+				}
+			}
+			return str.join('&');
+		}
+
+		function sortObjPropertiesAlpha(obj) {
+			var sorted = {},
+			key, a = [];
+
+			for (key in obj) {
+				if (obj.hasOwnProperty(key)) {
+					a.push(key);
+				}
+			}
+
+			a.sort();
+
+			for (key = 0; key < a.length; key++) {
+				sorted[a[key]] = obj[a[key]];
+			}
+			return sorted;
+		}
 
 		function detectParameter(keys) {
 			var regex = /apimock/i;
@@ -145,6 +181,7 @@ angular.module('apiMock', [])
 		}
 
 		function reroute(req) {
+			var regex;
 			if (!isApiPath(req.url)) {
 				return req;
 			}
@@ -154,9 +191,33 @@ angular.module('apiMock', [])
 			var newPath = req.url.substring(config.apiPath.length);
 			newPath = config.mockDataPath + newPath;
 
-			// strip query strings (like ?search=banana).
-			var regex = /[a-zA-z0-9/.\-]*/;
-			newPath = regex.exec(newPath)[0];
+			if (config.stripQueries) {
+				// strip query strings (like ?search=banana).
+				regex = /[a-zA-z0-9/.\-]*/;
+				newPath = regex.exec(newPath)[0];
+			} else {
+				//replace ? with / in case the params are in the url string directly
+				newPath = newPath.replace(/\?/,'/' );
+				//replace double / 
+				newPath = newPath.replace(/\/\//,'/' );
+				// keep query strings (like ?search=banana), strip other characters.
+				regex = /[a-zA-z0-9=&/.\-]*/;
+				newPath = regex.exec(newPath)[0];
+
+				//Test for params
+				if (typeof req.params === 'object') {
+					//test if there is already a trailing /
+					if (newPath.substring(newPath.length-1) !== '/') {
+						newPath = newPath + '/';
+					}
+					//serialize the param object to convert to string
+					//and concatenate to the newPath
+					newPath = newPath + serialize(req.params);
+				}
+			}
+
+			//Kill the params property so they aren't added back on to the end of the url
+			req.params = undefined;
 
 			// add file endings (method verb and .json).
 			if (newPath[newPath.length - 1] === '/') {
