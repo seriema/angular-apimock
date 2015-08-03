@@ -395,18 +395,6 @@ describe('Service: apiMock', function () {
 					expectHttpSuccess();
 				});
 
-				it('should NOT ignore query objects in request URL (path has /?)', function () {
-					defaultRequest.url = '/api/pokemon/?name=pikachu';
-					defaultExpectPath = '/mock_data/pokemon/name=pikachu.get.json';
-					expectHttpSuccess();
-				});
-
-				it('should NOT ignore query objects in request URL (path has /?)', function () {
-					defaultRequest.url = '/api/pokemon/?name=pikachu';
-					defaultExpectPath = '/mock_data/pokemon/name=pikachu.get.json';
-					expectHttpSuccess();
-				});
-
 				it('should NOT ignore query objects in request URL (path has only ?)', function () {
 					defaultRequest.url = '/api/pokemon?name=pikachu';
 					defaultExpectPath = '/mock_data/pokemon/name=pikachu.get.json';
