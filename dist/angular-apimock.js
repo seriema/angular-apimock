@@ -25,18 +25,18 @@ angular.module('apiMock', [])
 		 *
 		 * Public interface:
 		 * `onRequest` method: takes a `request` object and decides if mocking should
-		 *   be done on this request. It checks global and local apiMock flags to see
-		 *   if it should mock. It also checks the request URL if it starts with `apiPath`.
-		 *   If the request is to have a `recover` attempt it's put in the fallbacks list.
-		 *   A GET request to `/api/user/5?option=full` turns into `/mock_data/user/5.get.json`.
+		 *	 be done on this request. It checks global and local apiMock flags to see
+		 *	 if it should mock. It also checks the request URL if it starts with `apiPath`.
+		 *	 If the request is to have a `recover` attempt it's put in the fallbacks list.
+		 *	 A GET request to `/api/user/5?option=full` turns into `/mock_data/user/5.get.json`.
 		 * `onResponse` method: takes a `request` object and simply removes it from list
-		 *   of fallbacks for `recover`.
+		 *	 of fallbacks for `recover`.
 		 * `recover` method: if request has been marked for recover `onRequest` then it
-		 *   will reroute to mock data. This is only to be called on response error.
+		 *	 will reroute to mock data. This is only to be called on response error.
 		 *
 		 * Private members:
 		 * `_countFallbacks` method: returns the current number of fallbacks in queue.
-		 *   Only used for unit testing.
+		 *	 Only used for unit testing.
 		 */
 
 		// Helper objects
@@ -48,7 +48,8 @@ angular.module('apiMock', [])
 		var config = {
 			mockDataPath: '/mock_data',
 			apiPath: '/api',
-			disable: false
+			disable: false,
+			delay: 0
 		};
 		var fallbacks = [];
 
@@ -189,6 +190,10 @@ angular.module('apiMock', [])
 			return fallbacks.length;
 		};
 
+		p.getDelay = function () {
+			return config.delay;
+		};
+
 		p.onRequest = function (req) {
 			if (config.disable) {
 				return req;
@@ -251,7 +256,7 @@ angular.module('apiMock', [])
 		}];
 	})
 
-	.service('httpInterceptor', ["$injector", "$q", "apiMock", function($injector, $q, apiMock) {
+	.service('httpInterceptor', ["$injector", "$q", "$timeout", "apiMock", function($injector, $q, $timeout, apiMock) {
 		/* The main service. Is jacked in as a interceptor on `$http` so it gets called
 		 * on every http call. This allows us to do our magic. It uses the provider
 		 * `apiMock` to determine if a mock should be done, then do the actual mocking.
@@ -264,18 +269,39 @@ angular.module('apiMock', [])
 		};
 
 		this.response = function (res) {
-			res = apiMock.onResponse(res);
+			var deferred = $q.defer();
 
-			return res || $q.when(res);
+			$timeout(
+				function() {
+					deferred.resolve( apiMock.onResponse(res) ); // TODO: Apparently, no tests break regardless what this resolves to. Fix the tests!
+				},
+				apiMock.getDelay(),
+				true // Trigger a $digest.
+			);
+
+			return deferred.promise;
 		};
 
 		this.responseError = function (rej) {
-			var recover = apiMock.recover(rej);
-			if (recover) {
-				var $http = $injector.get('$http');
-				return $http(recover);
-			}
+			var deferred = $q.defer();
 
-			return $q.reject(rej);
+			$timeout(
+				function () {
+					var recover = apiMock.recover(rej);
+
+					if (recover) {
+						var $http = $injector.get('$http');
+						$http(recover).then(function (data) {
+							deferred.resolve(data);
+						});
+					} else {
+						deferred.reject( rej );
+					}
+				},
+				apiMock.getDelay(),
+				true // Trigger a $digest.
+			);
+
+			return deferred.promise;
 		};
 	}]);

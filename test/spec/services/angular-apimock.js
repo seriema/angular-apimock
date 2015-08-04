@@ -20,6 +20,7 @@ describe('Service: apiMock', function () {
 	var $httpBackend;
 	var $log;
 	var $rootScope;
+	var $timeout;
 
 	var defaultApiPath;
 	var defaultMockPath;
@@ -27,7 +28,7 @@ describe('Service: apiMock', function () {
 	var defaultExpectPath;
 	var defaultRequest;
 
-	beforeEach(inject(function (_httpInterceptor_, _apiMock_, _$location_, _$http_, _$httpBackend_, _$log_, _$rootScope_) {
+	beforeEach(inject(function (_httpInterceptor_, _apiMock_, _$location_, _$http_, _$httpBackend_, _$log_, _$rootScope_, _$timeout_) {
 		httpInterceptor = _httpInterceptor_;
 		apiMock = _apiMock_;
 		$location = _$location_;
@@ -35,6 +36,7 @@ describe('Service: apiMock', function () {
 		$httpBackend = _$httpBackend_;
 		$log = _$log_;
 		$rootScope = _$rootScope_;
+		$timeout = _$timeout_;
 
 		defaultApiPath = '/api/pokemon';
 		defaultMockPath = '/mock_data/pokemon.get.json';
@@ -47,6 +49,8 @@ describe('Service: apiMock', function () {
 	}));
 
 	afterEach(function () {
+		$timeout.verifyNoPendingTasks();
+
 		$httpBackend.verifyNoOutstandingExpectation(); // loops and $httpBackend.expect() doesn't seem to play nice
 		$httpBackend.verifyNoOutstandingRequest();
 	});
@@ -90,6 +94,7 @@ describe('Service: apiMock', function () {
 
 			$rootScope.$digest();
 			$httpBackend.flush();
+			$timeout.flush();
 		}
 
 		function expectHttpSuccess(done, fail) {
@@ -106,6 +111,7 @@ describe('Service: apiMock', function () {
 
 			$rootScope.$digest();
 			$httpBackend.flush();
+			$timeout.flush();
 		}
 
 		function assertFail() {
@@ -197,12 +203,20 @@ describe('Service: apiMock', function () {
 					});
 
 					it('should automatically mock when request fails', function () {
-						// Do a call, and expect it to recover from fail.
+						// First, it will try the API which will return a 404.
 						$httpBackend.expect('GET', defaultApiPath).respond(404);
+						$http(defaultRequest);
+						$httpBackend.flush();
 
-						expectHttpSuccess(function() {
-							expect(apiMock._countFallbacks()).to.equal(0);
-						});
+						// Now that it failed it will try the mock data instead.
+						$httpBackend.expect(defaultExpectMethod, '/mock_data/pokemon.get.json').respond({});
+						$timeout.flush();
+						$httpBackend.flush();
+
+						// The fallback list should be empty now.
+						// TODO: It doesn't actually detect if no HTTP call was done.
+						$timeout.flush();
+						expect(apiMock._countFallbacks()).to.equal(0);
 					});
 
 					it('can\'t automatically mock request on failure if the URL is an invalid API url', function () {
@@ -232,7 +246,7 @@ describe('Service: apiMock', function () {
 						angular.forEach(options, function (option) {
 							defaultRequest.apiMock = option;
 
-							// Cannot use $http.expect() because HTTP status doesn't do a request
+							// Cannot use $httpBackend.expect() because HTTP status doesn't do a request
 							$http(defaultRequest)
 								.success(assertFail)
 								.error(function(data, status) {
@@ -241,11 +255,12 @@ describe('Service: apiMock', function () {
 								});
 
 							$rootScope.$digest();
+							$timeout.flush();
 						});
 					});
 
 					it('should have basic header data in $http request status override', function () {
-						// Cannot use $http.expect() because HTTP status doesn't do a request
+						// Cannot use $httpBackend.expect() because HTTP status doesn't do a request
 						$http(defaultRequest)
 							.success(assertFail)
 							.error(function(data, status, headers) {
@@ -256,6 +271,7 @@ describe('Service: apiMock', function () {
 							});
 
 						$rootScope.$digest();
+						$timeout.flush();
 					});
 				});
 
@@ -377,6 +393,46 @@ describe('Service: apiMock', function () {
 				});
 
 			});
+
+			describe('delay option', function () {
+				var key = 'apiMock';
+				var delayMs = 500;
+
+				beforeEach(function() {
+					apiMockProvider.config({delay: delayMs});
+					$location.search(key, true);
+				});
+
+				afterEach(function() {
+					apiMockProvider.config({delay: 0});
+					$location.search(key, null);
+				});
+
+				it('should delay the request', function () {
+					var didRun = false;
+
+					// Test connection.
+					$httpBackend.expect(defaultRequest.method, defaultExpectPath).respond({});
+					$http(defaultRequest).finally(function () {
+						didRun = true;
+					});
+
+					// Flush connection.
+					$httpBackend.flush();
+
+					// Don't flush $timeout completely.
+					$timeout.flush(delayMs-1);
+					expect($timeout.verifyNoPendingTasks).to.throw(Error);
+
+					// Now flush it completely.
+					$timeout.flush(1);
+					expect($timeout.verifyNoPendingTasks).not.to.throw(Error);
+
+					// Make sure it actually ran. (TODO: too many tests here)
+					$rootScope.$digest();
+					expect(didRun).to.be.true;
+				});
+			});
 		});
 
 		describe('logging', function () {
@@ -392,10 +448,19 @@ describe('Service: apiMock', function () {
 			it('should log when command is auto', function () {
 				$location.search('apiMock', 'auto');
 
-				$httpBackend.expect(defaultRequest.method, defaultApiPath).respond(404);
-				expectHttpSuccess(function () {
-					expect($log.info.logs[0][0]).to.equal('apiMock: recovering from failure at ' + defaultApiPath);
-				});
+				// First, it will try the API which will return a 404.
+				$httpBackend.expect('GET', defaultApiPath).respond(404);
+				$http(defaultRequest);
+				$httpBackend.flush();
+
+				// Now that it failed it will try the mock data instead.
+				$httpBackend.expect(defaultExpectMethod, '/mock_data/pokemon.get.json').respond({});
+				$timeout.flush();
+				$httpBackend.flush();
+
+				// Should have logged.
+				$timeout.flush();
+				expect($log.info.logs[0][0]).to.equal('apiMock: recovering from failure at ' + defaultApiPath);
 			});
 
 			it('should log when command is a HTTP status', function () {
@@ -409,6 +474,7 @@ describe('Service: apiMock', function () {
 					.success(assertFail);
 
 				$rootScope.$digest();
+				$timeout.flush();
 			});
 
 		});

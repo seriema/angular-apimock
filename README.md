@@ -87,7 +87,7 @@ Configure is done through `apiMockProvider.config()`. Add this to your AngularJS
 .config(function (apiMockProvider) {
   apiMockProvider.config({
     mockDataPath: '/my_mock_data_path',
-    apiPath: '/my_api_path',
+    apiPath: '/my_api_path'
   });
 });
 ````
@@ -115,6 +115,14 @@ Type: `boolean`
 Default: `false`
 
 Disable apiMock completely. Used for production.
+
+#### delay
+
+Type: `number`
+
+Default: `0`
+
+Simulate network latency (in milliseconds).
 
 
 ## Samples
