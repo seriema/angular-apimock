@@ -60,12 +60,10 @@ angular.module('apiMock', [])
 			var str = [];
 
 			obj = sortObjPropertiesAlpha(obj);
-			for(var p in obj){
-				if (obj.hasOwnProperty(p)) {
-					var value = encodeURIComponent(obj[p]);
-					str.push(encodeURIComponent(p) + '=' + value);
-				}
-			}
+			angular.forEach(obj, function(value, p) {
+				var encodedValue = encodeURIComponent(value);
+				str.push(encodeURIComponent(p) + '=' + encodedValue);
+			});
 			return str.join('&');
 		}
 
