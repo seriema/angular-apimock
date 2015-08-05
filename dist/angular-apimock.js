@@ -63,10 +63,6 @@ angular.module('apiMock', [])
 			for(var p in obj){
 				if (obj.hasOwnProperty(p)) {
 					var value = encodeURIComponent(obj[p]);
-					//If the value is a string make it lowercase
-					if (typeof value === 'string') {
-						value = value.toLowerCase();
-					}
 					str.push(encodeURIComponent(p) + '=' + value);
 				}
 			}
