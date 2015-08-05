@@ -67,7 +67,7 @@ angular.module('apiMock', [])
 			return str.join('&');
 		}
 
-		function QueryStringToJSON(url) {
+		function queryStringToJSON(url) {
 			var paramString = url.split('?')[1];
 			var paramArray = [];
 
@@ -210,8 +210,7 @@ angular.module('apiMock', [])
 				regex = /[a-zA-z0-9/.\-]*/;
 				newPath = regex.exec(newPath)[0];
 			} else {
-
-				var queryParamsFromUrl = new QueryStringToJSON(newPath);
+				var queryParamsFromUrl = queryStringToJSON(newPath);
 				//if req.params is an object leave it as is but if it isn't then 
 				//normalize it to an empty object so we can cleanly merge it with queryParamsFromUrl 
 				req.params = typeof req.params === 'object' ? req.params : {};
