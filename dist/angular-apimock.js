@@ -73,6 +73,23 @@ angular.module('apiMock', [])
 			return str.join('&');
 		}
 
+		function QueryStringToJSON(url) {
+			var paramString = url.split('?')[1];
+			var paramArray = [];
+
+			if (paramString) {
+				paramArray = paramString.split('&');
+			}
+
+			var result = {};
+			paramArray.forEach(function(param) {
+				param = param.split('=');
+				result[param[0]] = decodeURIComponent(param[1] || '');
+			});
+
+			return JSON.parse(JSON.stringify(result));
+		}
+
 		function sortObjPropertiesAlpha(obj) {
 			var sorted = {},
 			key, a = [];
@@ -199,24 +216,29 @@ angular.module('apiMock', [])
 				regex = /[a-zA-z0-9/.\-]*/;
 				newPath = regex.exec(newPath)[0];
 			} else {
-				//replace ? with / in case the params are in the url string directly
-				newPath = newPath.replace(/\?/,'/' );
-				//replace double / 
-				newPath = newPath.replace(/\/\//,'/' );
-				// keep query strings (like ?search=banana), strip other characters.
-				regex = /[a-zA-z0-9=&/.\-]*/;
+
+				var queryParamsFromUrl = new QueryStringToJSON(newPath);
+				//if req.params is an object leave it as is but if it isn't then 
+				//normalize it to an empty object so we can cleanly merge it with queryParamsFromUrl 
+				req.params = typeof req.params === 'object' ? req.params : {};
+				
+				// strip query strings (like ?search=banana).
+				regex = /[a-zA-z0-9/.\-]*/;
 				newPath = regex.exec(newPath)[0];
 
-				//Test for params
-				if (typeof req.params === 'object') {
-					//test if there is already a trailing /
-					if (newPath.substring(newPath.length-1) !== '/') {
-						newPath = newPath + '/';
-					}
-					//serialize the param object to convert to string
-					//and concatenate to the newPath
-					newPath = newPath + serialize(req.params);
+				//test if we have query params
+				//if we do merge them on to the params object
+				if (typeof queryParamsFromUrl === 'object') {
+					req.params = angular.extend(req.params, queryParamsFromUrl);
 				}
+				//test if there is already a trailing /
+				if (newPath.substring(newPath.length-1) !== '/') {
+					newPath = newPath + '/';
+				}
+				//serialize the param object to convert to string
+				//and concatenate to the newPath
+				newPath = newPath + serialize(req.params);
+				
 			}
 
 			//Kill the params property so they aren't added back on to the end of the url
