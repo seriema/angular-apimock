@@ -53,13 +53,25 @@ angular.module('apiMock', [])
 		// Helper methods
 		//
 
+		// Array.prototype.map isn't supported in IE8. Which we need to support as long as we support Angular 1.2.
+		// This isn't a complete polyfill! It's just enough for what we need (and we don't need to bloat).
+		function mapArray(array, callback) {
+			var newArray = [];
+
+			angular.forEach(array, function (element) {
+				newArray.push(callback(element));
+			});
+
+			return newArray;
+		}
+
 		function serializeQueryObject(paramObj) {
 			paramObj = sortObjPropertiesAlpha(paramObj);
 
 			var keys = Object.keys(paramObj);
-			var paramArray = keys.map(function(key) {
 				var encodedValue = encodeURIComponent(paramObj[key].toLowerCase());
 				var encodedKey = encodeURIComponent(key.toLowerCase());
+			var paramArray = mapArray(keys, function(key) {
 				return encodedKey + '=' + encodedValue;
 			});
 
@@ -75,7 +87,7 @@ angular.module('apiMock', [])
 			}
 
 			var result = {};
-			paramArray.forEach(function(param) {
+			angular.forEach(paramArray, function(param) {
 				param = param.split('=');
 				result[param[0]] = param[1] || '';
 			});
@@ -87,7 +99,7 @@ angular.module('apiMock', [])
 			var sortedKeys = Object.keys(obj).sort();
 
 			var sorted = {};
-			sortedKeys.forEach(function (key) {
+			angular.forEach(sortedKeys, function (key) {
 				sorted[key] = obj[key];
 			});
 
