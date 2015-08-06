@@ -242,6 +242,7 @@ module.exports = function (grunt) {
 		},
 
 		// To run locally you need to set `COVERALLS_REPO_TOKEN` as an environment variable.
+		// It's currently being run from Travis-CI (see .travis.yml)
 		coveralls: {
 			options: {
 				force: true,
