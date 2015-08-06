@@ -70,25 +70,24 @@ angular.module('apiMock', [])
 		}
 
 		function serializeQueryObject(paramObj) {
-			paramObj = sortObjPropertiesAlpha(paramObj);
-
 			var keys = Object.keys(paramObj);
+			keys.sort(); // We want the query params alphabetically.
+
 			var paramArray = mapArray(keys, function(key) {
-				var encodedValue = safeURI(paramObj[key]);
-				var encodedKey = safeURI(key);
-				return encodedKey + '=' + encodedValue;
+				var value = paramObj[key];
+
+				return safeURI(key) + '=' + safeURI(value);
 			});
 
 			return paramArray.join('&');
 		}
 
-		function queryStringToObject(url) {
-			var paramString = url.split('?')[1];
-			var paramArray = [];
-
-			if (paramString) {
-				paramArray = paramString.split('&');
+		function queryStringToObject(paramString) {
+			if (!paramString) {
+				return {};
 			}
+
+			var paramArray = paramString.split('&');
 
 			var result = {};
 			angular.forEach(paramArray, function(param) {
@@ -97,17 +96,6 @@ angular.module('apiMock', [])
 			});
 
 			return result;
-		}
-
-		function sortObjPropertiesAlpha(obj) {
-			var sortedKeys = Object.keys(obj).sort();
-
-			var sorted = {};
-			angular.forEach(sortedKeys, function (key) {
-				sorted[key] = obj[key];
-			});
-
-			return sorted;
 		}
 
 		function detectParameter(keys) {
@@ -210,18 +198,16 @@ angular.module('apiMock', [])
 			// replace apiPath with mockDataPath.
 			var oldPath = req.url;
 			var redirectedPath = req.url.replace(config.apiPath, config.mockDataPath);
-			var newPath = redirectedPath;
 
-			// strip query strings (like ?search=banana).
-//			var regex = /[a-zA-z0-9/.\-]*/;
-			var split = newPath.split('?');
-			var url = split[0]; // TODO: also use split[1] to get the query params
-			newPath = url;
+			var split = redirectedPath.split('?');
+			var newPath = split[0];
+			var queries = split[1] || '';
 
+			// query strings are stripped by default (like ?search=banana).
 			if (!config.stripQueries) {
 				//test if we have query params
 				//if we do merge them on to the params object
-				var queryParamsFromUrl = queryStringToObject(redirectedPath);
+				var queryParamsFromUrl = queryStringToObject(queries);
 				var params = angular.extend(req.params || {}, queryParamsFromUrl);
 
 				//test if there is already a trailing /
