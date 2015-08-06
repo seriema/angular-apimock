@@ -289,6 +289,18 @@ describe('Service: apiMock', function () {
 						expectHttpSuccess();
 					});
 
+					it('should ignore query objects in config.params', function () {
+						defaultRequest.params = { 'name': 'Pikachu' };
+
+						expectHttpSuccess();
+					});
+
+					it('should ignore config.data', function () {
+						defaultRequest.data = { 'name': 'Pikachu' };
+
+						expectHttpSuccess();
+					});
+
 					it('should mock calls with valid API path', function () {
 						expectHttpSuccess();
 					});
@@ -401,6 +413,14 @@ describe('Service: apiMock', function () {
 					expectHttpSuccess();
 				});
 
+				it('should still ignore config.data', function () {
+					defaultRequest.data = {
+						'moves': ['Thunder Shock', 'Volt Tackle']
+					};
+
+					expectHttpSuccess();
+				});
+
 				it('should NOT ignore query objects in request URL (path has /?)', function () {
 					defaultRequest.url = '/api/pokemon/?name=pikachu';
 					defaultExpectPath = '/mock_data/pokemon/name=pikachu.get.json';
@@ -419,7 +439,7 @@ describe('Service: apiMock', function () {
 					expectHttpSuccess();
 				});
 
-				it('should NOT ignore query objects in request OBJECT', function () {
+				it('should NOT ignore query objects in config.params', function () {
 					defaultRequest.url = '/api/pokemon';
 					defaultRequest.params = {'name': 'pikachu', 'strength': 'electricity'};
 					defaultExpectPath = '/mock_data/pokemon/name=pikachu&strength=electricity.get.json';
