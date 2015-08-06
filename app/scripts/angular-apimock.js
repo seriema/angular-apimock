@@ -197,7 +197,6 @@ angular.module('apiMock', [])
 
 			// strip query strings (like ?search=banana).
 //			var regex = /[a-zA-z0-9/.\-]*/;
-			console.log('regex', newPath.split('?'));
 			var split = newPath.split('?');
 			var url = split[0]; // TODO: also use split[1] to get the query params
 			newPath = url;
