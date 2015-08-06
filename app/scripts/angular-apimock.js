@@ -53,16 +53,17 @@ angular.module('apiMock', [])
 		// Helper methods
 		//
 
-		function serialize(obj) {
-			obj = sortObjPropertiesAlpha(obj);
+		function serialize(paramObj) {
+			paramObj = sortObjPropertiesAlpha(paramObj);
 
-			var str = [];
-			angular.forEach(obj, function(value, p) {
-				var encodedValue = encodeURIComponent(value);
-				str.push(encodeURIComponent(p) + '=' + encodedValue);
+			var keys = Object.keys(paramObj);
+			var paramArray = keys.map(function(key) {
+				var encodedValue = encodeURIComponent(paramObj[key].toLowerCase());
+				var encodedKey = encodeURIComponent(key.toLowerCase());
+				return encodedKey + '=' + encodedValue;
 			});
 
-			return str.join('&');
+			return paramArray.join('&');
 		}
 
 		function queryStringToObject(url) {

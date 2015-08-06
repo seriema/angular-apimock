@@ -437,6 +437,12 @@ describe('Service: apiMock', function () {
 					defaultExpectPath = '/mock_data/pokemon/lang=sl&name=pika%C4%8Du.get.json';
 					expectHttpSuccess();
 				});
+
+				it('should lowercase characters in query params', function () {
+					defaultRequest.url = '/api/pokemon?NAME=PIKACHU';
+					defaultExpectPath = '/mock_data/pokemon/name=pikachu.get.json';
+					expectHttpSuccess();
+				});
 			});
 		});
 
