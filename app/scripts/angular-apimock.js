@@ -53,7 +53,7 @@ angular.module('apiMock', [])
 		// Helper methods
 		//
 
-		function serialize(paramObj) {
+		function serializeQueryObject(paramObj) {
 			paramObj = sortObjPropertiesAlpha(paramObj);
 
 			var keys = Object.keys(paramObj);
@@ -215,7 +215,7 @@ angular.module('apiMock', [])
 
 				//serialize the param object to convert to string
 				//and concatenate to the newPath
-				newPath += serialize(params);
+				newPath += serializeQueryObject(params);
 			}
 
 			//Kill the params property so they aren't added back on to the end of the url
