@@ -66,7 +66,11 @@ We use a [conventional changelog tool](https://github.com/btford/grunt-conventio
 
 ##### Summary message
 
-The first line of the commit message must be one of the following:
+The first line of the commit message must be the _type_, _area_, and _summary_. As in `type(area): summary`.
+
+Example: `feat(apimock): add disable config`
+
+_Type_ must be one of the following:
 
 * **feat**: A new feature
 * **fix**: A bug fix
@@ -77,7 +81,18 @@ The first line of the commit message must be one of the following:
 * **test**: Adding missing tests
 * **chore**: Changes to the build process or auxiliary tools and libraries such as documentation generation
 
-Example: `feat(apimock): add disable config`
+_Area_ should be one of these:
+
+* apimock
+* all
+* grunt
+* travis
+* readme
+* npm
+* tests (plural! don't forget the ending "s")
+* bower
+
+_Summary_ should preferably be less than 80 characters and succinctly summarize the commit. Use the description message (see below) to detail further and reference Github issues.
 
 ##### Description message
 
