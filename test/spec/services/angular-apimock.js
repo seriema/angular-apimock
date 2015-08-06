@@ -389,6 +389,10 @@ describe('Service: apiMock', function () {
 					apiMockProvider.config({stripQueries: true});
 				});
 
+				it('should still redirect simple paths without query params', function () {
+					expectHttpSuccess();
+				});
+
 				it('should NOT ignore query objects in request URL (path has /?)', function () {
 					defaultRequest.url = '/api/pokemon/?name=pikachu';
 					defaultExpectPath = '/mock_data/pokemon/name=pikachu.get.json';
@@ -422,9 +426,15 @@ describe('Service: apiMock', function () {
 				});
 
 				it('should handle a mix of query objects and query params in url', function () {
-					defaultRequest.url = '/api/pokemon?strength=electricity&name=pikachu';
-					defaultRequest.params = {'hp': '150'};
+					defaultRequest.url = '/api/pokemon?strength=electricity&hp=150';
+					defaultRequest.params = {'name': 'pikachu'};
 					defaultExpectPath = '/mock_data/pokemon/hp=150&name=pikachu&strength=electricity.get.json';
+					expectHttpSuccess();
+				});
+
+				it('should decode characters in query params', function () {
+					defaultRequest.url = '/api/pokemon?lang=sl&name=pikaču';
+					defaultExpectPath = '/mock_data/pokemon/lang=sl&name=pika%C4%8Du.get.json';
 					expectHttpSuccess();
 				});
 			});
