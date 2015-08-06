@@ -53,6 +53,10 @@ angular.module('apiMock', [])
 		// Helper methods
 		//
 
+		function safeURI(string) {
+			return encodeURIComponent(angular.lowercase(string));
+		}
+
 		// Array.prototype.map isn't supported in IE8. Which we need to support as long as we support Angular 1.2.
 		// This isn't a complete polyfill! It's just enough for what we need (and we don't need to bloat).
 		function mapArray(array, callback) {
@@ -69,9 +73,9 @@ angular.module('apiMock', [])
 			paramObj = sortObjPropertiesAlpha(paramObj);
 
 			var keys = Object.keys(paramObj);
-				var encodedValue = encodeURIComponent(paramObj[key].toLowerCase());
-				var encodedKey = encodeURIComponent(key.toLowerCase());
 			var paramArray = mapArray(keys, function(key) {
+				var encodedValue = safeURI(paramObj[key]);
+				var encodedKey = safeURI(key);
 				return encodedKey + '=' + encodedValue;
 			});
 
