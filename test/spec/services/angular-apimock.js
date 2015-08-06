@@ -471,6 +471,29 @@ describe('Service: apiMock', function () {
 					defaultExpectPath = '/mock_data/pokemon/name=pikachu.get.json';
 					expectHttpSuccess();
 				});
+
+				it('should strip nested objects but keep the key (for now)', function () {
+					defaultRequest.url = '/api/pokemon';
+					defaultRequest.params = {
+						'movesAppearences': {
+							'Thunder Shock': 'Pokémon - I Choose You!',
+							'Volt Tackle': 'May\'s Egg-Cellent Adventure!'
+						}
+					};
+					defaultExpectPath = '/mock_data/pokemon/movesappearences.get.json';
+
+					expectHttpSuccess();
+				});
+
+				it('should strip nested array but keep the key (for now)', function () {
+					defaultRequest.url = '/api/pokemon';
+					defaultRequest.params = {
+						'moves': ['Thunder Shock', 'Volt Tackle']
+					};
+					defaultExpectPath = '/mock_data/pokemon/moves.get.json';
+
+					expectHttpSuccess();
+				});
 			});
 		});
 

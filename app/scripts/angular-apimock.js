@@ -69,12 +69,18 @@ angular.module('apiMock', [])
 			return newArray;
 		}
 
+		// TODO: Does not support complex objects. $httpParamSerializerJQLike from Angular 1.4 supports it, and sorts them. But we need to support 1.2+. ("Borrow" their source code?)
 		function serializeQueryObject(paramObj) {
 			var keys = Object.keys(paramObj);
 			keys.sort(); // We want the query params alphabetically.
 
 			var paramArray = mapArray(keys, function(key) {
 				var value = paramObj[key];
+
+				// Strip complex parts.
+				if (angular.isObject(value) || angular.isArray(value)) { // Actually angular.isObject() returns true for arrays as well, but this way the intent is clearer.
+					return safeURI(key);
+				}
 
 				return safeURI(key) + '=' + safeURI(value);
 			});
