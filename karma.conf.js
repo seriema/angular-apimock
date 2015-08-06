@@ -2,6 +2,14 @@
 // http://karma-runner.github.io/0.10/config/configuration-file.html
 
 module.exports = function(config) {
+	var sourcePreprocessors = ['coverage'];
+	function isDebug(argument) {
+		return argument === '--debug';
+	}
+	if (process.argv.some(isDebug)) {
+		sourcePreprocessors = [];
+	}
+
 	config.set({
 		// base path, that will be used to resolve files and exclude
 		basePath: '',
@@ -16,7 +24,7 @@ module.exports = function(config) {
 			// source files, that you wanna generate coverage for
 			// do not include tests or libraries
 			// (these files will be instrumented by Istanbul)
-			'app/scripts/**/*.js': ['coverage']
+			'app/scripts/**/*.js': sourcePreprocessors
 		},
 
 		// list of files / patterns to load in the browser

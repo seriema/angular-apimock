@@ -54,7 +54,7 @@ See [.jshintrc](.jshintrc) for the [JSHint](http://jshint.com) conventions (use 
 
 Run `grunt test` in-between commits to check JS style and the code is working.
 
-Always run `grunt` before a commit as it runs `grunt test` and builds the distributions files.
+Always run `grunt` before a commit as it runs `grunt test` and builds the distributions files. Use `npm run debug` to run Karma tests in debug mode using Chrome.
 
 Never commit if `grunt` gives an error!
 
