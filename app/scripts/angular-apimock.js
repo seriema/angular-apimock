@@ -45,12 +45,59 @@ angular.module('apiMock', [])
 		var config = {
 			mockDataPath: '/mock_data',
 			apiPath: '/api',
-			disable: false
+			disable: false,
+			stripQueries: true
 		};
 		var fallbacks = [];
 
 		// Helper methods
 		//
+
+		function serialize(obj) {
+			var str = [];
+
+			obj = sortObjPropertiesAlpha(obj);
+			angular.forEach(obj, function(value, p) {
+				var encodedValue = encodeURIComponent(value);
+				str.push(encodeURIComponent(p) + '=' + encodedValue);
+			});
+			return str.join('&');
+		}
+
+		function queryStringToJSON(url) {
+			var paramString = url.split('?')[1];
+			var paramArray = [];
+
+			if (paramString) {
+				paramArray = paramString.split('&');
+			}
+
+			var result = {};
+			paramArray.forEach(function(param) {
+				param = param.split('=');
+				result[param[0]] = decodeURIComponent(param[1] || '');
+			});
+
+			return JSON.parse(JSON.stringify(result));
+		}
+
+		function sortObjPropertiesAlpha(obj) {
+			var sorted = {},
+			key, a = [];
+
+			for (key in obj) {
+				if (obj.hasOwnProperty(key)) {
+					a.push(key);
+				}
+			}
+
+			a.sort();
+
+			for (key = 0; key < a.length; key++) {
+				sorted[a[key]] = obj[a[key]];
+			}
+			return sorted;
+		}
 
 		function detectParameter(keys) {
 			var regex = /apimock/i;
@@ -145,6 +192,7 @@ angular.module('apiMock', [])
 		}
 
 		function reroute(req) {
+			var regex;
 			if (!isApiPath(req.url)) {
 				return req;
 			}
@@ -154,9 +202,37 @@ angular.module('apiMock', [])
 			var newPath = req.url.substring(config.apiPath.length);
 			newPath = config.mockDataPath + newPath;
 
-			// strip query strings (like ?search=banana).
-			var regex = /[a-zA-z0-9/.\-]*/;
-			newPath = regex.exec(newPath)[0];
+			if (config.stripQueries) {
+				// strip query strings (like ?search=banana).
+				regex = /[a-zA-z0-9/.\-]*/;
+				newPath = regex.exec(newPath)[0];
+			} else {
+				var queryParamsFromUrl = queryStringToJSON(newPath);
+				//if req.params is an object leave it as is but if it isn't then 
+				//normalize it to an empty object so we can cleanly merge it with queryParamsFromUrl 
+				req.params = typeof req.params === 'object' ? req.params : {};
+				
+				// strip query strings (like ?search=banana).
+				regex = /[a-zA-z0-9/.\-]*/;
+				newPath = regex.exec(newPath)[0];
+
+				//test if we have query params
+				//if we do merge them on to the params object
+				if (typeof queryParamsFromUrl === 'object') {
+					req.params = angular.extend(req.params, queryParamsFromUrl);
+				}
+				//test if there is already a trailing /
+				if (newPath.substring(newPath.length-1) !== '/') {
+					newPath = newPath + '/';
+				}
+				//serialize the param object to convert to string
+				//and concatenate to the newPath
+				newPath = newPath + serialize(req.params);
+				
+			}
+
+			//Kill the params property so they aren't added back on to the end of the url
+			req.params = undefined;
 
 			// add file endings (method verb and .json).
 			if (newPath[newPath.length - 1] === '/') {

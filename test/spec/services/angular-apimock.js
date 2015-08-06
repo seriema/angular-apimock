@@ -94,7 +94,6 @@ describe('Service: apiMock', function () {
 
 		function expectHttpSuccess(done, fail) {
 			$httpBackend.expect(defaultExpectMethod, defaultExpectPath).respond({});
-
 			$http(defaultRequest)
 				.success(function () {
 					done && done();
@@ -376,6 +375,58 @@ describe('Service: apiMock', function () {
 					$location.search(key, null);
 				});
 
+			});
+			
+			describe('enable query params', function () {
+
+				beforeEach(function() {
+					apiMockProvider.config({stripQueries: false});
+					// Set global flag to mock
+					$location.search('apiMock', true);
+				});
+
+				afterEach(function() {
+					apiMockProvider.config({stripQueries: true});
+				});
+
+				it('should NOT ignore query objects in request URL (path has /?)', function () {
+					defaultRequest.url = '/api/pokemon/?name=pikachu';
+					defaultExpectPath = '/mock_data/pokemon/name=pikachu.get.json';
+					expectHttpSuccess();
+				});
+
+				it('should NOT ignore query objects in request URL (path has only ?)', function () {
+					defaultRequest.url = '/api/pokemon?name=pikachu';
+					defaultExpectPath = '/mock_data/pokemon/name=pikachu.get.json';
+					expectHttpSuccess();
+				});
+
+				it('should sort query objects in request URL', function () {
+					defaultRequest.url = '/api/pokemon?strength=electricity&name=pikachu';
+					defaultExpectPath = '/mock_data/pokemon/name=pikachu&strength=electricity.get.json';
+					expectHttpSuccess();
+				});
+
+				it('should NOT ignore query objects in request OBJECT', function () {
+					defaultRequest.url = '/api/pokemon';
+					defaultRequest.params = {'name': 'pikachu', 'strength': 'electricity'};
+					defaultExpectPath = '/mock_data/pokemon/name=pikachu&strength=electricity.get.json';
+					expectHttpSuccess();
+				});
+
+				it('should sort query objects in alphabetical order', function () {
+					defaultRequest.url = '/api/pokemon';
+					defaultRequest.params = {'strength': 'electricity', 'name': 'pikachu'};
+					defaultExpectPath = '/mock_data/pokemon/name=pikachu&strength=electricity.get.json';
+					expectHttpSuccess();
+				});
+
+				it('should handle a mix of query objects and query params in url', function () {
+					defaultRequest.url = '/api/pokemon?strength=electricity&name=pikachu';
+					defaultRequest.params = {'hp': '150'};
+					defaultExpectPath = '/mock_data/pokemon/hp=150&name=pikachu&strength=electricity.get.json';
+					expectHttpSuccess();
+				});
 			});
 		});
 

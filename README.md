@@ -116,6 +116,14 @@ Default: `false`
 
 Disable apiMock completely. Used for production.
 
+#### stripQueries
+
+Type: `boolean`
+
+Default: `true`
+
+Remove query strings from url.  If false then "?" is replaced with "\" in expected filepath.
+
 
 ## Samples
 
