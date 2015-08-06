@@ -241,12 +241,6 @@ module.exports = function (grunt) {
 	]);
 
 	grunt.registerTask('test', [
-		'newer:jshint',
-		'connect:test',
-		'karma'
-	]);
-
-	grunt.registerTask('fulltest', [
 		'jshint',
 		'connect:test',
 		'karma'
@@ -273,7 +267,6 @@ module.exports = function (grunt) {
 	grunt.registerTask('publish:major', ['fulltest', 'bump-only:major', '_publish']);
 
 	grunt.registerTask('default', [
-		'newer:jshint',
 		'test',
 		'build'
 	]);
