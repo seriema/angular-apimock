@@ -77,7 +77,7 @@ angular.module('apiMock', [])
 			var result = {};
 			paramArray.forEach(function(param) {
 				param = param.split('=');
-				result[param[0]] = decodeURIComponent(param[1] || '');
+				result[param[0]] = param[1] || '';
 			});
 
 			return result;
