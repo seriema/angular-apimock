@@ -42,9 +42,14 @@ module.exports = function (grunt) {
 			}
 		},
 
-		changelog: {
+		conventionalChangelog: {
 			options: {
-				// We'll use defaults for everything. https://github.com/btford/grunt-conventional-changelog
+				changelogOpts: {
+					preset: 'angular'
+				}
+			},
+			release: {
+				src: 'CHANGELOG.md'
 			}
 		},
 
@@ -257,7 +262,7 @@ module.exports = function (grunt) {
 	grunt.registerTask('_publish', [
 		'build',
 		'nugetpack',
-		'changelog',
+		'conventionalChangelog',
 		'bump-commit',
 		'nugetpush'
 	]);
