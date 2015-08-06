@@ -203,7 +203,10 @@ module.exports = function (grunt) {
 				browsers: ['PhantomJS'],
 				reporters: [ 'dots', 'coverage' ],
 				coverageReporter: {
-					type: 'text',
+					reporters: [
+						{ type: 'lcov', subdir: 'PhantomJS' },
+						{ type: 'text' }
+					]
 				}
 			},
 			angular12: {
@@ -236,7 +239,15 @@ module.exports = function (grunt) {
 					]}
 				]
 			}
-		}
+		},
+
+		// To run locally you need to set `COVERALLS_REPO_TOKEN` as an environment variable.
+		coveralls: {
+			options: {
+				force: true,
+			},
+			src: 'coverage/**/*.info',
+		},
 	});
 
 	grunt.registerTask('serve', [
