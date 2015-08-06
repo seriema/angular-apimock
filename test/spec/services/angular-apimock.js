@@ -69,6 +69,14 @@ describe('Service: apiMock', function () {
 	// TODO: Add test for $http config overrides.
 	describe('httpInterceptor', function () {
 
+		function setGlobalCommand(command) {
+			$location.search('apiMock', command);
+		}
+
+		function unsetGlobalCommand() {
+			setGlobalCommand(null);
+		}
+
 		function expectMockEnabled() {
 		}
 
@@ -186,13 +194,11 @@ describe('Service: apiMock', function () {
 
 				describe('auto', function () {
 					beforeEach(function () {
-						// Set global flag to auto
-						$location.search('apiMock', 'auto');
+						setGlobalCommand('auto');
 					});
 
 					afterEach(function () {
-						// Remove global flag
-						$location.search('apiMock', null);
+						unsetGlobalCommand();
 					});
 
 					it('should automatically mock when request fails', function () {
@@ -217,8 +223,11 @@ describe('Service: apiMock', function () {
 				describe('HTTP status', function () {
 
 					beforeEach(function () {
-						// Set global flag to HTTP status
-						$location.search('apiMock', 404);
+						setGlobalCommand(404);
+					});
+
+					afterEach(function () {
+						unsetGlobalCommand();
 					});
 
 					it('should return status', function () {
@@ -261,8 +270,11 @@ describe('Service: apiMock', function () {
 				describe('mock', function () {
 
 					beforeEach(function () {
-						// Set global flag to mock
-						$location.search('apiMock', true);
+						setGlobalCommand(true);
+					});
+
+					afterEach(function () {
+						unsetGlobalCommand();
 					});
 
 					it('should ignore query objects in request URL (path has /?)', function () {
@@ -352,41 +364,37 @@ describe('Service: apiMock', function () {
 				});
 
 				it('should override command mock', function () {
-					var key = 'apimock';
-					$location.search(key, true);
+					setGlobalCommand(true);
 
 					// Test connection.
 					expectMockDisabled();
 					expectHttpFailure();
 
-					// Remove param tested from the location.
-					$location.search(key, null);
+					unsetGlobalCommand();
 				});
 
 				it('should override command auto', function () {
-					var key = 'apimock';
-					$location.search(key, 'auto');
+					setGlobalCommand('auto');
 
 					// Test connection.
 					expectMockDisabled();
 					expectHttpFailure();
 
-					// Remove param tested from the location.
-					$location.search(key, null);
+					unsetGlobalCommand();
 				});
 
 			});
-			
+
 			describe('enable query params', function () {
 
 				beforeEach(function() {
 					apiMockProvider.config({stripQueries: false});
-					// Set global flag to mock
-					$location.search('apiMock', true);
+					setGlobalCommand(true);
 				});
 
 				afterEach(function() {
 					apiMockProvider.config({stripQueries: true});
+					unsetGlobalCommand();
 				});
 
 				it('should still redirect simple paths without query params', function () {
@@ -449,24 +457,28 @@ describe('Service: apiMock', function () {
 		describe('logging', function () {
 
 			it('should log when command is true', function () {
-				$location.search('apiMock', true);
+				setGlobalCommand(true);
 
 				expectHttpSuccess(function () {
 					expect($log.info.logs[0][0]).to.equal('apiMock: rerouting ' + defaultApiPath + ' to ' + defaultMockPath);
 				});
+
+				unsetGlobalCommand();
 			});
 
 			it('should log when command is auto', function () {
-				$location.search('apiMock', 'auto');
+				setGlobalCommand('auto');
 
 				$httpBackend.expect(defaultRequest.method, defaultApiPath).respond(404);
 				expectHttpSuccess(function () {
 					expect($log.info.logs[0][0]).to.equal('apiMock: recovering from failure at ' + defaultApiPath);
 				});
+
+				unsetGlobalCommand();
 			});
 
 			it('should log when command is a HTTP status', function () {
-				$location.search('apiMock', 404);
+				setGlobalCommand(404);
 
 				// Don't do $httpBackend.expect() because the command doesn't do a real request.
 				$http(defaultRequest)
@@ -476,6 +488,7 @@ describe('Service: apiMock', function () {
 					.success(assertFail);
 
 				$rootScope.$digest();
+				unsetGlobalCommand();
 			});
 
 		});
