@@ -200,7 +200,11 @@ module.exports = function (grunt) {
 				singleRun: true
 			},
 			headless: {
-				browsers: ['PhantomJS']
+				browsers: ['PhantomJS'],
+				reporters: [ 'dots', 'coverage' ],
+				coverageReporter: {
+					type: 'text',
+				}
 			},
 			angular12: {
 				files: [{

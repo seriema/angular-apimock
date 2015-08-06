@@ -18,7 +18,7 @@ module.exports = function(config) {
 		frameworks: ['mocha', 'chai'],
 
 		// reporter style
-		reporters: [ 'dots', 'coverage' ],
+		reporters: [ 'progress' ],
 
 		preprocessors: {
 			// source files, that you wanna generate coverage for
@@ -63,10 +63,6 @@ module.exports = function(config) {
 
 		// Continuous Integration mode
 		// if true, it capture browsers, run tests and exit
-		singleRun: false,
-
-		coverageReporter: {
-			type : 'text'
-		}
+		singleRun: false
 	});
 };
