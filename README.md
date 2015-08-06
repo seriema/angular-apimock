@@ -171,7 +171,6 @@ angular.module('myModule', [])
 * Demo based on Magic The Gathering cards (reference to a //build presentation)
 * Demo for checking mock-flag
 * Demo with [Interfake](https://github.com/basicallydan/interfake)
-* Handle queries (?search=banana), not just ignore them
 * Handle body data in POST requests?
 * HTTP response overrides (200?) shouldn't always go to $http.error()
 * Test `apimock=true` in more scenarios
