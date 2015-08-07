@@ -60,9 +60,73 @@ module.exports = function(config) {
 		// - IE (only Windows)
 		browsers: ['Firefox'],
 
+		// For more browsers on Sauce Labs see:
+		// https://saucelabs.com/docs/platforms/webdriver
+		captureTimeout: 120000,
+		customLaunchers: {
+			'SL_Chrome': {
+				base: 'SauceLabs',
+				browserName: 'chrome'
+			},
+			'SL_Firefox': {
+				base: 'SauceLabs',
+				browserName: 'firefox'
+			},
+			'SL_Safari': {
+				base: 'SauceLabs',
+				browserName: 'safari'
+			},
+			'SL_IE_9': {
+				base: 'SauceLabs',
+				browserName: 'internet explorer',
+				platform: 'Windows 2008',
+				version: '9'
+			},
+			'SL_IE_10': {
+				base: 'SauceLabs',
+				browserName: 'internet explorer',
+				platform: 'Windows 2012',
+				version: '10'
+			},
+			'SL_IE_11': {
+				base: 'SauceLabs',
+				browserName: 'internet explorer',
+				platform: 'Windows 8.1',
+				version: '11'
+			},
+			'SL_iOS': {
+				base: 'SauceLabs',
+				browserName: 'iphone'
+			}
+		},
 
 		// Continuous Integration mode
 		// if true, it capture browsers, run tests and exit
 		singleRun: false
 	});
+
+	// Travis specific configs.
+	if (process.env.TRAVIS) {
+		var buildLabel = 'TRAVIS #' + process.env.TRAVIS_BUILD_NUMBER + ' (' + process.env.TRAVIS_BUILD_ID + ')';
+
+		config.logLevel = config.LOG_DEBUG;
+
+		config.sauceLabs.build = buildLabel;
+		config.sauceLabs.startConnect = false;
+		config.sauceLabs.tunnelIdentifier = process.env.TRAVIS_JOB_NUMBER;
+		config.sauceLabs.recordScreenshots = true;
+
+		// Debug logging into a file, that we print out at the end of the build.
+		config.loggers.push({
+			type: 'file',
+			filename: process.env.LOGS_DIR + '/' + 'karma.log'
+		});
+
+		if (process.env.BROWSER_PROVIDER === 'saucelabs' || !process.env.BROWSER_PROVIDER) {
+			// Allocating a browser can take pretty long (eg. if we are out of capacity and need to wait
+			// for another build to finish) and so the `captureTimeout` typically kills
+			// an in-queue-pending request, which makes no sense.
+			config.captureTimeout = 0;
+		}
+	}
 };
