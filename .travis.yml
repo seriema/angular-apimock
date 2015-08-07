@@ -11,7 +11,7 @@ script:
   - 'npm run coveralls'
   - 'npm run saucelabs'
 after_script:
-  - 'cat $LOGS_DIR/karma.log'
+  - 'cat logs/karma.log'
 env:
   global:
     - secure: L+EPka9O38GaLwg3xqr6p9rwvwy4MnQH0Fba8Qlt1M5QzLRz3e9JdVvxCQrQlETR5Guc5CN1dLOQFhVyYoCFNcOs3VkeD/mnegq16LwFE9vcmxySRqleUja3eCQ4HQJP99pSiCHYQVGvoZUf82nYNz6bh7JusbGapyyUF4Nl1TU=
