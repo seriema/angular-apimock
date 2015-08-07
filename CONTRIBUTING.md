@@ -52,11 +52,10 @@ See [.jshintrc](.jshintrc) for the [JSHint](http://jshint.com) conventions (use 
 
 ### Commit guidelines
 
-Run `grunt test` in-between commits to check JS style and the code is working.
+Run `grunt watch` to run unit-tests and JSHint continuously while developing. Always run `grunt test` before doing a commit. *Never commit if `grunt test` gives an error!*
 
-Always run `grunt` before a commit as it runs `grunt test` and builds the distributions files. Use `npm run debug` to run Karma tests in debug mode using Chrome.
+Run `npm run debug` to debug in Chrome.
 
-Never commit if `grunt` gives an error!
 
 Don't commit unnecessary changes (like white-space differences). Github for [Windows](https://windows.github.com) / [Mac](https://mac.github.com) has a useful diff-tool that allows you to pick files and which rows to include in the commit.
 

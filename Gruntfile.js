@@ -233,6 +233,16 @@ module.exports = function (grunt) {
 					]
 				}
 			},
+			dist: {
+				files: [{
+					src: [
+						'app/bower_components/angular/angular.js',
+						'app/bower_components/angular-mocks/angular-mocks.js',
+						'<%= yeoman.dist %>/*.min.js',
+						'<%= watch.jsTest.files %>',
+					]},
+				],
+			},
 			angular12: {
 				files: [{
 					src: [
@@ -293,7 +303,8 @@ module.exports = function (grunt) {
 		'clean',
 		'concat',
 		'ngAnnotate',
-		'uglify'
+		'uglify',
+		'karma:dist',
 	]);
 
 	grunt.registerTask('_publish', [
@@ -311,6 +322,5 @@ module.exports = function (grunt) {
 
 	grunt.registerTask('default', [
 		'test',
-		'build'
 	]);
 };
