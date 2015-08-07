@@ -123,11 +123,9 @@ module.exports = function(config) {
 		config.sauceLabs.tunnelIdentifier = process.env.TRAVIS_JOB_NUMBER;
 		config.sauceLabs.recordScreenshots = true;
 
-		if (process.env.BROWSER_PROVIDER === 'saucelabs' || !process.env.BROWSER_PROVIDER) {
-			// Allocating a browser can take pretty long (eg. if we are out of capacity and need to wait
-			// for another build to finish) and so the `captureTimeout` typically kills
-			// an in-queue-pending request, which makes no sense.
-			config.captureTimeout = 0;
-		}
+		// Allocating a browser can take pretty long (eg. if we are out of capacity and need to wait
+		// for another build to finish) and so the `captureTimeout` typically kills
+		// an in-queue-pending request, which makes no sense.
+		config.captureTimeout = 0;
 	}
 };
