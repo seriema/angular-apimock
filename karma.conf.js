@@ -103,6 +103,7 @@ module.exports = function(config) {
 		},
 
 		// SauceLabs config for local development.
+		// You need to set `SAUCE_USERNAME` and `SAUCE_ACCESS_KEY` as environment variables.
 		sauceLabs: {
 			testName: 'Angular ApiMock',
 			startConnect: true,
@@ -121,10 +122,6 @@ module.exports = function(config) {
 		config.sauceLabs.startConnect = false;
 		config.sauceLabs.tunnelIdentifier = process.env.TRAVIS_JOB_NUMBER;
 		config.sauceLabs.recordScreenshots = true;
-
-		// Use SauceLabs browsers and report back.
-		config.browsers = Object.keys(config.customLaunchers);
-		config.reporters.push('saucelabs');
 
 		// Allocating a browser can take pretty long (eg. if we are out of capacity and need to wait
 		// for another build to finish) and so the `captureTimeout` typically kills

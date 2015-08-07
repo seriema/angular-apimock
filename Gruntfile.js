@@ -57,14 +57,14 @@ module.exports = function (grunt) {
 		watch: {
 			js: {
 				files: ['<%= yeoman.app %>/scripts/{,*/}*.js'],
-				tasks: ['newer:jshint:all', 'karma:coverage'],
+				tasks: ['newer:jshint:all', 'karma:default'],
 				options: {
 					livereload: true
 				}
 			},
 			jsTest: {
 				files: ['test/spec/{,*/}*.js'],
-				tasks: ['newer:jshint:test', 'karma:coverage']
+				tasks: ['newer:jshint:test', 'karma:default']
 			},
 			gruntfile: {
 				files: ['Gruntfile.js']
@@ -199,6 +199,30 @@ module.exports = function (grunt) {
 				configFile: 'karma.conf.js',
 				singleRun: true
 			},
+			default: {
+				// Default
+			},
+			sauce: {
+				sauceLabs: {
+					testName: 'Angular ApiMock with multiple browsers',
+				},
+				browsers: ['SL_Chrome', 'SL_Firefox', 'SL_Safari', 'SL_iOS', 'SL_IE_8', 'SL_IE_9', 'SL_IE_10', 'SL_IE_11'],
+				reporters: [ 'progress', 'saucelabs' ],
+				coverageReporter: {
+					reporters: [
+						{ type: 'lcov' },
+						{ type: 'text' },
+					],
+				},
+				files: [{
+					src: [
+						'test/ref/angular-v1.2.js',
+						'test/ref/angular-mocks-v1.2.js',
+						'<%= watch.js.files %>',
+						'<%= watch.jsTest.files %>',
+					]},
+				],
+			},
 			coverage: {
 				browsers: ['PhantomJS'],
 				reporters: [ 'dots', 'coverage' ],
@@ -259,7 +283,10 @@ module.exports = function (grunt) {
 	grunt.registerTask('test', [
 		'jshint',
 		'connect:test',
-		'karma'
+		'karma:coverage',
+		'karma:angular12',
+		'karma:angular13',
+		'karma:angular14',
 	]);
 
 	grunt.registerTask('build', [

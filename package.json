@@ -53,6 +53,7 @@
     "postinstall": "bower install",
     "test": "grunt test",
     "debug": "./node_modules/.bin/karma start karma.conf.js --browsers=Chrome --debug --autoWatch=true",
+    "saucelabs": "grunt karma:sauce",
     "coveralls": "grunt coveralls"
   }
 }
