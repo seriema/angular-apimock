@@ -58,10 +58,9 @@ module.exports = function(config) {
 		// - Safari (only Mac)
 		// - PhantomJS
 		// - IE (only Windows)
-		browsers: ['Firefox'],
+		browsers: ['PhantomJS'],
 
-		// For more browsers on Sauce Labs see:
-		// https://saucelabs.com/docs/platforms/webdriver
+		// Check out https://saucelabs.com/platforms for all browser/platform combos
 		captureTimeout: 120000,
 		customLaunchers: {
 			'SL_Chrome': {
@@ -76,16 +75,19 @@ module.exports = function(config) {
 				base: 'SauceLabs',
 				browserName: 'safari'
 			},
+			'SL_IE_8': {
+				base: 'SauceLabs',
+				browserName: 'internet explorer',
+				version: '8'
+			},
 			'SL_IE_9': {
 				base: 'SauceLabs',
 				browserName: 'internet explorer',
-				platform: 'Windows 2008',
 				version: '9'
 			},
 			'SL_IE_10': {
 				base: 'SauceLabs',
 				browserName: 'internet explorer',
-				platform: 'Windows 2012',
 				version: '10'
 			},
 			'SL_IE_11': {
@@ -104,9 +106,6 @@ module.exports = function(config) {
 		sauceLabs: {
 			testName: 'Angular ApiMock',
 			startConnect: true,
-			options: {
-				'selenium-version': '2.41.0'
-			}
 		},
 
 		// Continuous Integration mode
@@ -122,6 +121,10 @@ module.exports = function(config) {
 		config.sauceLabs.startConnect = false;
 		config.sauceLabs.tunnelIdentifier = process.env.TRAVIS_JOB_NUMBER;
 		config.sauceLabs.recordScreenshots = true;
+
+		// Use SauceLabs browsers and report back.
+		config.browsers = Object.keys(config.customLaunchers);
+		config.reporters.push('saucelabs');
 
 		// Allocating a browser can take pretty long (eg. if we are out of capacity and need to wait
 		// for another build to finish) and so the `captureTimeout` typically kills
