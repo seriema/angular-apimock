@@ -6,7 +6,8 @@ before_install:
 before_script:
   - 'export DISPLAY=:99.0'
   - 'sh -e /etc/init.d/xvfb start'
-after_script:
+script:
+  - 'npm test'
   - 'npm run coveralls'
   - 'npm run saucelabs'
 env:
