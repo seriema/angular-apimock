@@ -100,6 +100,15 @@ module.exports = function(config) {
 			}
 		},
 
+		// SauceLabs config for local development.
+		sauceLabs: {
+			testName: 'Angular ApiMock',
+			startConnect: true,
+			options: {
+				'selenium-version': '2.41.0'
+			}
+		},
+
 		// Continuous Integration mode
 		// if true, it capture browsers, run tests and exit
 		singleRun: false
