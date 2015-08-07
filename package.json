@@ -1,10 +1,14 @@
 {
   "name": "angular-apiMock",
   "version": "0.1.8",
+  "author": "John-Philip Johansson <seriema@gmail.com> (http://johansson.jp/)",
+  "homepage": "http://johansson.jp/angular-apimock/",
+  "bugs": "https://github.com/seriema/angular-apimock/issues",
   "repository": {
     "type": "git",
     "url": "git://github.com/seriema/angular-apimock.git"
   },
+  "license": "MIT",
   "dependencies": {},
   "devDependencies": {
     "chai": "^3.2.0",
