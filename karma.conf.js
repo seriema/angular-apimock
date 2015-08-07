@@ -133,7 +133,7 @@ module.exports = function(config) {
 		// Debug logging into a file, that we print out at the end of the build.
 		config.loggers.push({
 			type: 'file',
-			filename: 'logs/karma.log'
+			filename: '/logs/karma.log'
 		});
 	}
 };
