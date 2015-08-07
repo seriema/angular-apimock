@@ -206,7 +206,7 @@ module.exports = function (grunt) {
 				sauceLabs: {
 					testName: 'Angular ApiMock with multiple browsers',
 				},
-				browsers: ['SL_Chrome', 'SL_Firefox', 'SL_Safari', 'SL_iOS', 'SL_IE_8', 'SL_IE_9', 'SL_IE_10', 'SL_IE_11'],
+				browsers: ['SL_Chrome', 'SL_Firefox', 'SL_Safari', 'SL_iOS', /*'SL_IE_8', */'SL_IE_9', 'SL_IE_10', 'SL_IE_11'],
 				reporters: [ 'progress', 'saucelabs' ],
 				coverageReporter: {
 					reporters: [
