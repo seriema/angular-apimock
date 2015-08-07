@@ -118,6 +118,8 @@ module.exports = function(config) {
 	if (process.env.TRAVIS) {
 		var buildLabel = 'TRAVIS #' + process.env.TRAVIS_BUILD_NUMBER + ' (' + process.env.TRAVIS_BUILD_ID + ')';
 
+		config.logLevel = config.LOG_DEBUG;
+
 		config.sauceLabs.build = buildLabel;
 		config.sauceLabs.startConnect = false;
 		config.sauceLabs.tunnelIdentifier = process.env.TRAVIS_JOB_NUMBER;
@@ -127,5 +129,11 @@ module.exports = function(config) {
 		// for another build to finish) and so the `captureTimeout` typically kills
 		// an in-queue-pending request, which makes no sense.
 		config.captureTimeout = 0;
+
+		// Debug logging into a file, that we print out at the end of the build.
+		config.loggers.push({
+			type: 'file',
+			filename: process.env.LOGS_DIR + '/' + 'karma.log'
+		});
 	}
 };
