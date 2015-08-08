@@ -203,10 +203,11 @@ module.exports = function (grunt) {
 				// Default
 			},
 			sauce: {
-				browsers: ['SL_Chrome', 'SL_Firefox', 'SL_Safari', 'SL_iOS', /*'SL_IE_8', */'SL_IE_9', 'SL_IE_10', 'SL_IE_11'],
+				browsers: ['SL_Chrome', 'SL_Firefox', 'SL_Safari', 'SL_iOS', 'SL_IE_8', 'SL_IE_9', 'SL_IE_10', 'SL_IE_11'],
 				reporters: [ 'progress', 'saucelabs' ],
 				files: [{
 					src: [
+						// It has to be Angular 1.2 because it's the lowest one, and the only one that runs on IE8.
 						'test/ref/angular-v1.2.js',
 						'test/ref/angular-mocks-v1.2.js',
 						'<%= watch.js.files %>',

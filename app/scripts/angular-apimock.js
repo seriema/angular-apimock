@@ -69,9 +69,21 @@ angular.module('apiMock', [])
 			return newArray;
 		}
 
+		// Object.keys isn't supported in IE8. Which we need to support as long as we support Angular 1.2.
+		// This isn't a complete polyfill! It's just enough for what we need (and we don't need to bloat).
+		function objectKeys(object) {
+			var keys = [];
+
+			angular.forEach(object, function (value, key) {
+				keys.push(key);
+			});
+
+			return keys;
+		}
+
 		// TODO: Does not support complex objects. $httpParamSerializerJQLike from Angular 1.4 supports it, and sorts them. But we need to support 1.2+. ("Borrow" their source code?)
 		function serializeQueryObject(paramObj) {
-			var keys = Object.keys(paramObj);
+			var keys = objectKeys(paramObj);
 			keys.sort(); // We want the query params alphabetically.
 
 			var paramArray = mapArray(keys, function(key) {
