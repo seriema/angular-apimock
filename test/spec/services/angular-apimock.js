@@ -84,41 +84,36 @@ describe('Service: apiMock', function () {
 			defaultExpectPath = defaultApiPath;
 		}
 
-		function expectHttpFailure(done, fail) {
+		function expectHttpFailure(doneCb, failCb) {
 			$httpBackend.expect(defaultExpectMethod, defaultExpectPath).respond(404);
 
 			$http(defaultRequest)
 				.success(function () {
-					assertFail(); // Todo: How to fail the test if this happens?
-					fail && fail();
+					fail(); // Todo: How to fail the test if this happens?
+					failCb && failCb();
 				})
 				.error(function (data, status) {
-					done && done(data, status);
+					doneCb && doneCb(data, status);
 				});
 
 			$rootScope.$digest();
 			$httpBackend.flush();
 		}
 
-		function expectHttpSuccess(done, fail) {
+		function expectHttpSuccess(doneCb, failCb) {
 			$httpBackend.expect(defaultExpectMethod, defaultExpectPath).respond({});
 			$http(defaultRequest)
 				.success(function () {
-					done && done();
+					doneCb && doneCb();
 				})
 				.error(function () {
-					assertFail();
-					fail && fail();
+					fail();
+					failCb && failCb();
 				});
 
 			$rootScope.$digest();
 			$httpBackend.flush();
 		}
-
-		function assertFail() {
-			expect(true).to.be.false; // Todo: How to fail properly? There should be a method for that.
-		}
-
 
 
 		describe('URL flag', function () {
@@ -206,7 +201,7 @@ describe('Service: apiMock', function () {
 						$httpBackend.expect('GET', defaultApiPath).respond(404);
 
 						expectHttpSuccess(function() {
-							expect(apiMock._countFallbacks()).to.equal(0);
+							expect(apiMock._countFallbacks()).toEqual(0);
 						});
 					});
 
@@ -242,10 +237,10 @@ describe('Service: apiMock', function () {
 
 							// Cannot use $http.expect() because HTTP status doesn't do a request
 							$http(defaultRequest)
-								.success(assertFail)
+								.success(fail)
 								.error(function(data, status) {
-									expect(apiMock._countFallbacks()).to.equal(0);
-									expect(status).to.equal(option);
+									expect(apiMock._countFallbacks()).toEqual(0);
+									expect(status).toEqual(option);
 								});
 
 							$rootScope.$digest();
@@ -255,12 +250,12 @@ describe('Service: apiMock', function () {
 					it('should have basic header data in $http request status override', function () {
 						// Cannot use $http.expect() because HTTP status doesn't do a request
 						$http(defaultRequest)
-							.success(assertFail)
+							.success(fail)
 							.error(function(data, status, headers) {
-								expect(apiMock._countFallbacks()).to.equal(0);
-								expect(headers).to.exist;
-								expect(headers['Content-Type']).to.equal('text/html; charset=utf-8');
-								expect(headers.Server).to.equal('Angular ApiMock');
+								expect(apiMock._countFallbacks()).toEqual(0);
+								expect(headers).toExist;
+								expect(headers['Content-Type']).toEqual('text/html; charset=utf-8');
+								expect(headers.Server).toEqual('Angular ApiMock');
 							});
 
 						$rootScope.$digest();
@@ -503,7 +498,7 @@ describe('Service: apiMock', function () {
 				setGlobalCommand(true);
 
 				expectHttpSuccess(function () {
-					expect($log.info.logs[0][0]).to.equal('apiMock: rerouting ' + defaultApiPath + ' to ' + defaultMockPath);
+					expect($log.info.logs[0][0]).toEqual('apiMock: rerouting ' + defaultApiPath + ' to ' + defaultMockPath);
 				});
 
 				unsetGlobalCommand();
@@ -514,7 +509,7 @@ describe('Service: apiMock', function () {
 
 				$httpBackend.expect(defaultRequest.method, defaultApiPath).respond(404);
 				expectHttpSuccess(function () {
-					expect($log.info.logs[0][0]).to.equal('apiMock: recovering from failure at ' + defaultApiPath);
+					expect($log.info.logs[0][0]).toEqual('apiMock: recovering from failure at ' + defaultApiPath);
 				});
 
 				unsetGlobalCommand();
@@ -526,9 +521,9 @@ describe('Service: apiMock', function () {
 				// Don't do $httpBackend.expect() because the command doesn't do a real request.
 				$http(defaultRequest)
 					.error(function () {
-						expect($log.info.logs[0][0]).to.equal('apiMock: mocking HTTP status to 404');
+						expect($log.info.logs[0][0]).toEqual('apiMock: mocking HTTP status to 404');
 					})
-					.success(assertFail);
+					.success(fail);
 
 				$rootScope.$digest();
 				unsetGlobalCommand();
