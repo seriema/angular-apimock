@@ -124,6 +124,14 @@ Default: `true`
 
 Remove query strings from url.  If false then "?" is replaced with "\" in expected filepath.
 
+#### delay
+
+Type: `number`
+
+Default: `0`
+
+Simulate network latency (in milliseconds).
+
 
 ## Samples
 

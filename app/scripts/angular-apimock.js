@@ -46,7 +46,8 @@ angular.module('apiMock', [])
 			mockDataPath: '/mock_data',
 			apiPath: '/api',
 			disable: false,
-			stripQueries: true
+			stripQueries: true,
+			delay: 0,
 		};
 		var fallbacks = [];
 
@@ -269,6 +270,10 @@ angular.module('apiMock', [])
 			return fallbacks.length;
 		};
 
+		p.getDelay = function () {
+			return config.delay;
+		};
+
 		p.onRequest = function (req) {
 			if (config.disable) {
 				return req;
@@ -331,7 +336,7 @@ angular.module('apiMock', [])
 		};
 	})
 
-	.service('httpInterceptor', function($injector, $q, apiMock) {
+	.service('httpInterceptor', function($injector, $q, $timeout, apiMock) {
 		/* The main service. Is jacked in as a interceptor on `$http` so it gets called
 		 * on every http call. This allows us to do our magic. It uses the provider
 		 * `apiMock` to determine if a mock should be done, then do the actual mocking.
@@ -344,18 +349,39 @@ angular.module('apiMock', [])
 		};
 
 		this.response = function (res) {
-			res = apiMock.onResponse(res);
+			var deferred = $q.defer();
 
-			return res || $q.when(res);
+			$timeout(
+				function() {
+					deferred.resolve( apiMock.onResponse(res) ); // TODO: Apparently, no tests break regardless what this resolves to. Fix the tests!
+				},
+				apiMock.getDelay(),
+				true // Trigger a $digest.
+			);
+
+			return deferred.promise;
 		};
 
 		this.responseError = function (rej) {
-			var recover = apiMock.recover(rej);
-			if (recover) {
-				var $http = $injector.get('$http');
-				return $http(recover);
-			}
+			var deferred = $q.defer();
 
-			return $q.reject(rej);
+			$timeout(
+				function () {
+					var recover = apiMock.recover(rej);
+
+					if (recover) {
+						var $http = $injector.get('$http');
+						$http(recover).then(function (data) {
+							deferred.resolve(data);
+						});
+					} else {
+						deferred.reject( rej );
+					}
+				},
+				apiMock.getDelay(),
+				true // Trigger a $digest.
+			);
+
+			return deferred.promise;
 		};
 	});
