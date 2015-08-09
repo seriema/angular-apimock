@@ -308,9 +308,9 @@ module.exports = function (grunt) {
 	]);
 
 	grunt.registerTask('publish', ['publish:patch']);
-	grunt.registerTask('publish:patch', ['test', 'bump-only:patch', '_publish']);
-	grunt.registerTask('publish:minor', ['test', 'bump-only:minor', '_publish']);
-	grunt.registerTask('publish:major', ['test', 'bump-only:major', '_publish']);
+	grunt.registerTask('publish:patch', ['test', 'karma:sauce', 'bump-only:patch', '_publish']);
+	grunt.registerTask('publish:minor', ['test', 'karma:sauce', 'bump-only:minor', '_publish']);
+	grunt.registerTask('publish:major', ['test', 'karma:sauce', 'bump-only:major', '_publish']);
 
 	grunt.registerTask('default', [
 		'test',
