@@ -1,4 +1,4 @@
-/*! Angular API Mock v0.1.8
+/*! Angular API Mock v0.2.0
  * Licensed with MIT
  * Made with ♥ from Seriema + Redhorn */
 /* Create the main module, `apiMock`. It's the one that needs to be included in
@@ -49,57 +49,102 @@ angular.module('apiMock', [])
 			mockDataPath: '/mock_data',
 			apiPath: '/api',
 			disable: false,
-			stripQueries: true
+			stripQueries: true,
+			delay: 0,
 		};
 		var fallbacks = [];
 
 		// Helper methods
 		//
 
-		function serialize(obj) {
-			var str = [];
+		// TODO: IE8: remove when we drop IE8/Angular 1.2 support.
+		// Object.keys isn't supported in IE8. Which we need to support as long as we support Angular 1.2.
+		// This isn't a complete polyfill! It's just enough for what we need (and we don't need to bloat).
+		function objectKeys(object) {
+			var keys = [];
 
-			obj = sortObjPropertiesAlpha(obj);
-			angular.forEach(obj, function(value, p) {
-				var encodedValue = encodeURIComponent(value);
-				str.push(encodeURIComponent(p) + '=' + encodedValue);
+			angular.forEach(object, function (value, key) {
+				keys.push(key);
 			});
-			return str.join('&');
+
+			return keys;
 		}
 
-		function queryStringToJSON(url) {
-			var paramString = url.split('?')[1];
-			var paramArray = [];
+		// Taken from Angular 1.4.x: https://github.com/angular/angular.js/blob/f13852c179ffd9ec18b7a94df27dec39eb5f19fc/src/Angular.js#L296
+		function forEachSorted(obj, iterator, context) {
+			var keys = objectKeys(obj).sort();
+			for (var i = 0; i < keys.length; i++) {
+				iterator.call(context, obj[keys[i]], keys[i]);
+			}
+			return keys;
+		}
 
-			if (paramString) {
-				paramArray = paramString.split('&');
+		// Taken from Angular 1.4.x: https://github.com/angular/angular.js/blob/929ec6ba5a60e926654583033a90aebe716123c0/src/ng/http.js#L18
+		function serializeValue(v) {
+			if (angular.isObject(v)) {
+				return angular.isDate(v) ? v.toISOString() : angular.toJson(v);
+			}
+			return v;
+		}
+
+		// Taken from Angular 1.4.x: https://github.com/angular/angular.js/blob/720012eab6fef5e075a1d6876dd2e508c8e95b73/src/ngResource/resource.js#L405
+		function encodeUriQuery(val, pctEncodeSpaces) {
+			return encodeURIComponent(val).
+			replace(/%40/gi, '@').
+			replace(/%3A/gi, ':').
+			replace(/%24/g, '$').
+			replace(/%2C/gi, ',').
+			replace(/%20/g, (pctEncodeSpaces ? '%20' : '+'));
+		}
+
+		// TODO: replace with a $httpParamSerializerJQLikeProvider() call when we require Angular 1.4 (i.e. when we drop 1.2 and 1.3).
+		// Taken from Angular 1.4.x: https://github.com/angular/angular.js/blob/929ec6ba5a60e926654583033a90aebe716123c0/src/ng/http.js#L108
+		function jQueryLikeParamSerializer(params) {
+			if (!params) {
+				return '';
 			}
 
-			var result = {};
-			paramArray.forEach(function(param) {
-				param = param.split('=');
-				result[param[0]] = decodeURIComponent(param[1] || '');
-			});
+			var parts = [];
 
-			return JSON.parse(JSON.stringify(result));
-		}
+			function serialize(toSerialize, prefix, topLevel) {
+				if (toSerialize === null || angular.isUndefined(toSerialize)) {
+					return;
+				}
 
-		function sortObjPropertiesAlpha(obj) {
-			var sorted = {},
-			key, a = [];
-
-			for (key in obj) {
-				if (obj.hasOwnProperty(key)) {
-					a.push(key);
+				if (angular.isArray(toSerialize)) {
+					angular.forEach(toSerialize, function(value, index) {
+						serialize(value, prefix + '[' + (angular.isObject(value) ? index : '') + ']');
+					});
+				} else if (angular.isObject(toSerialize) && !angular.isDate(toSerialize)) {
+					forEachSorted(toSerialize, function(value, key) {
+						serialize(value, prefix +
+						(topLevel ? '' : '[') +
+						key +
+						(topLevel ? '' : ']'));
+					});
+				} else {
+					parts.push(encodeUriQuery(prefix) + '=' + encodeUriQuery(serializeValue(toSerialize)));
 				}
 			}
 
-			a.sort();
+			serialize(params, '', true);
+			return parts.join('&');
+		}
 
-			for (key = 0; key < a.length; key++) {
-				sorted[a[key]] = obj[a[key]];
+		function queryStringToObject(paramString) {
+			if (!paramString) {
+				return {};
 			}
-			return sorted;
+
+			var paramArray = paramString.split('&');
+
+			var result = {};
+			angular.forEach(paramArray, function(param) {
+				param = param.split('=');
+				result[param[0]] = param[1] || '';
+			});
+
+			return result;
 		}
 
 		function detectParameter(keys) {
@@ -195,43 +240,33 @@ angular.module('apiMock', [])
 		}
 
 		function reroute(req) {
-			var regex;
 			if (!isApiPath(req.url)) {
 				return req;
 			}
 
 			// replace apiPath with mockDataPath.
 			var oldPath = req.url;
-			var newPath = req.url.substring(config.apiPath.length);
-			newPath = config.mockDataPath + newPath;
+			var redirectedPath = req.url.replace(config.apiPath, config.mockDataPath);
 
-			if (config.stripQueries) {
-				// strip query strings (like ?search=banana).
-				regex = /[a-zA-z0-9/.\-]*/;
-				newPath = regex.exec(newPath)[0];
-			} else {
-				var queryParamsFromUrl = queryStringToJSON(newPath);
-				//if req.params is an object leave it as is but if it isn't then 
-				//normalize it to an empty object so we can cleanly merge it with queryParamsFromUrl 
-				req.params = typeof req.params === 'object' ? req.params : {};
-				
-				// strip query strings (like ?search=banana).
-				regex = /[a-zA-z0-9/.\-]*/;
-				newPath = regex.exec(newPath)[0];
+			var split = redirectedPath.split('?');
+			var newPath = split[0];
+			var queries = split[1] || '';
 
+			// query strings are stripped by default (like ?search=banana).
+			if (!config.stripQueries) {
 				//test if we have query params
 				//if we do merge them on to the params object
-				if (typeof queryParamsFromUrl === 'object') {
-					req.params = angular.extend(req.params, queryParamsFromUrl);
-				}
+				var queryParamsFromUrl = queryStringToObject(queries);
+				var params = angular.extend(req.params || {}, queryParamsFromUrl);
+
 				//test if there is already a trailing /
-				if (newPath.substring(newPath.length-1) !== '/') {
-					newPath = newPath + '/';
+				if (newPath[newPath.length-1] !== '/') {
+					newPath += '/';
 				}
+
 				//serialize the param object to convert to string
 				//and concatenate to the newPath
-				newPath = newPath + serialize(req.params);
-				
+				newPath += angular.lowercase(jQueryLikeParamSerializer(params));
 			}
 
 			//Kill the params property so they aren't added back on to the end of the url
@@ -263,6 +298,10 @@ angular.module('apiMock', [])
 
 		p._countFallbacks = function () {
 			return fallbacks.length;
+		};
+
+		p.getDelay = function () {
+			return config.delay;
 		};
 
 		p.onRequest = function (req) {
@@ -327,7 +366,7 @@ angular.module('apiMock', [])
 		}];
 	})
 
-	.service('httpInterceptor', ["$injector", "$q", "apiMock", function($injector, $q, apiMock) {
+	.service('httpInterceptor', ["$injector", "$q", "$timeout", "apiMock", function($injector, $q, $timeout, apiMock) {
 		/* The main service. Is jacked in as a interceptor on `$http` so it gets called
 		 * on every http call. This allows us to do our magic. It uses the provider
 		 * `apiMock` to determine if a mock should be done, then do the actual mocking.
@@ -340,18 +379,39 @@ angular.module('apiMock', [])
 		};
 
 		this.response = function (res) {
-			res = apiMock.onResponse(res);
+			var deferred = $q.defer();
 
-			return res || $q.when(res);
+			$timeout(
+				function() {
+					deferred.resolve( apiMock.onResponse(res) ); // TODO: Apparently, no tests break regardless what this resolves to. Fix the tests!
+				},
+				apiMock.getDelay(),
+				true // Trigger a $digest.
+			);
+
+			return deferred.promise;
 		};
 
 		this.responseError = function (rej) {
-			var recover = apiMock.recover(rej);
-			if (recover) {
-				var $http = $injector.get('$http');
-				return $http(recover);
-			}
+			var deferred = $q.defer();
 
-			return $q.reject(rej);
+			$timeout(
+				function () {
+					var recover = apiMock.recover(rej);
+
+					if (recover) {
+						var $http = $injector.get('$http');
+						$http(recover).then(function (data) {
+							deferred.resolve(data);
+						});
+					} else {
+						deferred.reject( rej );
+					}
+				},
+				apiMock.getDelay(),
+				true // Trigger a $digest.
+			);
+
+			return deferred.promise;
 		};
 	}]);

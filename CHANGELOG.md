@@ -1,3 +1,26 @@
+<a name="0.2.0"></a>
+# 0.2.0 (2015-08-09)
+
+
+### Bug Fixes
+
+* **demo:** simple demo was outdated ([96b0196](https://github.com/seriema/angular-apimock/commit/96b0196))
+* **grunt:** grunt-conventional-changelog 2.0 changed name ([b21b909](https://github.com/seriema/angular-apimock/commit/b21b909))
+* **tests:** switch back to Jasmine for IE8 support ([6338b69](https://github.com/seriema/angular-apimock/commit/6338b69))
+
+### Features
+
+* **apimock:** add network latency simulation ([2783f10](https://github.com/seriema/angular-apimock/commit/2783f10)), closes [#20](https://github.com/seriema/angular-apimock/issues/20)
+* **delay:** add network latency simulation ([8b996d3](https://github.com/seriema/angular-apimock/commit/8b996d3)), closes [#20](https://github.com/seriema/angular-apimock/issues/20)
+* **queryParams:**  add query param functionality ([1e779c3](https://github.com/seriema/angular-apimock/commit/1e779c3)), closes [#23](https://github.com/seriema/angular-apimock/issues/23)
+* **queryParams:** ignore nested objects and arrays on $http config.param ([0e3138a](https://github.com/seriema/angular-apimock/commit/0e3138a))
+* **queryParams:** lowercase query params ([2aeb262](https://github.com/seriema/angular-apimock/commit/2aeb262))
+* **queryParams:** support nested objects and arrays in $http config ([4147b33](https://github.com/seriema/angular-apimock/commit/4147b33))
+* **readme:** add coverage status badge ([61dc226](https://github.com/seriema/angular-apimock/commit/61dc226))
+* **travis:** add Sauce Labs testing to CI ([3375513](https://github.com/seriema/angular-apimock/commit/3375513))
+
+
+
 <a name="0.1.8"></a>
 ### 0.1.8 (2015-03-22)
 
