@@ -54,22 +54,7 @@ angular.module('apiMock', [])
 		// Helper methods
 		//
 
-		function safeURI(string) {
-			return encodeURIComponent(angular.lowercase(string));
-		}
-
-		// Array.prototype.map isn't supported in IE8. Which we need to support as long as we support Angular 1.2.
-		// This isn't a complete polyfill! It's just enough for what we need (and we don't need to bloat).
-		function mapArray(array, callback) {
-			var newArray = [];
-
-			angular.forEach(array, function (element) {
-				newArray.push(callback(element));
-			});
-
-			return newArray;
-		}
-
+		// TODO: IE8: remove when we drop IE8/Angular 1.2 support.
 		// Object.keys isn't supported in IE8. Which we need to support as long as we support Angular 1.2.
 		// This isn't a complete polyfill! It's just enough for what we need (and we don't need to bloat).
 		function objectKeys(object) {
@@ -82,23 +67,65 @@ angular.module('apiMock', [])
 			return keys;
 		}
 
-		// TODO: Does not support complex objects. $httpParamSerializerJQLike from Angular 1.4 supports it, and sorts them. But we need to support 1.2+. ("Borrow" their source code?)
-		function serializeQueryObject(paramObj) {
-			var keys = objectKeys(paramObj);
-			keys.sort(); // We want the query params alphabetically.
+		// Taken from Angular 1.4.x: https://github.com/angular/angular.js/blob/f13852c179ffd9ec18b7a94df27dec39eb5f19fc/src/Angular.js#L296
+		function forEachSorted(obj, iterator, context) {
+			var keys = objectKeys(obj).sort();
+			for (var i = 0; i < keys.length; i++) {
+				iterator.call(context, obj[keys[i]], keys[i]);
+			}
+			return keys;
+		}
 
-			var paramArray = mapArray(keys, function(key) {
-				var value = paramObj[key];
+		// Taken from Angular 1.4.x: https://github.com/angular/angular.js/blob/929ec6ba5a60e926654583033a90aebe716123c0/src/ng/http.js#L18
+		function serializeValue(v) {
+			if (angular.isObject(v)) {
+				return angular.isDate(v) ? v.toISOString() : angular.toJson(v);
+			}
+			return v;
+		}
 
-				// Strip complex parts.
-				if (angular.isObject(value) || angular.isArray(value)) { // Actually angular.isObject() returns true for arrays as well, but this way the intent is clearer.
-					return safeURI(key);
+		// Taken from Angular 1.4.x: https://github.com/angular/angular.js/blob/720012eab6fef5e075a1d6876dd2e508c8e95b73/src/ngResource/resource.js#L405
+		function encodeUriQuery(val, pctEncodeSpaces) {
+			return encodeURIComponent(val).
+			replace(/%40/gi, '@').
+			replace(/%3A/gi, ':').
+			replace(/%24/g, '$').
+			replace(/%2C/gi, ',').
+			replace(/%20/g, (pctEncodeSpaces ? '%20' : '+'));
+		}
+
+		// TODO: replace with a $httpParamSerializerJQLikeProvider() call when we require Angular 1.4 (i.e. when we drop 1.2 and 1.3).
+		// Taken from Angular 1.4.x: https://github.com/angular/angular.js/blob/929ec6ba5a60e926654583033a90aebe716123c0/src/ng/http.js#L108
+		function jQueryLikeParamSerializer(params) {
+			if (!params) {
+				return '';
+			}
+
+			var parts = [];
+
+			function serialize(toSerialize, prefix, topLevel) {
+				if (toSerialize === null || angular.isUndefined(toSerialize)) {
+					return;
 				}
 
-				return safeURI(key) + '=' + safeURI(value);
-			});
+				if (angular.isArray(toSerialize)) {
+					angular.forEach(toSerialize, function(value, index) {
+						serialize(value, prefix + '[' + (angular.isObject(value) ? index : '') + ']');
+					});
+				} else if (angular.isObject(toSerialize) && !angular.isDate(toSerialize)) {
+					forEachSorted(toSerialize, function(value, key) {
+						serialize(value, prefix +
+						(topLevel ? '' : '[') +
+						key +
+						(topLevel ? '' : ']'));
+					});
+				} else {
+					parts.push(encodeUriQuery(prefix) + '=' + encodeUriQuery(serializeValue(toSerialize)));
+				}
+			}
 
-			return paramArray.join('&');
+			serialize(params, '', true);
+			return parts.join('&');
 		}
 
 		function queryStringToObject(paramString) {
@@ -236,7 +263,7 @@ angular.module('apiMock', [])
 
 				//serialize the param object to convert to string
 				//and concatenate to the newPath
-				newPath += serializeQueryObject(params);
+				newPath += angular.lowercase(jQueryLikeParamSerializer(params));
 			}
 
 			//Kill the params property so they aren't added back on to the end of the url

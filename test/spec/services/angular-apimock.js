@@ -474,7 +474,7 @@ describe('Service: apiMock', function () {
 
 				it('should encode characters in query params', function () {
 					defaultRequest.url = '/api/pokemon?lang=sl&name=pikaču';
-					defaultExpectPath = '/mock_data/pokemon/lang=sl&name=pika%C4%8Du.get.json';
+					defaultExpectPath = '/mock_data/pokemon/lang=sl&name=pika%c4%8du.get.json';
 					expectHttpSuccess();
 				});
 
@@ -484,7 +484,7 @@ describe('Service: apiMock', function () {
 					expectHttpSuccess();
 				});
 
-				it('should strip nested objects but keep the key (for now)', function () {
+				it('should serialize nested objects', function () {
 					defaultRequest.url = '/api/pokemon';
 					defaultRequest.params = {
 						'movesAppearences': {
@@ -492,17 +492,17 @@ describe('Service: apiMock', function () {
 							'Volt Tackle': 'May\'s Egg-Cellent Adventure!'
 						}
 					};
-					defaultExpectPath = '/mock_data/pokemon/movesappearences.get.json';
+					defaultExpectPath = '/mock_data/pokemon/movesappearences%5bthunder+shock%5d=pok%c3%a9mon+-+i+choose+you!&movesappearences%5bvolt+tackle%5d=may\'s+egg-cellent+adventure!.get.json';
 
 					expectHttpSuccess();
 				});
 
-				it('should strip nested array but keep the key (for now)', function () {
+				it('should serialize nested arrays', function () {
 					defaultRequest.url = '/api/pokemon';
 					defaultRequest.params = {
 						'moves': ['Thunder Shock', 'Volt Tackle']
 					};
-					defaultExpectPath = '/mock_data/pokemon/moves.get.json';
+					defaultExpectPath = '/mock_data/pokemon/moves%5b%5d=thunder+shock&moves%5b%5d=volt+tackle.get.json';
 
 					expectHttpSuccess();
 				});
