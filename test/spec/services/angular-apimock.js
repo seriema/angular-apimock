@@ -472,7 +472,7 @@ describe('Service: apiMock', function () {
 					expectHttpSuccess();
 				});
 
-				it('should decode characters in query params', function () {
+				it('should encode characters in query params', function () {
 					defaultRequest.url = '/api/pokemon?lang=sl&name=pikaču';
 					defaultExpectPath = '/mock_data/pokemon/lang=sl&name=pika%C4%8Du.get.json';
 					expectHttpSuccess();
