@@ -1,5 +1,7 @@
 # ApiMock for AngularJS: UI-first development [![Build Status](https://travis-ci.org/seriema/angular-apimock.png?branch=master)](https://travis-ci.org/seriema/angular-apimock) [![Coverage Status](https://coveralls.io/repos/seriema/angular-apimock/badge.svg?branch=master&service=github)](https://coveralls.io/github/seriema/angular-apimock?branch=master) [![devDependency Status](https://david-dm.org/seriema/angular-apimock/dev-status.png)](https://david-dm.org/seriema/angular-apimock#info=devDependencies)
 
+[![Join the chat at https://gitter.im/seriema/angular-apimock](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/seriema/angular-apimock?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 ApiMock is a minimal (1.5kb gzipped) library for AngularJS that allows you to mock your RESTful API by routing your API calls to static JSON files.
 
 
