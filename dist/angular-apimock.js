@@ -8,7 +8,7 @@
  */
 angular.module('apiMock', [])
 
-	.config(["$httpProvider", function ($httpProvider) {
+	.config(['$httpProvider', function ($httpProvider) {
 		/* This is where the magic happens. Configure `$http` to use our
 		 `httpInterceptor` on all calls. It's what allows us to do automatic routing.
 		 */
@@ -361,12 +361,12 @@ angular.module('apiMock', [])
 			angular.extend(config, options);
 		};
 
-		this.$get = ["$location", "$log", "$q", function ($location, $log, $q) {
+		this.$get = ['$location', '$log', '$q', function ($location, $log, $q) {
 			return new ApiMock($location, $log, $q);
 		}];
 	})
 
-	.service('httpInterceptor', ["$injector", "$q", "$timeout", "apiMock", function($injector, $q, $timeout, apiMock) {
+	.service('httpInterceptor', ['$injector', '$q', '$timeout', 'apiMock', function($injector, $q, $timeout, apiMock) {
 		/* The main service. Is jacked in as a interceptor on `$http` so it gets called
 		 * on every http call. This allows us to do our magic. It uses the provider
 		 * `apiMock` to determine if a mock should be done, then do the actual mocking.
