@@ -20,9 +20,9 @@ Go to our [website demo](http://johansson.jp/angular-apimock/#/demo-simple) to t
 
 Download it  [here](https://raw.githubusercontent.com/seriema/angular-apimock/master/dist/angular-apimock.min.js). Or grab it through [NuGet](https://www.nuget.org/packages/Angular-ApiMock/), [Bower](http://bower.io/search/?q=angular-apimock), or [npm](https://www.npmjs.com/package/angular-apimock):
 
-* Nuget: `PM> Install-Package Angular-ApiMock`
-* Bower: `$ bower install angular-apimock --save`
-* npm: `$ npm install angular-apimock --save`
+* [NuGet](https://www.nuget.org/packages/Angular-ApiMock/): `PM> Install-Package Angular-ApiMock`
+* [Bower](http://bower.io/search/?q=angular-apimock): `$ bower install angular-apimock --save`
+* [npm](https://www.npmjs.com/package/angular-apimock): `$ npm install angular-apimock --save`
 
 
 Include `angular-apimock.min.js` in your HTML:
