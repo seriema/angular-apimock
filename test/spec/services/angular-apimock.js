@@ -151,6 +151,36 @@ describe('Service: apiMock', function () {
 					});
 				});
 
+				it('should detect HTTP verb command as string', function () {
+					$location.url('/page?apiMock=200');
+
+					// Cannot use $httpBackend.expect() because HTTP status doesn't do a request
+					$http(defaultRequest)
+						.success(fail)
+						.error(function(data, status) {
+							expect(apiMock._countFallbacks()).toEqual(0);
+							expect(status).toEqual(200);
+						});
+
+					$rootScope.$digest();
+					$timeout.flush();
+				});
+
+				it('should detect HTTP verb command as number', function () {
+					$location.search('apimock', 200);
+
+					// Cannot use $httpBackend.expect() because HTTP status doesn't do a request
+					$http(defaultRequest)
+						.success(fail)
+						.error(function(data, status) {
+							expect(apiMock._countFallbacks()).toEqual(0);
+							expect(status).toEqual(200);
+						});
+
+					$rootScope.$digest();
+					$timeout.flush();
+				});
+
 				it('should detect in search queries', function () {
 					$location.url('/page?apiMock=true');
 

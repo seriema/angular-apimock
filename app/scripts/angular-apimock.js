@@ -171,27 +171,18 @@ angular.module('apiMock', [])
 		}
 
 		function getCommand(mockValue) {
-			switch (typeof mockValue) {
-				case 'number':
-					if (mockValue !== 0 && !isNaN(mockValue)) {
-						return { type: 'respond', value: mockValue };
-					}
-					break;
+			// Depending how we got mockValue it might've been parsed into a type or not.
+			switch ((mockValue || '').toString().toLowerCase()) {
+				case '200':
+				case '404':
+				case '500':
+					return { type: 'respond', value: parseInt(mockValue, 10) };
 
-				case 'string':
-					switch(mockValue.toLowerCase()) {
-						case 'auto':
-							return { type: 'recover' };
-						case 'true':
-							return { type: 'reroute' };
-					}
-					break;
+				case 'auto':
+					return { type: 'recover' };
 
-				case 'boolean':
-					if (mockValue === true) {
-						return { type: 'reroute' };
-					}
-					break;
+				case 'true':
+					return { type: 'reroute' };
 			}
 
 			return { type: 'ignore' };
