@@ -1,5 +1,5 @@
 /**
- * @license AngularJS v1.4.3
+ * @license AngularJS v1.4.5
  * (c) 2010-2015 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -762,36 +762,58 @@ angular.mock.animate = angular.module('ngAnimateMock', ['ng'])
 
   .config(['$provide', function($provide) {
 
-    var reflowQueue = [];
-    $provide.value('$$animateReflow', function(fn) {
-      var index = reflowQueue.length;
-      reflowQueue.push(fn);
-      return function cancel() {
-        reflowQueue.splice(index, 1);
-      };
+    $provide.factory('$$forceReflow', function() {
+      function reflowFn() {
+        reflowFn.totalReflows++;
+      }
+      reflowFn.totalReflows = 0;
+      return reflowFn;
     });
 
-    $provide.decorator('$animate', ['$delegate', '$timeout', '$browser', '$$rAF',
-                            function($delegate,   $timeout,   $browser,   $$rAF) {
+    $provide.factory('$$animateAsyncRun', function() {
+      var queue = [];
+      var queueFn = function() {
+        return function(fn) {
+          queue.push(fn);
+        };
+      };
+      queueFn.flush = function() {
+        if (queue.length === 0) return false;
+
+        for (var i = 0; i < queue.length; i++) {
+          queue[i]();
+        }
+        queue = [];
+
+        return true;
+      };
+      return queueFn;
+    });
+
+    $provide.decorator('$animate', ['$delegate', '$timeout', '$browser', '$$rAF', '$$forceReflow', '$$animateAsyncRun',
+                            function($delegate,   $timeout,   $browser,   $$rAF,   $$forceReflow,   $$animateAsyncRun) {
+
       var animate = {
         queue: [],
         cancel: $delegate.cancel,
+        on: $delegate.on,
+        off: $delegate.off,
+        pin: $delegate.pin,
+        get reflows() {
+          return $$forceReflow.totalReflows;
+        },
         enabled: $delegate.enabled,
-        triggerCallbackEvents: function() {
-          $$rAF.flush();
-        },
-        triggerCallbackPromise: function() {
-          $timeout.flush(0);
-        },
-        triggerCallbacks: function() {
-          this.triggerCallbackEvents();
-          this.triggerCallbackPromise();
-        },
-        triggerReflow: function() {
-          angular.forEach(reflowQueue, function(fn) {
-            fn();
-          });
-          reflowQueue = [];
+        flush: function() {
+          var rafsFlushed = false;
+          if ($$rAF.queue.length) {
+            $$rAF.flush();
+            rafsFlushed = true;
+          }
+
+          var animatorsFlushed = $$animateAsyncRun.flush();
+          if (!rafsFlushed && !animatorsFlushed) {
+            throw new Error('No pending animations ready to be closed or flushed');
+          }
         }
       };
 
@@ -1743,28 +1765,28 @@ angular.mock.$TimeoutDecorator = ['$delegate', '$browser', function($delegate, $
 }];
 
 angular.mock.$RAFDecorator = ['$delegate', function($delegate) {
-  var queue = [];
   var rafFn = function(fn) {
-    var index = queue.length;
-    queue.push(fn);
+    var index = rafFn.queue.length;
+    rafFn.queue.push(fn);
     return function() {
-      queue.splice(index, 1);
+      rafFn.queue.splice(index, 1);
     };
   };
 
+  rafFn.queue = [];
   rafFn.supported = $delegate.supported;
 
   rafFn.flush = function() {
-    if (queue.length === 0) {
+    if (rafFn.queue.length === 0) {
       throw new Error('No rAF callbacks present');
     }
 
-    var length = queue.length;
+    var length = rafFn.queue.length;
     for (var i = 0; i < length; i++) {
-      queue[i]();
+      rafFn.queue[i]();
     }
 
-    queue = queue.slice(i);
+    rafFn.queue = rafFn.queue.slice(i);
   };
 
   return rafFn;
@@ -1812,7 +1834,7 @@ angular.mock.$RootElementProvider = function() {
  *
  * describe('myDirectiveController', function() {
  *   it('should write the bound name to the log', inject(function($controller, $log) {
- *     var ctrl = $controller('MyDirective', { /* no locals &#42;/ }, { name: 'Clark Kent' });
+ *     var ctrl = $controller('MyDirectiveController', { /* no locals &#42;/ }, { name: 'Clark Kent' });
  *     expect(ctrl.name).toEqual('Clark Kent');
  *     expect($log.info.logs).toEqual(['Clark Kent']);
  *   });

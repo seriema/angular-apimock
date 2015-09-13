@@ -1,7 +1,8 @@
 {
   "name": "angular-apimock",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "main": "dist/angular-apimock.min.js",
+	"appPath": "app",
   "ignore": [
     "Gruntfile.js",
     "karma*.js",
@@ -10,10 +11,10 @@
     "test"
   ],
   "dependencies": {
-    "angular": "~1.2.15"
+    "angular": "^1.2.15"
   },
   "devDependencies": {
-    "angular-mocks": "~1.2.15",
-    "angular-scenario": "~1.2.15"
+    "angular-mocks": "^1.2.15",
+    "angular-scenario": "^1.2.15"
   }
 }

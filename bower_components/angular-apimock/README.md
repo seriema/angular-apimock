@@ -1,6 +1,8 @@
-# ApiMock for AngularJS: UI-first development [![Build Status](https://travis-ci.org/seriema/angular-apimock.png?branch=master)](https://travis-ci.org/seriema/angular-apimock) [![devDependency Status](https://david-dm.org/seriema/angular-apimock/dev-status.png)](https://david-dm.org/seriema/angular-apimock#info=devDependencies)
+# ApiMock for AngularJS: UI-first development [![Build Status](https://travis-ci.org/seriema/angular-apimock.png?branch=master)](https://travis-ci.org/seriema/angular-apimock) [![Coverage Status](https://coveralls.io/repos/seriema/angular-apimock/badge.svg?branch=master&service=github)](https://coveralls.io/github/seriema/angular-apimock?branch=master) [![devDependency Status](https://david-dm.org/seriema/angular-apimock/dev-status.png)](https://david-dm.org/seriema/angular-apimock#info=devDependencies)
 
-ApiMock is a minimal (0.5kb gzipped!) library for AngularJS that allows you to mock your RESTful API by routing your API calls to static JSON files.
+[![Join the chat at https://gitter.im/seriema/angular-apimock](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/seriema/angular-apimock?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
+ApiMock is a minimal (1.5kb gzipped) library for AngularJS that allows you to mock your RESTful API by routing your API calls to static JSON files.
 
 
 ## Example
@@ -16,11 +18,12 @@ Go to our [website demo](http://johansson.jp/angular-apimock/#/demo-simple) to t
 
 ## Get started
 
-Download it  [here](https://raw.githubusercontent.com/seriema/angular-apimock/master/dist/angular-apimock.min.js) or grab it through Bower.
+Download it  [here](https://raw.githubusercontent.com/seriema/angular-apimock/master/dist/angular-apimock.min.js). Or grab it through [NuGet](https://www.nuget.org/packages/Angular-ApiMock/), [Bower](http://bower.io/search/?q=angular-apimock), or [npm](https://www.npmjs.com/package/angular-apimock):
 
-````
-bower install angular-apimock --save
-````
+* [NuGet](https://www.nuget.org/packages/Angular-ApiMock/): `PM> Install-Package Angular-ApiMock`
+* [Bower](http://bower.io/search/?q=angular-apimock): `$ bower install angular-apimock --save`
+* [npm](https://www.npmjs.com/package/angular-apimock): `$ npm install angular-apimock --save`
+
 
 Include `angular-apimock.min.js` in your HTML:
 ````
@@ -108,6 +111,30 @@ Default: `'/api'`
 
 Set the path to be rerouted from.
 
+#### disable
+
+Type: `boolean`
+
+Default: `false`
+
+Disable apiMock completely. Used for production.
+
+#### stripQueries
+
+Type: `boolean`
+
+Default: `true`
+
+Remove query strings from url.  If false then "?" is replaced with "\" in expected filepath.
+
+#### delay
+
+Type: `number`
+
+Default: `0`
+
+Simulate network latency (in milliseconds).
+
 
 ## Samples
 
@@ -155,7 +182,6 @@ angular.module('myModule', [])
 * Demo based on Magic The Gathering cards (reference to a //build presentation)
 * Demo for checking mock-flag
 * Demo with [Interfake](https://github.com/basicallydan/interfake)
-* Handle queries (?search=banana), not just ignore them
 * Handle body data in POST requests?
 * HTTP response overrides (200?) shouldn't always go to $http.error()
 * Test `apimock=true` in more scenarios
@@ -167,7 +193,7 @@ angular.module('myModule', [])
 
 ## Contribute
 
-ApiMock started as a concept at a large eCommerce project years ago. Having the backend team completely separate from the frontend team created some constraints that needed to be solved. Now it's been cleaned up and simplified for AngularJS. We'd love any feedback so feel free to raise [an issue](https://github.com/seriema/angular-apimock/issues) or do a [pull request](https://github.com/seriema/angular-apimock/pulls) (make sure you run `grunt`). If you want to implement something from the Wishlist, that would be awesome too!
+ApiMock started as a concept on a large eCommerce project years ago. We'd love to get feedback or help to improve things. If you want to contribute, take a look at [CONTRIBUTING](CONTRIBUTING.md).
 
 
 ♥ from [Seriema](http://johansson.jp) + [Redhorn](http://redhorn.se/)

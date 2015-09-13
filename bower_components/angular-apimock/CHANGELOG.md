@@ -1,17 +1,81 @@
+<a name="0.2.1"></a>
+## [0.2.1](https://github.com/seriema/angular-apimock/compare/v0.2.0...v0.2.1) (2015-09-13)
+
+
+### Bug Fixes
+
+* **apimock:** correctly detect URL commands ([29874c9](https://github.com/seriema/angular-apimock/commit/29874c9)), closes [#37](https://github.com/seriema/angular-apimock/issues/37)
+* **apimock:** correctly detect URL commands ([ccf22f2](https://github.com/seriema/angular-apimock/commit/ccf22f2)), closes [#37](https://github.com/seriema/angular-apimock/issues/37)
+* **travis:** don't run SauceLabs on PR's ([b20c786](https://github.com/seriema/angular-apimock/commit/b20c786)), closes [#31](https://github.com/seriema/angular-apimock/issues/31)
+* **travis:** don't run SauceLabs tests on PR's ([0e07eb3](https://github.com/seriema/angular-apimock/commit/0e07eb3)), closes [#32](https://github.com/seriema/angular-apimock/issues/32) [#31](https://github.com/seriema/angular-apimock/issues/31)
+
+### Features
+
+* **npm:** Angular ApiMock now available on the npm registry! ([f7d5663](https://github.com/seriema/angular-apimock/commit/f7d5663))
+
+
+
 <a name="0.2.0"></a>
-## 0.2.0 (2014-05-21)
+# 0.2.0 (2015-08-09)
+
+
+### Bug Fixes
+
+* **demo:** simple demo was outdated ([96b0196](https://github.com/seriema/angular-apimock/commit/96b0196))
+* **grunt:** grunt-conventional-changelog 2.0 changed name ([b21b909](https://github.com/seriema/angular-apimock/commit/b21b909))
+* **tests:** switch back to Jasmine for IE8 support ([6338b69](https://github.com/seriema/angular-apimock/commit/6338b69))
+
+### Features
+
+* **apimock:** add network latency simulation ([2783f10](https://github.com/seriema/angular-apimock/commit/2783f10)), closes [#20](https://github.com/seriema/angular-apimock/issues/20)
+* **delay:** add network latency simulation ([8b996d3](https://github.com/seriema/angular-apimock/commit/8b996d3)), closes [#20](https://github.com/seriema/angular-apimock/issues/20)
+* **queryParams:**  add query param functionality ([1e779c3](https://github.com/seriema/angular-apimock/commit/1e779c3)), closes [#23](https://github.com/seriema/angular-apimock/issues/23)
+* **queryParams:** ignore nested objects and arrays on $http config.param ([0e3138a](https://github.com/seriema/angular-apimock/commit/0e3138a))
+* **queryParams:** lowercase query params ([2aeb262](https://github.com/seriema/angular-apimock/commit/2aeb262))
+* **queryParams:** support nested objects and arrays in $http config ([4147b33](https://github.com/seriema/angular-apimock/commit/4147b33))
+* **readme:** add coverage status badge ([61dc226](https://github.com/seriema/angular-apimock/commit/61dc226))
+* **travis:** add Sauce Labs testing to CI ([3375513](https://github.com/seriema/angular-apimock/commit/3375513))
+
+
+
+<a name="0.1.8"></a>
+### 0.1.8 (2015-03-22)
 
 
 #### Bug Fixes
 
-* **apiMock:** lower Angular version requirement ([634390f1](http://github.com/seriema/angular-apimock/commit/634390f16726f36fa3ce98e7a04f1705432c8865), closes [#11](http://github.com/seriema/angular-apimock/issues/11))
-* **bower:** bump version in Bower ([b9a3f667](http://github.com/seriema/angular-apimock/commit/b9a3f66707509edc86448c0c661fedbe3d1ff2ae))
-* **nuget:** fix target path ([f9e588d9](http://github.com/seriema/angular-apimock/commit/f9e588d999918f705c5224d687988319a89d7283))
+* **apimock:** Adjust for PR19. Always use 'GET' requests. ([0ae1ba57](http://github.com/seriema/angular-apimock/commit/0ae1ba571359f80a30a04f05c6a18b620932668e))
 
 
 #### Features
 
-* **distribution:** now available on NuGet ([32e686c4](http://github.com/seriema/angular-apimock/commit/32e686c48248ce04185f1be0ab0526842dac85ad), closes [#12](http://github.com/seriema/angular-apimock/issues/12))
+* **apimock:** update Angular dependencies in Bower to latest (below 2.x). ([8847c192](http://github.com/seriema/angular-apimock/commit/8847c192e50ed82576e6ae0e736c547ebdb1def8))
+
+
+<a name="0.1.7"></a>
+### 0.1.7 (2014-10-19)
+
+
+#### Features
+
+* **apimock:** add disable config (#15) ([9e7b14a1](http://github.com/seriema/angular-apimock/commit/9e7b14a1d893a321835aa2d453a4aab5b60c01e5))
+
+
+<a name="0.1.6"></a>
+### 0.1.6 (2014-05-29)
+
+
+#### Bug Fixes
+
+* **apimock:**
+  * fix command 'auto' ([acfc2371](http://github.com/seriema/angular-apimock/commit/acfc2371079be8f428a02e31ece05e1d90bb5c38))
+  * treat NaN as false for command ([a28544d4](http://github.com/seriema/angular-apimock/commit/a28544d43c5d11f65095b6950fba75bd07553578))
+* **nuget:** fix nuget push task ([e77e6e7f](http://github.com/seriema/angular-apimock/commit/e77e6e7f96a8da6510390b3e70ca49b0ab4d4a6a))
+
+
+#### Features
+
+* **apimock:** add logging through $log ([9d93551f](http://github.com/seriema/angular-apimock/commit/9d93551f3801483a2cd479c972a89a033e88fcab))
 
 
 <a name="0.1.5"></a>
