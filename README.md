@@ -193,7 +193,7 @@ angular.module('myModule', [])
 
 ## Contribute
 
-ApiMock started as a concept on a large eCommerce project years ago. We'd love to get feedback or help to improve things. If you want to contribute, take a look at [CONTRIBUTING](tree/master/CONTRIBUTING.md).
+ApiMock started as a concept on a large eCommerce project years ago. We'd love to get feedback or help to improve things. If you want to contribute, take a look at [CONTRIBUTING](CONTRIBUTING.md).
 
 
 ♥ from [Seriema](http://johansson.jp) + [Redhorn](http://redhorn.se/)
