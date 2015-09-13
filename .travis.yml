@@ -10,7 +10,7 @@ before_script:
 script:
   - 'npm test'
   - 'npm run coveralls'
-  - 'npm run saucelabs'
+  - '[ "${TRAVIS_PULL_REQUEST}" = "false" ] && npm run saucelabs || true'
 after_script:
   - 'cat $LOGS_DIR/karma.log'
 env:
