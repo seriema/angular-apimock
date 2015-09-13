@@ -1,3 +1,20 @@
+<a name="0.2.1"></a>
+## [0.2.1](https://github.com/seriema/angular-apimock/compare/v0.2.0...v0.2.1) (2015-09-13)
+
+
+### Bug Fixes
+
+* **apimock:** correctly detect URL commands ([29874c9](https://github.com/seriema/angular-apimock/commit/29874c9)), closes [#37](https://github.com/seriema/angular-apimock/issues/37)
+* **apimock:** correctly detect URL commands ([ccf22f2](https://github.com/seriema/angular-apimock/commit/ccf22f2)), closes [#37](https://github.com/seriema/angular-apimock/issues/37)
+* **travis:** don't run SauceLabs on PR's ([b20c786](https://github.com/seriema/angular-apimock/commit/b20c786)), closes [#31](https://github.com/seriema/angular-apimock/issues/31)
+* **travis:** don't run SauceLabs tests on PR's ([0e07eb3](https://github.com/seriema/angular-apimock/commit/0e07eb3)), closes [#32](https://github.com/seriema/angular-apimock/issues/32) [#31](https://github.com/seriema/angular-apimock/issues/31)
+
+### Features
+
+* **npm:** Angular ApiMock now available on the npm registry! ([f7d5663](https://github.com/seriema/angular-apimock/commit/f7d5663))
+
+
+
 <a name="0.2.0"></a>
 # 0.2.0 (2015-08-09)
 
