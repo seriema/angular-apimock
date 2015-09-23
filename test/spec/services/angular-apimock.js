@@ -8,7 +8,7 @@ describe('Service: apiMock', function () {
 
 	// Hack (?) to get the provider so we can call .config()
 	var apiMockProvider;
-	beforeEach(module(function(_apiMockProvider_){
+	beforeEach(module(function (_apiMockProvider_) {
 		apiMockProvider = _apiMockProvider_;
 	}));
 
@@ -138,7 +138,7 @@ describe('Service: apiMock', function () {
 						'ApiMock'
 					];
 
-					angular.forEach(keys, function(key) {
+					angular.forEach(keys, function (key) {
 						// Set location with the query string.
 						$location.search(key, value);
 
@@ -157,7 +157,7 @@ describe('Service: apiMock', function () {
 					// Cannot use $httpBackend.expect() because HTTP status doesn't do a request
 					$http(defaultRequest)
 						.success(fail)
-						.error(function(data, status) {
+						.error(function (data, status) {
 							expect(apiMock._countFallbacks()).toEqual(0);
 							expect(status).toEqual(200);
 						});
@@ -172,7 +172,7 @@ describe('Service: apiMock', function () {
 					// Cannot use $httpBackend.expect() because HTTP status doesn't do a request
 					$http(defaultRequest)
 						.success(fail)
-						.error(function(data, status) {
+						.error(function (data, status) {
 							expect(apiMock._countFallbacks()).toEqual(0);
 							expect(status).toEqual(200);
 						});
@@ -283,7 +283,7 @@ describe('Service: apiMock', function () {
 							// Cannot use $httpBackend.expect() because HTTP status doesn't do a request
 							$http(defaultRequest)
 								.success(fail)
-								.error(function(data, status) {
+								.error(function (data, status) {
 									expect(apiMock._countFallbacks()).toEqual(0);
 									expect(status).toEqual(option);
 								});
@@ -297,7 +297,7 @@ describe('Service: apiMock', function () {
 						// Cannot use $httpBackend.expect() because HTTP status doesn't do a request
 						$http(defaultRequest)
 							.success(fail)
-							.error(function(data, status, headers) {
+							.error(function (data, status, headers) {
 								expect(apiMock._countFallbacks()).toEqual(0);
 								expect(headers).toExist;
 								expect(headers['Content-Type']).toEqual('text/html; charset=utf-8');
@@ -370,7 +370,7 @@ describe('Service: apiMock', function () {
 						];
 
 						angular.forEach(verbs, function (verb) {
-							defaultExpectPath = '/mock_data/pokemon.'+verb.toLowerCase()+'.json';
+							defaultExpectPath = '/mock_data/pokemon.' + verb.toLowerCase() + '.json';
 							defaultRequest.method = verb;
 
 							expectHttpSuccess();
@@ -410,11 +410,11 @@ describe('Service: apiMock', function () {
 
 			describe('disable option', function () {
 
-				beforeEach(function() {
+				beforeEach(function () {
 					apiMockProvider.config({disable: true});
 				});
 
-				afterEach(function() {
+				afterEach(function () {
 					apiMockProvider.config({disable: false});
 				});
 
@@ -442,13 +442,13 @@ describe('Service: apiMock', function () {
 
 			describe('allow regexp for apiPath option instead of string', function () {
 
-				beforeEach(function() {
+				beforeEach(function () {
 					// apiMockProvider.config({apiPath: [/\/(aPI)/i]});
 					apiMockProvider.config({apiPath: /\/(aPi|UPI|APU)/i});
 					setGlobalCommand(true);
 				});
 
-				afterEach(function() {
+				afterEach(function () {
 					apiMockProvider.config({apiPath: '/api'});
 					unsetGlobalCommand();
 				});
@@ -475,12 +475,12 @@ describe('Service: apiMock', function () {
 
 			describe('allow strings array for apiPath option', function () {
 
-				beforeEach(function() {
-					apiMockProvider.config({apiPath: ['/other/api', '/api', '/v2api']});
+				beforeEach(function () {
+					apiMockProvider.config({apiPath: [ '/other/api', '/api', '/v2api' ]});
 					setGlobalCommand(true);
 				});
 
-				afterEach(function() {
+				afterEach(function () {
 					apiMockProvider.config({apiPath: '/api'});
 					unsetGlobalCommand();
 				});
@@ -513,12 +513,12 @@ describe('Service: apiMock', function () {
 
 			describe('allow regexp array for apiPath option', function () {
 
-				beforeEach(function() {
-					apiMockProvider.config({apiPath: [/\/other\/api/i, /\/api/i, /\/v(2|3|4)api/i]});
+				beforeEach(function () {
+					apiMockProvider.config({apiPath: [ /\/other\/api/i, /\/api/i, /\/v(2|3|4)api/i ]});
 					setGlobalCommand(true);
 				});
 
-				afterEach(function() {
+				afterEach(function () {
 					apiMockProvider.config({apiPath: '/api'});
 					unsetGlobalCommand();
 				});
@@ -558,12 +558,12 @@ describe('Service: apiMock', function () {
 
 			describe('enable query params', function () {
 
-				beforeEach(function() {
+				beforeEach(function () {
 					apiMockProvider.config({stripQueries: false});
 					setGlobalCommand(true);
 				});
 
-				afterEach(function() {
+				afterEach(function () {
 					apiMockProvider.config({stripQueries: true});
 					unsetGlobalCommand();
 				});
@@ -574,7 +574,7 @@ describe('Service: apiMock', function () {
 
 				it('should still ignore config.data', function () {
 					defaultRequest.data = {
-						'moves': ['Thunder Shock', 'Volt Tackle']
+						'moves': [ 'Thunder Shock', 'Volt Tackle' ]
 					};
 
 					expectHttpSuccess();
@@ -647,7 +647,7 @@ describe('Service: apiMock', function () {
 				it('should serialize nested arrays', function () {
 					defaultRequest.url = '/api/pokemon';
 					defaultRequest.params = {
-						'moves': ['Thunder Shock', 'Volt Tackle']
+						'moves': [ 'Thunder Shock', 'Volt Tackle' ]
 					};
 					defaultExpectPath = '/mock_data/pokemon/moves%5b%5d=thunder+shock&moves%5b%5d=volt+tackle.get.json';
 
@@ -658,12 +658,12 @@ describe('Service: apiMock', function () {
 			describe('delay option', function () {
 				var delayMs = 500;
 
-				beforeEach(function() {
+				beforeEach(function () {
 					apiMockProvider.config({delay: delayMs});
 					setGlobalCommand(true);
 				});
 
-				afterEach(function() {
+				afterEach(function () {
 					apiMockProvider.config({delay: 0});
 					unsetGlobalCommand();
 				});
@@ -681,7 +681,7 @@ describe('Service: apiMock', function () {
 					$httpBackend.flush();
 
 					// Don't flush $timeout completely.
-					$timeout.flush(delayMs-1);
+					$timeout.flush(delayMs - 1);
 					expect($timeout.verifyNoPendingTasks).toThrow();
 					$rootScope.$digest();
 					expect(didRun).toBe(false);

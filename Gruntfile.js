@@ -24,59 +24,60 @@ module.exports = function (grunt) {
 			version: require('./bower.json').version,
 			app: require('./bower.json').appPath,
 			dist: 'dist',
+			test: 'test'
 		},
 
 		bump: {
 			options: {
-				files: ['package.json', 'bower.json'],
-				updateConfigs: ['yeoman'],
+				files: [ 'package.json', 'bower.json' ],
+				updateConfigs: [ 'yeoman' ],
 				commit: true,
 				commitMessage: 'chore(release): release v%VERSION%. See CHANGELOG.md',
-				commitFiles: ['-a'], // '-a' for all files
+				commitFiles: [ '-a' ], // '-a' for all files
 				createTag: true,
 				tagName: 'v%VERSION%',
 				tagMessage: 'Version %VERSION%',
 				push: true,
-				pushTo: 'origin',
-				gitDescribeOptions: '--tags --always --abbrev=1 --dirty=-d', // options to use with '$ git describe'
-			},
+				pushTo: 'origin master',
+				gitDescribeOptions: '--tags --always --abbrev=1 --dirty=-d' // options to use with '$ git describe'
+			}
 		},
 
 		conventionalChangelog: {
 			options: {
 				changelogOpts: {
-					preset: 'angular',
-				},
+					preset: 'angular'
+				}
 			},
 			release: {
-				src: 'CHANGELOG.md',
-			},
+				src: 'CHANGELOG.md'
+			}
 		},
 
 		// Watches files for changes and runs tasks based on the changed files
 		watch: {
 			js: {
-				files: ['<%= yeoman.app %>/scripts/{,*/}*.js'],
-				tasks: ['newer:jshint:all', 'karma:default'],
+				files: [ '<%= yeoman.app %>/scripts/{,*/}*.js' ],
+				tasks: [ 'newer:jshint:all', 'karma:default' ],
 				options: {
-					livereload: true,
-				},
+					livereload: true
+				}
 			},
 			jsTest: {
-				files: ['test/spec/{,*/}*.js'],
-				tasks: ['newer:jshint:test', 'karma:default'],
+				files: [ 'test/spec/{,*/}*.js' ],
+				tasks: [ 'newer:jshint:test', 'karma:default' ]
 			},
 			gruntfile: {
-				files: ['Gruntfile.js'],
+				files: [ 'Gruntfile.js' ]
 			},
 			livereload: {
 				options: {
-					livereload: '<%= connect.options.livereload %>',
+					livereload: '<%= connect.options.livereload %>'
 				},
 				files: [
-					'<%= yeoman.app %>/{,*/}*.html',
-				],
-			},
+					'<%= yeoman.app %>/{,*/}*.html'
+				]
+			}
 		},
 
 		// The actual grunt server settings
@@ -85,42 +86,55 @@ module.exports = function (grunt) {
 				port: 0,
 				// Change this to '0.0.0.0' to access the server from outside.
 				hostname: 'localhost',
-				livereload: 35729,
+				livereload: 35729
 			},
 			test: {
 				options: {
 					port: 0,
 					base: [
 						'test',
-						'<%= yeoman.app %>',
-					],
-				},
+						'<%= yeoman.app %>'
+					]
+				}
 			},
 			livereload: {
 				options: {
 					open: true,
 					base: [
-						'<%= yeoman.app %>',
-					],
-				},
-			},
+						'<%= yeoman.app %>'
+					]
+				}
+			}
 		},
 
 		// Make sure code styles are up to par and there are no obvious mistakes
 		jshint: {
 			options: {
 				jshintrc: '.jshintrc',
-				reporter: require('jshint-stylish'),
+				reporter: require('jshint-stylish')
 			},
 			all: [
 				'Gruntfile.js',
-				'<%= yeoman.app %>/scripts/{,*/}*.js',
+				'<%= yeoman.app %>/scripts/{,*/}*.js'
 			],
 			test: {
 				options: {
-					jshintrc: 'test/.jshintrc',
+					jshintrc: 'test/.jshintrc'
 				},
-				src: ['test/spec/{,*/}*.js'],
+				src: [ 'test/spec/{,*/}*.js' ]
+			}
+		},
+
+		// Check code style guidelines
+		jscs: {
+			src: [
+				'<%= yeoman.app %>/scripts/**/*.js',
+				'<%= yeoman.test %>/spec/**/*.js',
+				'*.js'
+			],
+			options: {
+					config: '.jscsrc',
+					verbose: true
 			}
 		},
 
@@ -131,53 +145,53 @@ module.exports = function (grunt) {
 					dot: true,
 					src: [
 						'<%= yeoman.dist %>/*',
-						'!<%= yeoman.dist %>/.git*',
-					],
-				}],
-			},
+						'!<%= yeoman.dist %>/.git*'
+					]
+				}]
+			}
 		},
 
 		// Allow the use of non-minsafe AngularJS files. Automatically makes it
 		// minsafe compatible so Uglify does not destroy the ng references
 		ngAnnotate: {
 			options: {
-				singleQuotes: true,
+				singleQuotes: true
 			},
 			dist: {
-				src: ['<%= yeoman.dist %>/angular-apimock.js'],
-				dest: '<%= yeoman.dist %>/angular-apimock.js',
-			},
+				src: [ '<%= yeoman.dist %>/angular-apimock.js' ],
+				dest: '<%= yeoman.dist %>/angular-apimock.js'
+			}
 		},
 
 		// Replace Google CDN references
 		cdnify: {
 			dist: {
-				html: ['<%= yeoman.dist %>/*.html'],
-			},
+				html: [ '<%= yeoman.dist %>/*.html' ]
+			}
 		},
 
 		uglify: {
 			options: {
 				preserveComments: 'some',
-				report: 'gzip',
+				report: 'gzip'
 			},
 			dist: {
 				files: {
 					'<%= yeoman.dist %>/angular-apimock.min.js': [
-						'<%= yeoman.dist %>/angular-apimock.js',
-					],
-				},
-			},
+						'<%= yeoman.dist %>/angular-apimock.js'
+					]
+				}
+			}
 		},
 
 		concat: {
 			options: {
-				banner: '/*! Angular API Mock v<%= yeoman.version %>\n * Licensed with MIT\n * Made with ♥ from Seriema + Redhorn */\n',
+				banner: '/*! Angular API Mock v<%= yeoman.version %>\n * Licensed with MIT\n * Made with ♥ from Seriema + Redhorn */\n'
 			},
 			dist: {
 				src: '<%= yeoman.app %>/scripts/**/*.js',
-				dest: '<%= yeoman.dist %>/angular-apimock.js',
-			},
+				dest: '<%= yeoman.dist %>/angular-apimock.js'
+			}
 		},
 
 		nugetpack: {
@@ -185,28 +199,28 @@ module.exports = function (grunt) {
 				src: 'package.nuspec',
 				dest: 'nuget/',
 				options: {
-					version: '<%= yeoman.version %>',
-				},
-			},
+					version: '<%= yeoman.version %>'
+				}
+			}
 		},
 
 		nugetpush: {
 			dist: {
-				src: 'nuget/Angular-ApiMock.<%= yeoman.version %>.nupkg',
-			},
+				src: 'nuget/Angular-ApiMock.<%= yeoman.version %>.nupkg'
+			}
 		},
 
 		// Test settings
 		karma: {
 			options: {
 				configFile: 'karma.conf.js',
-				singleRun: true,
+				singleRun: true
 			},
 			default: {
 				// Default
 			},
 			sauce: {
-				browsers: ['SL_Chrome', 'SL_Firefox', 'SL_Safari', 'SL_iOS', 'SL_IE_8', 'SL_IE_9', 'SL_IE_10', 'SL_IE_11'],
+				browsers: [ 'SL_Chrome', 'SL_Firefox', 'SL_Safari', 'SL_iOS', 'SL_IE_8', 'SL_IE_9', 'SL_IE_10', 'SL_IE_11' ],
 				reporters: [ 'progress', 'saucelabs' ],
 				files: [{
 					src: [
@@ -214,19 +228,19 @@ module.exports = function (grunt) {
 						'test/ref/angular-v1.2.js',
 						'test/ref/angular-mocks-v1.2.js',
 						'<%= watch.js.files %>',
-						'<%= watch.jsTest.files %>',
-					]},
-				],
+						'<%= watch.jsTest.files %>'
+					]}
+				]
 			},
 			coverage: {
-				browsers: ['PhantomJS'],
+				browsers: [ 'PhantomJS' ],
 				reporters: [ 'dots', 'coverage' ],
 				coverageReporter: {
 					reporters: [
 						{ type: 'lcov', subdir: 'PhantomJS' },
-						{ type: 'text' },
-					],
-				},
+						{ type: 'text' }
+					]
+				}
 			},
 			dist: {
 				files: [{
@@ -234,9 +248,9 @@ module.exports = function (grunt) {
 						'app/bower_components/angular/angular.js',
 						'app/bower_components/angular-mocks/angular-mocks.js',
 						'<%= yeoman.dist %>/*.min.js',
-						'<%= watch.jsTest.files %>',
-					]},
-				],
+						'<%= watch.jsTest.files %>'
+					]}
+				]
 			},
 			angular12: {
 				files: [{
@@ -244,9 +258,9 @@ module.exports = function (grunt) {
 						'test/ref/angular-v1.2.js',
 						'test/ref/angular-mocks-v1.2.js',
 						'<%= watch.js.files %>',
-						'<%= watch.jsTest.files %>',
-					]},
-				],
+						'<%= watch.jsTest.files %>'
+					]}
+				]
 			},
 			angular13: {
 				files: [{
@@ -254,9 +268,9 @@ module.exports = function (grunt) {
 						'test/ref/angular-v1.3.js',
 						'test/ref/angular-mocks-v1.3.js',
 						'<%= watch.js.files %>',
-						'<%= watch.jsTest.files %>',
-					]},
-				],
+						'<%= watch.jsTest.files %>'
+					]}
+				]
 			},
 			angular14: {
 				files: [{
@@ -264,34 +278,35 @@ module.exports = function (grunt) {
 						'test/ref/angular-v1.4.js',
 						'test/ref/angular-mocks-v1.4.js',
 						'<%= watch.js.files %>',
-						'<%= watch.jsTest.files %>',
-					]},
-				],
-			},
+						'<%= watch.jsTest.files %>'
+					]}
+				]
+			}
 		},
 
 		// To run locally you need to set `COVERALLS_REPO_TOKEN` as an environment variable.
 		// It's currently being run from Travis-CI (see .travis.yml)
 		coveralls: {
 			options: {
-				force: true,
+				force: true
 			},
-			src: 'coverage/**/*.info',
-		},
+			src: 'coverage/**/*.info'
+		}
 	});
 
 	grunt.registerTask('serve', [
 		'connect',
-		'watch:js',
+		'watch:js'
 	]);
 
 	grunt.registerTask('test', [
 		'jshint',
+		'jscs',
 		'connect:test',
 		'karma:coverage',
 		'karma:angular12',
 		'karma:angular13',
-		'karma:angular14',
+		'karma:angular14'
 	]);
 
 	grunt.registerTask('build', [
@@ -299,7 +314,7 @@ module.exports = function (grunt) {
 		'concat',
 		'ngAnnotate',
 		'uglify',
-		'karma:dist',
+		'karma:dist'
 	]);
 
 	grunt.registerTask('_publish', [
@@ -307,15 +322,15 @@ module.exports = function (grunt) {
 		'nugetpack',
 		'conventionalChangelog',
 		'bump-commit',
-		'nugetpush',
+		'nugetpush'
 	]);
 
-	grunt.registerTask('publish', ['publish:patch']);
-	grunt.registerTask('publish:patch', ['test', 'karma:sauce', 'bump-only:patch', '_publish']);
-	grunt.registerTask('publish:minor', ['test', 'karma:sauce', 'bump-only:minor', '_publish']);
-	grunt.registerTask('publish:major', ['test', 'karma:sauce', 'bump-only:major', '_publish']);
+	grunt.registerTask('publish', [ 'publish:patch' ]);
+	grunt.registerTask('publish:patch', [ 'test', 'karma:sauce', 'bump-only:patch', '_publish' ]);
+	grunt.registerTask('publish:minor', [ 'test', 'karma:sauce', 'bump-only:minor', '_publish' ]);
+	grunt.registerTask('publish:major', [ 'test', 'karma:sauce', 'bump-only:major', '_publish' ]);
 
 	grunt.registerTask('default', [
-		'test',
+		'test'
 	]);
 };
