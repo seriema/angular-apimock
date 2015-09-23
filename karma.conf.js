@@ -1,8 +1,8 @@
 // Karma configuration
 // http://karma-runner.github.io/0.10/config/configuration-file.html
 
-module.exports = function(config) {
-	var sourcePreprocessors = ['coverage'];
+module.exports = function (config) {
+	var sourcePreprocessors = [ 'coverage' ];
 	function isDebug(argument) {
 		return argument === '--debug';
 	}
@@ -15,7 +15,7 @@ module.exports = function(config) {
 		basePath: '',
 
 		// testing framework to use (jasmine/mocha/qunit/...)
-		frameworks: ['jasmine'],
+		frameworks: [ 'jasmine' ],
 
 		// reporter style
 		reporters: [ 'progress' ],
@@ -58,7 +58,7 @@ module.exports = function(config) {
 		// - Safari (only Mac)
 		// - PhantomJS
 		// - IE (only Windows)
-		browsers: ['PhantomJS'],
+		browsers: [ 'PhantomJS' ],
 
 		// Check out https://saucelabs.com/platforms for all browser/platform combos
 		captureTimeout: 120000,
@@ -106,7 +106,7 @@ module.exports = function(config) {
 		// You need to set `SAUCE_USERNAME` and `SAUCE_ACCESS_KEY` as environment variables.
 		sauceLabs: {
 			testName: 'Angular ApiMock',
-			startConnect: true,
+			startConnect: true
 		},
 
 		// Continuous Integration mode

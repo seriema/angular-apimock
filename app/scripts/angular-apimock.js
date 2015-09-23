@@ -47,7 +47,7 @@ angular.module('apiMock', [])
 			apiPath: '/api',
 			disable: false,
 			stripQueries: true,
-			delay: 0,
+			delay: 0
 		};
 		var fallbacks = [];
 
@@ -109,11 +109,11 @@ angular.module('apiMock', [])
 				}
 
 				if (angular.isArray(toSerialize)) {
-					angular.forEach(toSerialize, function(value, index) {
+					angular.forEach(toSerialize, function (value, index) {
 						serialize(value, prefix + '[' + (angular.isObject(value) ? index : '') + ']');
 					});
 				} else if (angular.isObject(toSerialize) && !angular.isDate(toSerialize)) {
-					forEachSorted(toSerialize, function(value, key) {
+					forEachSorted(toSerialize, function (value, key) {
 						serialize(value, prefix +
 						(topLevel ? '' : '[') +
 						key +
@@ -136,7 +136,7 @@ angular.module('apiMock', [])
 			var paramArray = paramString.split('&');
 
 			var result = {};
-			angular.forEach(paramArray, function(param) {
+			angular.forEach(paramArray, function (param) {
 				param = param.split('=');
 				result[param[0]] = param[1] || '';
 			});
@@ -216,14 +216,14 @@ angular.module('apiMock', [])
 				angular.forEach(apiPath, function (path) {
 					if (match) { return; } // Hack to skip more recursive calls if already matched
 						var found = apiPathMatched(url, path);
-					if (found) { 
-						match = found; 
+					if (found) {
+						match = found;
 					}
 				});
 			}
-			if (match) { 
-				return match; 
-			} 
+			if (match) {
+				return match;
+			}
 			if (apiPath instanceof RegExp) {
 				if (apiPath.test(url)) {
 					return apiPath;
@@ -276,7 +276,7 @@ angular.module('apiMock', [])
 				var params = angular.extend(req.params || {}, queryParamsFromUrl);
 
 				//test if there is already a trailing /
-				if (newPath[newPath.length-1] !== '/') {
+				if (newPath[newPath.length - 1] !== '/') {
 					newPath += '/';
 				}
 
@@ -382,7 +382,7 @@ angular.module('apiMock', [])
 		};
 	})
 
-	.service('httpInterceptor', function($injector, $q, $timeout, apiMock) {
+	.service('httpInterceptor', function ($injector, $q, $timeout, apiMock) {
 		/* The main service. Is jacked in as a interceptor on `$http` so it gets called
 		 * on every http call. This allows us to do our magic. It uses the provider
 		 * `apiMock` to determine if a mock should be done, then do the actual mocking.
@@ -398,9 +398,9 @@ angular.module('apiMock', [])
 			var deferred = $q.defer();
 
 			$timeout(
-				function() {
+				function () {
 					// TODO: Apparently, no tests break regardless what this resolves to. Fix the tests!
-					deferred.resolve( apiMock.onResponse(res) );
+					deferred.resolve(apiMock.onResponse(res));
 				},
 				apiMock.getDelay(),
 				true // Trigger a $digest.
@@ -422,7 +422,7 @@ angular.module('apiMock', [])
 							deferred.resolve(data);
 						});
 					} else {
-						deferred.reject( rej );
+						deferred.reject(rej);
 					}
 				},
 				apiMock.getDelay(),

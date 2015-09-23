@@ -21,6 +21,7 @@
     "grunt-contrib-watch": "^0.6.0",
     "grunt-conventional-changelog": "^4.1.0",
     "grunt-coveralls": "^1.0.0",
+    "grunt-jscs": "^2.1.0",
     "grunt-karma": "^0.12.0",
     "grunt-newer": "^1.1.0",
     "grunt-ng-annotate": "^1.0.1",
