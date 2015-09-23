@@ -407,6 +407,7 @@ describe('Service: apiMock', function () {
 		});
 
 		describe('module config', function () {
+
 			describe('disable option', function () {
 
 				beforeEach(function() {
@@ -438,6 +439,122 @@ describe('Service: apiMock', function () {
 				});
 
 			});
+
+			describe('allow regexp for apiPath option instead of string', function () {
+
+				beforeEach(function() {
+					// apiMockProvider.config({apiPath: [/\/(aPI)/i]});
+					apiMockProvider.config({apiPath: /\/(aPi|UPI|APU)/i});
+					setGlobalCommand(true);
+				});
+
+				afterEach(function() {
+					apiMockProvider.config({apiPath: '/api'});
+					unsetGlobalCommand();
+				});
+
+				it('should redirect when match', function () {
+					defaultRequest.url = '/api/pokemon';
+					defaultExpectPath = '/mock_data/pokemon.get.json';
+					expectHttpSuccess();
+				});
+
+				it('should redirect any match', function () {
+					defaultRequest.url = '/UPI/pokemon';
+					defaultExpectPath = '/mock_data/pokemon.get.json';
+					expectHttpSuccess();
+				});
+
+				it('should NOT redirect not matched', function () {
+					defaultRequest.url = '/EPI/picachu';
+					defaultExpectPath = '/EPI/picachu';
+					expectHttpFailure();
+				});
+
+			});
+
+			describe('allow strings array for apiPath option', function () {
+
+				beforeEach(function() {
+					apiMockProvider.config({apiPath: ['/other/api', '/api', '/v2api']});
+					setGlobalCommand(true);
+				});
+
+				afterEach(function() {
+					apiMockProvider.config({apiPath: '/api'});
+					unsetGlobalCommand();
+				});
+
+				it('should redirect when match first in list', function () {
+					defaultRequest.url = '/other/api/otherpikamon';
+					defaultExpectPath = '/mock_data/otherpikamon.get.json';
+					expectHttpSuccess();
+				});
+
+				it('should redirect when match second in list', function () {
+					defaultRequest.url = '/api/pikamon';
+					defaultExpectPath = '/mock_data/pikamon.get.json';
+					expectHttpSuccess();
+				});
+
+				it('should redirect when match third in list as regexp', function () {
+					defaultRequest.url = '/v2api/v2pikamon';
+					defaultExpectPath = '/mock_data/v2pikamon.get.json';
+					expectHttpSuccess();
+				});
+
+				it('should NOT redirect not matched', function () {
+					defaultRequest.url = '/v9api/v9picachu';
+					defaultExpectPath = '/v9api/v9picachu';
+					expectHttpFailure();
+				});
+
+			});
+
+			describe('allow regexp array for apiPath option', function () {
+
+				beforeEach(function() {
+					apiMockProvider.config({apiPath: [/\/other\/api/i, /\/api/i, /\/v(2|3|4)api/i]});
+					setGlobalCommand(true);
+				});
+
+				afterEach(function() {
+					apiMockProvider.config({apiPath: '/api'});
+					unsetGlobalCommand();
+				});
+
+				it('should redirect when match first in list', function () {
+					defaultRequest.url = '/other/api/otherpikamon';
+					defaultExpectPath = '/mock_data/otherpikamon.get.json';
+					expectHttpSuccess();
+				});
+
+				it('should redirect when match second in list', function () {
+					defaultRequest.url = '/api/pikamon';
+					defaultExpectPath = '/mock_data/pikamon.get.json';
+					expectHttpSuccess();
+				});
+
+
+				it('should redirect when match third in list as regexp', function () {
+					defaultRequest.url = '/v2api/v2pikamon';
+					defaultExpectPath = '/mock_data/v2pikamon.get.json';
+					expectHttpSuccess();
+				});
+
+				it('should redirect when match third again in list as regexp', function () {
+					defaultRequest.url = '/v3api/v3pikamon';
+					defaultExpectPath = '/mock_data/v3pikamon.get.json';
+					expectHttpSuccess();
+				});
+
+				it('should NOT redirect not matched', function () {
+					defaultRequest.url = '/v9api/v9picachu';
+					defaultExpectPath = '/v9api/v9picachu';
+					expectHttpFailure();
+				});
+
+      });
 
 			describe('enable query params', function () {
 

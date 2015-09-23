@@ -206,7 +206,33 @@ angular.module('apiMock', [])
 		}
 
 		function isApiPath(url) {
-			return url.indexOf(config.apiPath) === 0;
+			return (apiPathMatched(url, config.apiPath) !== undefined);
+		}
+
+		function apiPathMatched(url, apiPath) {
+			var match; // Lets initially assume undefined as no match
+
+			if (angular.isArray(apiPath)) {
+				angular.forEach(apiPath, function (path) {
+					if (match) { return; } // Hack to skip more recursive calls if already matched
+						var found = apiPathMatched(url, path);
+					if (found) { 
+						match = found; 
+					}
+				});
+			}
+			if (match) { 
+				return match; 
+			} 
+			if (apiPath instanceof RegExp) {
+				if (apiPath.test(url)) {
+					return apiPath;
+				}
+			}
+			if ((url.toString().indexOf(apiPath) === 0)) {
+				return apiPath;
+			}
+			return match;
 		}
 
 		function prepareFallback(req) {
@@ -234,7 +260,8 @@ angular.module('apiMock', [])
 
 			// replace apiPath with mockDataPath.
 			var oldPath = req.url;
-			var redirectedPath = req.url.replace(config.apiPath, config.mockDataPath);
+
+			var redirectedPath = req.url.replace(apiPathMatched(req.url, config.apiPath), config.mockDataPath);
 
 			var split = redirectedPath.split('?');
 			var newPath = split[0];
@@ -242,6 +269,7 @@ angular.module('apiMock', [])
 
 			// query strings are stripped by default (like ?search=banana).
 			if (!config.stripQueries) {
+
 				//test if we have query params
 				//if we do merge them on to the params object
 				var queryParamsFromUrl = queryStringToObject(queries);
@@ -371,7 +399,8 @@ angular.module('apiMock', [])
 
 			$timeout(
 				function() {
-					deferred.resolve( apiMock.onResponse(res) ); // TODO: Apparently, no tests break regardless what this resolves to. Fix the tests!
+					// TODO: Apparently, no tests break regardless what this resolves to. Fix the tests!
+					deferred.resolve( apiMock.onResponse(res) );
 				},
 				apiMock.getDelay(),
 				true // Trigger a $digest.
