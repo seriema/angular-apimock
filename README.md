@@ -105,11 +105,12 @@ Set the path to be rerouted to.
 
 #### apiPath
 
-Type: `string`
+Type: `string` | `RegExp` | `[<string|RegExp>]`
 
 Default: `'/api'`
 
-Set the path to be rerouted from.
+Set the path to be rerouted from, for strings, will match request path from the left part, if it is a regular expresion it will evaluate expression.
+It can handle arrays and both mixed.
 
 #### disable
 
