@@ -43,6 +43,7 @@ angular.module('apiMock', [])
 		var $log;
 		var $q;
 		var config = {
+			defaultMock: false,
 			mockDataPath: '/mock_data',
 			apiPath: '/api',
 			disable: false,
@@ -163,8 +164,12 @@ angular.module('apiMock', [])
 
 		function getParameter(req) {
 			var mockValue = localMock(req);
+			// Note: `false` is a valid option, so we can't use falsy-checks.
 			if (mockValue === undefined) {
 				mockValue = globalMock();
+			}
+			if (mockValue === undefined) {
+				mockValue = config.defaultMock;
 			}
 
 			return mockValue;
