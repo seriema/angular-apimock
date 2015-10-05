@@ -91,9 +91,9 @@ describe('Service: apiMock', function () {
 		function expectHttpFailure(doneCb, failCb) {
 			$httpBackend.expect(defaultExpectMethod, defaultExpectPath).respond(404);
 
-			$http(defaultRequest)
+			$http(defaultRequest) // TODO: Callbacks isn't the proper way to test $http. It also doesn't seem to test properly as we can switch expectHttpSuccess() and expectHttpFailure() without tests failing.
 				.success(function () {
-					fail(); // Todo: How to fail the test if this happens?
+					fail();
 					failCb && failCb();
 				})
 				.error(function (data, status) {
@@ -107,7 +107,7 @@ describe('Service: apiMock', function () {
 
 		function expectHttpSuccess(doneCb, failCb) {
 			$httpBackend.expect(defaultExpectMethod, defaultExpectPath).respond({});
-			$http(defaultRequest)
+			$http(defaultRequest) // TODO: Callbacks isn't the proper way to test $http. It also doesn't seem to test properly as we can switch expectHttpSuccess() and expectHttpFailure() without tests failing.
 				.success(function () {
 					doneCb && doneCb();
 				})
@@ -381,7 +381,7 @@ describe('Service: apiMock', function () {
 
 				describe('off', function () {
 
-					it('should explicitly behave as usual with falsy values', function () {
+					it('should not mock with falsy values', function () {
 						// Define falsy values.
 						var values = [
 							false,
@@ -418,6 +418,16 @@ describe('Service: apiMock', function () {
 					apiMockProvider.config({disable: false});
 				});
 
+				it('should override config default mock', function () {
+					apiMockProvider.config({defaultMock: true});
+
+					// Test connection.
+					expectMockDisabled();
+					expectHttpFailure();
+
+					unsetGlobalCommand();
+				});
+
 				it('should override command mock', function () {
 					setGlobalCommand(true);
 
@@ -438,6 +448,51 @@ describe('Service: apiMock', function () {
 					unsetGlobalCommand();
 				});
 
+			});
+
+			describe('default mock option', function () {
+				beforeEach(function () {
+					//apiMockProvider.config({defaultMock: true});
+				});
+
+				afterEach(function () {
+					apiMockProvider.config({defaultMock: false});
+					unsetGlobalCommand();
+				});
+
+				it('should mock even without global or local flag', function () {
+					apiMockProvider.config({defaultMock: true});
+
+					// Test connection.
+					expectMockEnabled();
+					expectHttpSuccess();
+				});
+
+				it('should be overriden by global flag', function () {
+					apiMockProvider.config({defaultMock: true});
+					setGlobalCommand(false);
+
+					// Test connection.
+					expectMockDisabled();
+					expectHttpFailure();
+				});
+
+				it('should be overriden by local flag', function () {
+					apiMockProvider.config({defaultMock: true});
+					defaultRequest.apiMock = false;
+
+					// Test connection.
+					expectMockDisabled();
+					expectHttpFailure();
+				});
+
+				it('should not mock when set to false', function () {
+					apiMockProvider.config({defaultMock: false});
+
+					// Test connection.
+					expectMockDisabled();
+					expectHttpFailure();
+				});
 			});
 
 			describe('allow regexp for apiPath option instead of string', function () {

@@ -95,6 +95,14 @@ Configure is done through `apiMockProvider.config()`. Add this to your AngularJS
 });
 ````
 
+#### defaultMock
+
+Type: `boolean/string/number`
+
+Default: `false`
+
+Sets a default mock value. See [apiMock values](#apimock).
+
 #### mockDataPath
 
 Type: `string`
