@@ -27,15 +27,16 @@ module.exports = function (grunt) {
 			test: 'test'
 		},
 
+		// Test run with `grunt bump --dry-run`
 		bump: {
 			options: {
 				files: [ 'package.json', 'bower.json' ],
 				updateConfigs: [ 'yeoman' ],
 				commit: true,
-				commitMessage: 'chore(release): release v%VERSION%. See CHANGELOG.md',
+				commitMessage: 'chore(release): release %VERSION%. See CHANGELOG.md',
 				commitFiles: [ '-a' ], // '-a' for all files
 				createTag: true,
-				tagName: 'v%VERSION%',
+				tagName: '%VERSION%',
 				tagMessage: 'Version %VERSION%',
 				push: true,
 				pushTo: 'origin',
@@ -51,6 +52,20 @@ module.exports = function (grunt) {
 			},
 			release: {
 				src: 'CHANGELOG.md'
+			}
+		},
+
+		conventionalGithubReleaser: {
+			release: {
+				options: {
+					auth: {
+						type: 'oauth',
+						token: process.env.GITHUB_PERSONAL_ACCESS_TOKEN
+					},
+					changelogOpts: {
+						preset: 'angular'
+					}
+				}
 			}
 		},
 
@@ -160,13 +175,6 @@ module.exports = function (grunt) {
 			dist: {
 				src: [ '<%= yeoman.dist %>/angular-apimock.js' ],
 				dest: '<%= yeoman.dist %>/angular-apimock.js'
-			}
-		},
-
-		// Replace Google CDN references
-		cdnify: {
-			dist: {
-				html: [ '<%= yeoman.dist %>/*.html' ]
 			}
 		},
 
@@ -322,6 +330,8 @@ module.exports = function (grunt) {
 		'nugetpack',
 		'conventionalChangelog',
 		'bump-commit',
+		'conventionalGithubReleaser',
+		'npm-publish',
 		'nugetpush'
 	]);
 
