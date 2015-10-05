@@ -1,3 +1,19 @@
+<a name="0.3.0"></a>
+# [0.3.0](https://github.com/seriema/angular-apimock/compare/v0.2.1...v0.3.0) (2015-10-05)
+
+
+### Bug Fixes
+
+* **grunt:** revert failed merge ([7df9420](https://github.com/seriema/angular-apimock/commit/7df9420))
+
+### Features
+
+* **apiMock:** default mock setting ([f4e2258](https://github.com/seriema/angular-apimock/commit/f4e2258)), closes [#24](https://github.com/seriema/angular-apimock/issues/24)
+* **apiPath:** add support for arrays and/or regexp when matching ([0a08a7d](https://github.com/seriema/angular-apimock/commit/0a08a7d)), closes [#16](https://github.com/seriema/angular-apimock/issues/16)
+* **grunt:** enforce code style with JSCS ([583b65a](https://github.com/seriema/angular-apimock/commit/583b65a)), closes [#30](https://github.com/seriema/angular-apimock/issues/30)
+
+
+
 <a name="0.2.1"></a>
 ## [0.2.1](https://github.com/seriema/angular-apimock/compare/v0.2.0...v0.2.1) (2015-09-13)
 
