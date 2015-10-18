@@ -125,10 +125,12 @@ angular.module('apiMock', [])
 
 			function serialize(toSerialize, prefix, topLevel) {
 				if (angular.isArray(toSerialize)) {
+					// Serialize arrays.
 					angular.forEach(toSerialize, function (value, index) {
 						serialize(value, prefix + '[' + (angular.isObject(value) ? index : '') + ']');
 					});
 				} else if (angular.isObject(toSerialize) && !angular.isDate(toSerialize)) {
+					// Serialize objects (not dates, because that's covered by the default case).
 					forEachSorted(toSerialize, function (value, key) {
 						serialize(value, prefix +
 						(topLevel ? '' : '[') +
@@ -136,8 +138,10 @@ angular.module('apiMock', [])
 						(topLevel ? '' : ']'));
 					});
 				} else if (toSerialize === undefined || toSerialize === '') {
+					// Keep empty parameters as it still affects the mock file path.
 					parts.push(encodeUriQuery(prefix));
 				} else {
+					// Serialize everything else (including dates).
 					parts.push(encodeUriQuery(prefix) + '=' + encodeUriQuery(serializeValue(toSerialize)));
 				}
 			}
