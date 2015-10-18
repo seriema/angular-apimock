@@ -135,6 +135,8 @@ angular.module('apiMock', [])
 						key +
 						(topLevel ? '' : ']'));
 					});
+				} else if (toSerialize === undefined || toSerialize === '') {
+					parts.push(encodeUriQuery(prefix));
 				} else {
 					parts.push(encodeUriQuery(prefix) + '=' + encodeUriQuery(serializeValue(toSerialize)));
 				}

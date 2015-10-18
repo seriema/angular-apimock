@@ -730,7 +730,7 @@ describe('Service: apiMock', function () {
 
 				it('should handle empty value', function () {
 					defaultRequest.url = '/api/pokemon?releaseDate';
-					defaultExpectPath = '/mock_data/pokemon/releasedate=.get.json';
+					defaultExpectPath = '/mock_data/pokemon/releasedate.get.json';
 
 					expectHttpSuccess();
 				});
@@ -740,7 +740,7 @@ describe('Service: apiMock', function () {
 					defaultRequest.params = {
 						'releaseDate': undefined
 					};
-					defaultExpectPath = '/mock_data/pokemon/releasedate=undefined.get.json';
+					defaultExpectPath = '/mock_data/pokemon/releasedate.get.json';
 
 					expectHttpSuccess();
 				});
