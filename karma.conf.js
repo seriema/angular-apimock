@@ -106,6 +106,8 @@ module.exports = function (config) {
 		// You need to set `SAUCE_USERNAME` and `SAUCE_ACCESS_KEY` as environment variables.
 		sauceLabs: {
 			testName: 'Angular ApiMock',
+			recordVideo: false,
+			recordScreenshots: false,
 			startConnect: true
 		},
 
