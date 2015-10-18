@@ -1,4 +1,4 @@
-/*! Angular API Mock v0.3.0
+/*! Angular API Mock v0.3.1
  * Licensed with MIT
  * Made with ♥ from Seriema + Redhorn */
 /* Create the main module, `apiMock`. It's the one that needs to be included in
@@ -45,6 +45,7 @@ angular.module('apiMock', [])
 		var $location;
 		var $log;
 		var $q;
+		var $filter;
 		var config = {
 			defaultMock: false,
 			mockDataPath: '/mock_data',
@@ -71,7 +72,28 @@ angular.module('apiMock', [])
 			return keys;
 		}
 
-		// Taken from Angular 1.4.x: https://github.com/angular/angular.js/blob/f13852c179ffd9ec18b7a94df27dec39eb5f19fc/src/Angular.js#L296
+		// TODO: IE8: remove when we drop IE8/Angular 1.2 support.
+		// Date.prototype.toISOString isn't supported in IE8. Which we need to support as long as we support Angular 1.2.
+		// Modified from MDN: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toISOString
+		function toISOString(date) {
+			function pad(number) {
+				if (number < 10) {
+					return '0' + number;
+				}
+				return number;
+			}
+
+			return date.getUTCFullYear() +
+				'-' + pad(date.getUTCMonth() + 1) +
+				'-' + pad(date.getUTCDate()) +
+				'T' + pad(date.getUTCHours()) +
+				':' + pad(date.getUTCMinutes()) +
+				':' + pad(date.getUTCSeconds()) +
+				'.' + (date.getUTCMilliseconds() / 1000).toFixed(3).slice(2, 5) +
+				'Z';
+		}
+
+		// Taken as-is from Angular 1.4.x: https://github.com/angular/angular.js/blob/f13852c179ffd9ec18b7a94df27dec39eb5f19fc/src/Angular.js#L296
 		function forEachSorted(obj, iterator, context) {
 			var keys = objectKeys(obj).sort();
 			for (var i = 0; i < keys.length; i++) {
@@ -80,50 +102,49 @@ angular.module('apiMock', [])
 			return keys;
 		}
 
-		// Taken from Angular 1.4.x: https://github.com/angular/angular.js/blob/929ec6ba5a60e926654583033a90aebe716123c0/src/ng/http.js#L18
+		// Modified from Angular 1.4.x: https://github.com/angular/angular.js/blob/929ec6ba5a60e926654583033a90aebe716123c0/src/ng/http.js#L18
 		function serializeValue(v) {
-			if (angular.isObject(v)) {
-				return angular.isDate(v) ? v.toISOString() : angular.toJson(v);
+			if (angular.isDate(v)) {
+				return toISOString(v);
 			}
+
 			return v;
 		}
 
-		// Taken from Angular 1.4.x: https://github.com/angular/angular.js/blob/720012eab6fef5e075a1d6876dd2e508c8e95b73/src/ngResource/resource.js#L405
-		function encodeUriQuery(val, pctEncodeSpaces) {
+		// Modified from Angular 1.4.x: https://github.com/angular/angular.js/blob/720012eab6fef5e075a1d6876dd2e508c8e95b73/src/ngResource/resource.js#L405
+		function encodeUriQuery(val) {
 			return encodeURIComponent(val).
 			replace(/%40/gi, '@').
 			replace(/%3A/gi, ':').
 			replace(/%24/g, '$').
 			replace(/%2C/gi, ',').
-			replace(/%20/g, (pctEncodeSpaces ? '%20' : '+'));
+			replace(/%20/g, '+');
 		}
 
 		// TODO: replace with a $httpParamSerializerJQLikeProvider() call when we require Angular 1.4 (i.e. when we drop 1.2 and 1.3).
-		// Taken from Angular 1.4.x: https://github.com/angular/angular.js/blob/929ec6ba5a60e926654583033a90aebe716123c0/src/ng/http.js#L108
+		// Modified from Angular 1.4.x: https://github.com/angular/angular.js/blob/929ec6ba5a60e926654583033a90aebe716123c0/src/ng/http.js#L108
 		function jQueryLikeParamSerializer(params) {
-			if (!params) {
-				return '';
-			}
-
 			var parts = [];
 
 			function serialize(toSerialize, prefix, topLevel) {
-				if (toSerialize === null || angular.isUndefined(toSerialize)) {
-					return;
-				}
-
 				if (angular.isArray(toSerialize)) {
+					// Serialize arrays.
 					angular.forEach(toSerialize, function (value, index) {
 						serialize(value, prefix + '[' + (angular.isObject(value) ? index : '') + ']');
 					});
 				} else if (angular.isObject(toSerialize) && !angular.isDate(toSerialize)) {
+					// Serialize objects (not dates, because that's covered by the default case).
 					forEachSorted(toSerialize, function (value, key) {
 						serialize(value, prefix +
 						(topLevel ? '' : '[') +
 						key +
 						(topLevel ? '' : ']'));
 					});
+				} else if (toSerialize === undefined || toSerialize === '') {
+					// Keep empty parameters as it still affects the mock file path.
+					parts.push(encodeUriQuery(prefix));
 				} else {
+					// Serialize everything else (including dates).
 					parts.push(encodeUriQuery(prefix) + '=' + encodeUriQuery(serializeValue(toSerialize)));
 				}
 			}
@@ -250,15 +271,13 @@ angular.module('apiMock', [])
 		}
 
 		function removeFallback(res) {
-			var found = false;
-			angular.forEach(fallbacks, function (fallback, index) {
-				if (fallback.method === res.method && fallback.url === res.url) {
-					found = true;
-					fallbacks.splice(index, 1);
-				}
-			});
+			var startLength = fallbacks.length;
+			fallbacks = $filter('filter')(fallbacks, {
+				method: '!' + res.method,
+				url: '!' + res.url
+			}, true);
 
-			return found;
+			return startLength > fallbacks.length;
 		}
 
 		function reroute(req) {
@@ -312,10 +331,11 @@ angular.module('apiMock', [])
 		// Expose public interface for provider instance
 		//
 
-		function ApiMock(_$location, _$log, _$q) {
+		function ApiMock(_$location, _$log, _$q, _$filter) {
 			$location = _$location;
 			$log = _$log;
 			$q = _$q;
+			$filter = _$filter;
 		}
 
 		var p = ApiMock.prototype;
@@ -345,18 +365,13 @@ angular.module('apiMock', [])
 				case 'respond':
 					return httpStatusResponse(command.value);
 				case 'ignore':
-					return req;
-
+				/* falls through */
 				default:
 					return req;
 			}
 		};
 
 		p.onResponse = function (res) {
-			if (config.disable) {
-				return res;
-			}
-
 			removeFallback(res);
 			return res;
 		};
@@ -385,8 +400,8 @@ angular.module('apiMock', [])
 			angular.extend(config, options);
 		};
 
-		this.$get = ['$location', '$log', '$q', function ($location, $log, $q) {
-			return new ApiMock($location, $log, $q);
+		this.$get = ['$location', '$log', '$q', '$filter', function ($location, $log, $q, $filter) {
+			return new ApiMock($location, $log, $q, $filter);
 		}];
 	})
 
@@ -396,10 +411,7 @@ angular.module('apiMock', [])
 		 * `apiMock` to determine if a mock should be done, then do the actual mocking.
 		 */
 		this.request = function (req) {
-			req = apiMock.onRequest(req);
-
-			// Return the request or promise.
-			return req || $q.when(req);
+			return apiMock.onRequest(req);
 		};
 
 		this.response = function (res) {

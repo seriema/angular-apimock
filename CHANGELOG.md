@@ -1,3 +1,14 @@
+<a name="0.3.1"></a>
+## [0.3.1](https://github.com/seriema/angular-apimock/compare/v0.3.0...v0.3.1) (2015-10-18)
+
+
+### Bug Fixes
+
+* **apimock:** normalize file paths for empty query params ([9252f71](https://github.com/seriema/angular-apimock/commit/9252f71)), closes [#48](https://github.com/seriema/angular-apimock/issues/48)
+* **apimock:** toISOString support on dates in IE8 ([3a1ac50](https://github.com/seriema/angular-apimock/commit/3a1ac50)), closes [#51](https://github.com/seriema/angular-apimock/issues/51)
+
+
+
 <a name="0.3.0"></a>
 # [0.3.0](https://github.com/seriema/angular-apimock/compare/v0.2.1...v0.3.0) (2015-10-05)
 
