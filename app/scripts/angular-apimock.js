@@ -69,6 +69,27 @@ angular.module('apiMock', [])
 			return keys;
 		}
 
+		// TODO: IE8: remove when we drop IE8/Angular 1.2 support.
+		// Date.prototype.toISOString isn't supported in IE8. Which we need to support as long as we support Angular 1.2.
+		// Modified from MDN: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toISOString
+		function toISOString(date) {
+			function pad(number) {
+				if (number < 10) {
+					return '0' + number;
+				}
+				return number;
+			}
+
+			return date.getUTCFullYear() +
+				'-' + pad(date.getUTCMonth() + 1) +
+				'-' + pad(date.getUTCDate()) +
+				'T' + pad(date.getUTCHours()) +
+				':' + pad(date.getUTCMinutes()) +
+				':' + pad(date.getUTCSeconds()) +
+				'.' + (date.getUTCMilliseconds() / 1000).toFixed(3).slice(2, 5) +
+				'Z';
+		}
+
 		// Taken as-is from Angular 1.4.x: https://github.com/angular/angular.js/blob/f13852c179ffd9ec18b7a94df27dec39eb5f19fc/src/Angular.js#L296
 		function forEachSorted(obj, iterator, context) {
 			var keys = objectKeys(obj).sort();
@@ -81,7 +102,7 @@ angular.module('apiMock', [])
 		// Modified from Angular 1.4.x: https://github.com/angular/angular.js/blob/929ec6ba5a60e926654583033a90aebe716123c0/src/ng/http.js#L18
 		function serializeValue(v) {
 			if (angular.isDate(v)) {
-				return v.toISOString();
+				return toISOString(v);
 			}
 
 			return v;
