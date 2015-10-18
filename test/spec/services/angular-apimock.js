@@ -708,6 +708,52 @@ describe('Service: apiMock', function () {
 
 					expectHttpSuccess();
 				});
+
+				it('should serialize objects nested inside arrays', function () {
+					defaultRequest.url = '/api/pokemon';
+					defaultRequest.params = {
+						'moves': [ {
+							'Thunderbolt': {
+								power: 95,
+								type: 'Electric'
+							}}, {
+							'Double Edge': {
+								power: 120,
+								type: 'Normal'
+							}
+						} ]
+					};
+					defaultExpectPath = '/mock_data/pokemon/moves%5b0%5d%5bthunderbolt%5d%5bpower%5d=95&moves%5b0%5d%5bthunderbolt%5d%5btype%5d=electric&moves%5b1%5d%5bdouble+edge%5d%5bpower%5d=120&moves%5b1%5d%5bdouble+edge%5d%5btype%5d=normal.get.json';
+
+					expectHttpSuccess();
+				});
+
+				it('should handle empty value', function () {
+					defaultRequest.url = '/api/pokemon?releaseDate';
+					defaultExpectPath = '/mock_data/pokemon/releasedate=.get.json';
+
+					expectHttpSuccess();
+				});
+
+				it('should handle undefined value', function () {
+					defaultRequest.url = '/api/pokemon';
+					defaultRequest.params = {
+						'releaseDate': undefined
+					};
+					defaultExpectPath = '/mock_data/pokemon/releasedate=undefined.get.json';
+
+					expectHttpSuccess();
+				});
+
+				it('should serialize date type', function () {
+					defaultRequest.url = '/api/pokemon';
+					defaultRequest.params = {
+						'releaseDate': new Date(Date.UTC(96, 1, 27, 0, 0, 0))
+					};
+					defaultExpectPath = '/mock_data/pokemon/releasedate=1996-02-27t00:00:00.000z.get.json';
+
+					expectHttpSuccess();
+				});
 			});
 
 			describe('delay option', function () {
