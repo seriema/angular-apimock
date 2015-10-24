@@ -748,9 +748,9 @@ describe('Service: apiMock', function () {
 				it('should serialize date type', function () {
 					defaultRequest.url = '/api/pokemon';
 					defaultRequest.params = {
-						'releaseDate': new Date(Date.UTC(96, 1, 27, 0, 0, 0))
+						'releaseDate': new Date(Date.UTC(96, 1, 27, 1, 2, 3))
 					};
-					defaultExpectPath = '/mock_data/pokemon/releasedate=1996-02-27t00:00:00.000z.get.json';
+					defaultExpectPath = '/mock_data/pokemon/releasedate=1996-02-27t01.02.03.000z.get.json';
 
 					expectHttpSuccess();
 				});
