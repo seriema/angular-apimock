@@ -1,4 +1,4 @@
-/*! Angular API Mock v0.3.1
+/*! Angular API Mock v0.3.2
  * Licensed with MIT
  * Made with ♥ from Seriema + Redhorn */
 /* Create the main module, `apiMock`. It's the one that needs to be included in
@@ -87,8 +87,8 @@ angular.module('apiMock', [])
 				'-' + pad(date.getUTCMonth() + 1) +
 				'-' + pad(date.getUTCDate()) +
 				'T' + pad(date.getUTCHours()) +
-				':' + pad(date.getUTCMinutes()) +
-				':' + pad(date.getUTCSeconds()) +
+				'.' + pad(date.getUTCMinutes()) +
+				'.' + pad(date.getUTCSeconds()) +
 				'.' + (date.getUTCMilliseconds() / 1000).toFixed(3).slice(2, 5) +
 				'Z';
 		}

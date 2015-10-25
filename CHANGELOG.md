@@ -1,3 +1,13 @@
+<a name="0.3.2"></a>
+## [0.3.2](https://github.com/seriema/angular-apimock/compare/0.3.1...v0.3.2) (2015-10-25)
+
+
+### Bug Fixes
+
+* **apimock:** timestamps had an invalid format ([024c8de](https://github.com/seriema/angular-apimock/commit/024c8de)), closes [#57](https://github.com/seriema/angular-apimock/issues/57)
+
+
+
 <a name="0.3.1"></a>
 ## [0.3.1](https://github.com/seriema/angular-apimock/compare/v0.3.0...v0.3.1) (2015-10-18)
 
