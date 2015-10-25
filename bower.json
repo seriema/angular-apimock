@@ -19,8 +19,9 @@
   "ignore": [
     "**/*",
     "!dist/*",
-    "!README.md",
+    "!CHANGELOG.md",
     "!LICENSE",
+    "!README.md",
     "!bower.json"
   ],
   "license": "MIT",
