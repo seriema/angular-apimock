@@ -218,6 +218,14 @@ module.exports = function (grunt) {
 			}
 		},
 
+		gitadd: {
+			task: {
+				files: {
+					src: [ 'nuget/Angular-ApiMock.<%= yeoman.version %>.nupkg' ]
+				}
+			}
+		},
+
 		// Test settings
 		karma: {
 			options: {
@@ -328,11 +336,12 @@ module.exports = function (grunt) {
 	grunt.registerTask('_publish', [
 		'build',
 		'nugetpack',
+		'gitadd',
 		'conventionalChangelog',
 		'bump-commit',
 		'conventionalGithubReleaser',
-		'npm-publish',
-		'nugetpush'
+		'nugetpush',
+		'npm-publish'
 	]);
 
 	grunt.registerTask('publish', [ 'publish:patch' ]);
