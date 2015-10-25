@@ -8,7 +8,7 @@
     "type": "git",
     "url": "git://github.com/seriema/angular-apimock.git"
   },
-  "main": "dist/angular-apimock.min.js",
+  "main": "dist/angular-apimock.js",
   "keywords": [
     "angular",
     "angularjs",
