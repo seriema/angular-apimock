@@ -1,6 +1,7 @@
 {
   "name": "angular-apimock",
   "version": "0.3.2",
+  "description": "Automatically route your API calls to static JSON files, for hiccup free front–end development.",
   "author": "John-Philip Johansson <seriema@gmail.com> (http://johansson.jp/)",
   "homepage": "http://johansson.jp/angular-apimock/",
   "bugs": "https://github.com/seriema/angular-apimock/issues",
