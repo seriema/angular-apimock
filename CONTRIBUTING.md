@@ -36,7 +36,7 @@ Helpful steps:
 1. One PR per logged bug or feature (read above about **Bugs** or **Features**)
 2. Check for an existing issue or create a new one (see step 1)
 3. Fork the project and create a new branch to do your changes in
-4. Install dependencies with `npm install` (you'll need [Node](https://nodejs.org), [Grunt](http://gruntjs.com), and [Bower](http://bower.io) already installed)
+4. Install dependencies with `npm install` and `bower install` (you'll need [Node](https://nodejs.org), [Grunt](http://gruntjs.com), and [Bower](http://bower.io) already installed)
 5. Run `grunt` before every commit and see the **Commit guidelines** section below
 6. Create a PR and reference the issue from step 2
 
