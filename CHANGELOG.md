@@ -1,3 +1,13 @@
+<a name="0.3.3"></a>
+## [0.3.3](https://github.com/seriema/angular-apimock/compare/0.3.2...v0.3.3) (2015-11-14)
+
+
+### Bug Fixes
+
+* **npm:** `npm install` was failing because it ran bower as `postinstall` ([a696e14](https://github.com/seriema/angular-apimock/commit/a696e14))
+
+
+
 <a name="0.3.2"></a>
 ## [0.3.2](https://github.com/seriema/angular-apimock/compare/0.3.1...v0.3.2) (2015-10-25)
 
