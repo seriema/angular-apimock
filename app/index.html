@@ -46,7 +46,7 @@
 				$http.get('/api/people/pikachu').success(function(data) {
 					$scope.name = data.name;
 				}).error(function(data) {
-					$scope.name = 'No connection :( Now add ?apimock=true to the browser addressbar and try again ;)';
+					$scope.name = 'No connection :( Now add #?apimock=true to the browser addressbar (e.g. http://localhost:60280/#?apimock=true) and try again ;)';
 				});
 			});
 		</script>
