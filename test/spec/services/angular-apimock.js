@@ -121,6 +121,35 @@ describe('Service: apiMock', function () {
 			$timeout.flush();
 		}
 
+		describe('mocking', function () {
+			beforeEach(function () {
+				setGlobalCommand(true);
+			});
+
+			afterEach(function () {
+				unsetGlobalCommand();
+			});
+
+			it('should ignore URLs outside of apiPath', inject(function (_$rootScope_, _$compile_, $templateCache) {
+				var templateUrl = 'scripts/hello-world.html';
+				$httpBackend.expect('GET', templateUrl).respond('<div>hello world!</div>');
+				$templateCache.put(templateUrl, '<div>hello world!</div>');
+
+				var result;
+				$http({
+					url: templateUrl,
+					method: 'GET'
+				}).success(function (data) {
+					result = data;
+				});
+
+				$rootScope.$digest();
+				$httpBackend.flush();
+				$timeout.flush();
+
+				expect(result).toEqual('<div>hello world!</div>');
+			}));
+		});
 
 		describe('URL flag', function () {
 
