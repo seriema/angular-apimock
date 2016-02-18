@@ -23,6 +23,7 @@
     "README.md",
     "package.json"
   ],
+  "main": "dist/angular-apimock.js",
   "license": "MIT",
   "dependencies": {},
   "devDependencies": {
