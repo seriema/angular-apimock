@@ -297,6 +297,16 @@ module.exports = function (grunt) {
 						'<%= watch.jsTest.files %>'
 					]}
 				]
+			},
+			angular15: {
+				files: [{
+					src: [
+						'test/ref/angular-v1.5.js',
+						'test/ref/angular-mocks-v1.5.js',
+						'<%= watch.js.files %>',
+						'<%= watch.jsTest.files %>'
+					]}
+				]
 			}
 		},
 
@@ -322,7 +332,8 @@ module.exports = function (grunt) {
 		'karma:coverage',
 		'karma:angular12',
 		'karma:angular13',
-		'karma:angular14'
+		'karma:angular14',
+		'karma:angular15'
 	]);
 
 	grunt.registerTask('build', [
