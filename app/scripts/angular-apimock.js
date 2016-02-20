@@ -183,6 +183,10 @@ angular.module('apiMock', [])
 			return detectParameter(req);
 		}
 
+		function globalMock() {
+			return detectParameter($location.search());
+		}
+
 		function getParameter(req) {
 			var mockValue = localMock(req);
 			// Note: `false` is a valid option, so we can't use falsy-checks.
@@ -215,10 +219,6 @@ angular.module('apiMock', [])
 		}
 
 
-		function globalMock() {
-			return detectParameter($location.search());
-		}
-
 		function httpStatusResponse(status) {
 			var response = {
 				status: status,
@@ -229,10 +229,6 @@ angular.module('apiMock', [])
 			};
 			$log.info('apiMock: mocking HTTP status to ' + status);
 			return $q.reject(response);
-		}
-
-		function isApiPath(url) {
-			return (apiPathMatched(url, config.apiPath) !== undefined);
 		}
 
 		function apiPathMatched(url, apiPath) {
@@ -259,6 +255,10 @@ angular.module('apiMock', [])
 				return apiPath;
 			}
 			return match;
+		}
+
+		function isApiPath(url) {
+			return (apiPathMatched(url, config.apiPath) !== undefined);
 		}
 
 		function prepareFallback(req) {
